@@ -20,3 +20,15 @@ export const createChallenge = async (
 
   return data;
 };
+
+export const getChallenges = async (userId: string) => {
+  const data = await prisma.challenge.findMany({
+    where: { userId: userId },
+    orderBy: { startDate: "desc" },
+    include: {
+      dailyProgress: true,
+    },
+  });
+
+  return data;
+};

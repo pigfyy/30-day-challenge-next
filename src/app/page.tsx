@@ -5,17 +5,7 @@ import { createUser } from "@/lib/prisma/user";
 
 export default function Page() {
   // (async () => {
-  //   const userInformation: User = {
-  //     id: "cjld2cjxh0000qzrmn831i7rn",
-  //     email: "franklinzhang06@gmail.com",
-  //     username: "pigfy",
-  //     imageUrl: "some-url.com",
-  //     clerkId: "some-id",
-  //     createdAt: new Date(),
-  //     updatedAt: new Date(),
-  //   };
-
-  //   const data = await createUser(userInformation);
+  //   const data = await getMostRecentChallenge("clwe90jge00007uala1rjik7g");
   //   console.log(data);
   // })();
 

@@ -5,20 +5,22 @@ import { z } from "zod";
 
 const schema = z.object({
   title: z.string(),
-  description: z.string().nullable(),
+  wish: z.string(),
+  dailyAction: z.string(),
   clerkId: z.string(),
 });
 
 type schema = z.infer<typeof schema>;
 
-const handleValidData = async (data: schema) => {
+const handleValidatedData = async (data: schema) => {
   try {
-    const { title, description, clerkId } = data;
+    const { title, wish, dailyAction, clerkId } = data;
     const { id } = await findUserByClerkId(clerkId);
 
     return await createChallenge({
       title: title,
-      description: description,
+      wish: wish,
+      dailyAction: dailyAction,
       userId: id,
     });
   } catch (e) {
@@ -31,7 +33,7 @@ export async function PUT(req: Request) {
     const body = await req.json();
     const parsedData = schema.parse(body);
 
-    const data = await handleValidData(parsedData);
+    const data = await handleValidatedData(parsedData);
 
     return NextResponse.json({
       message: "Challenge created successfully",
