@@ -1,5 +1,6 @@
 import { createChallenge } from "@/lib/prisma/challenge";
 import { findUserByClerkId } from "@/lib/prisma/user";
+import { handleError, validateRequest } from "@/lib/util/routeUtils";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -30,8 +31,7 @@ const handleValidatedData = async (data: schema) => {
 
 export async function PUT(req: Request) {
   try {
-    const body = await req.json();
-    const parsedData = schema.parse(body);
+    const parsedData = await validateRequest(schema, req);
 
     const data = await handleValidatedData(parsedData);
 
@@ -40,16 +40,6 @@ export async function PUT(req: Request) {
       data: data,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: "Validation failed", errors: error.errors },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { message: "Internal Server Error" },
-      { status: 500 }
-    );
+    handleError(error);
   }
 }
