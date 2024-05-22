@@ -8,9 +8,9 @@ const schema = z.object({
   clerkId: z.string(),
 });
 
-type Schema = z.infer<typeof schema>;
+type schema = z.infer<typeof schema>;
 
-const handleValidatedData = async ({ clerkId }: Schema) => {
+const handleValidatedData = async ({ clerkId }: schema) => {
   const { id } = await findUserByClerkId(clerkId);
   return getChallenges(id);
 };

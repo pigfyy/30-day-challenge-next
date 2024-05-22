@@ -14,7 +14,6 @@ export async function validateRequest<T>(
 ): Promise<T> {
   try {
     const body = await req.json();
-    console.log(body);
     return schema.parse(body);
   } catch (error) {
     if (error instanceof z.ZodError) {

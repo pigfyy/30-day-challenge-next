@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@30-day-challenge/prisma-schema": "^0.0.18",
+    "@30-day-challenge/prisma-zod": "^1.0.12",
     "@clerk/nextjs": "^5.0.12",
     "@prisma/client": "^5.14.0",
     "date-fns": "^3.6.0",
