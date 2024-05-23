@@ -25,8 +25,10 @@ const handleValidatedData = async (data: schema) => {
       challengeId,
       userId,
       completed,
+      ...(data.id && { id: data.id }),
     });
   } catch (e) {
+    console.error(e);
     throw new Error("Failed to create challenge");
   }
 };
