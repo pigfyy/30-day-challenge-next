@@ -31,7 +31,6 @@ export function handleError(error: unknown) {
     );
   }
 
-  console.error(error);
   return NextResponse.json(
     { message: "Internal Server Error" },
     { status: 500 }
