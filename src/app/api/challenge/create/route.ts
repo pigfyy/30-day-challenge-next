@@ -8,6 +8,7 @@ const schema = z.object({
   title: z.string(),
   wish: z.string(),
   dailyAction: z.string(),
+  icon: z.string(),
   clerkId: z.string(),
 });
 
@@ -15,7 +16,7 @@ type schema = z.infer<typeof schema>;
 
 const handleValidatedData = async (data: schema) => {
   try {
-    const { title, wish, dailyAction, clerkId } = data;
+    const { title, wish, dailyAction, icon, clerkId } = data;
     const { id } = await findUserByClerkId(clerkId);
 
     return await createChallenge({
@@ -23,6 +24,7 @@ const handleValidatedData = async (data: schema) => {
       wish: wish,
       dailyAction: dailyAction,
       userId: id,
+      icon,
     });
   } catch (e) {
     throw new Error("Failed to create challenge");
