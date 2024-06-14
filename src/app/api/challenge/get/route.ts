@@ -1,5 +1,5 @@
-import { getChallenges } from "@/lib/prisma/challenge";
-import { findUserByClerkId } from "@/lib/prisma/user";
+import { getChallenges } from "@/lib/db/challenge";
+import { findUserByClerkId } from "@/lib/db/user";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { validateRequest, handleError } from "@/lib/util/routeUtils";

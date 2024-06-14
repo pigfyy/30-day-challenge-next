@@ -1,4 +1,4 @@
-import { updateChallenge } from "@/lib/prisma/challenge";
+import { updateChallenge } from "@/lib/db/challenge";
 import { handleError, validateRequest } from "@/lib/util/routeUtils";
 import { NextResponse } from "next/server";
 import { z } from "zod";

@@ -1,7 +1,7 @@
 import React from "react";
 import { PrismaClient, User, Challenge } from "@prisma/client";
-import { prisma } from "../lib/prisma/(root)/prisma";
-import { createUser } from "@/lib/prisma/user";
+import { prisma } from "@/lib/db/(root)/prisma";
+import { createUser } from "@/lib/db/user";
 
 export default function Page() {
   // (async () => {

@@ -1,5 +1,5 @@
-import { createChallenge } from "@/lib/prisma/challenge";
-import { findUserByClerkId } from "@/lib/prisma/user";
+import { createChallenge } from "@/lib/db/challenge";
+import { findUserByClerkId } from "@/lib/db/user";
 import { handleError, validateRequest } from "@/lib/util/routeUtils";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -7,7 +7,7 @@ import {
   ChallengeSchema,
   DailyProgressOptionalDefaultsSchema,
 } from "@30-day-challenge/prisma-zod";
-import { editDailyProgressCompletion } from "@/lib/prisma/dailyProgress";
+import { editDailyProgressCompletion } from "@/lib/db/dailyProgress";
 
 const schema = DailyProgressOptionalDefaultsSchema.omit({
   userId: true,
