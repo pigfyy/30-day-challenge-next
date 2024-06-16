@@ -1,13 +1,33 @@
+"use client";
+
 import React from "react";
-import { PrismaClient, User, Challenge } from "@prisma/client";
-import { prisma } from "@/lib/db/(root)/prisma";
-import { createUser } from "@/lib/db/user";
-
 export default function Page() {
-  // (async () => {
-  //   const data = await getMostRecentChallenge("clwe90jge00007uala1rjik7g");
-  //   console.log(data);
-  // })();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  return <div>Page</div>;
+    const fileInput = e.target.elements[0] as HTMLInputElement;
+    const file = fileInput.files?.[0];
+
+    fetch("/api/upload-image", {
+      method: "POST",
+      body: JSON.stringify({
+        base64: await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(file);
+        }),
+      }),
+    })
+      .then((res) => res.json())
+      .then((json) => console.log(json));
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="file" />
+      <button type="submit" className="bg-blue-500 text-white p-3 rounded-xl">
+        Submit
+      </button>
+    </form>
+  );
 }

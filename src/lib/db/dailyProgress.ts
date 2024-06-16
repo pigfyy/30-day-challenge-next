@@ -1,5 +1,7 @@
 import { DailyProgressOptionalDefaults } from "@30-day-challenge/prisma-zod";
 import { prisma } from "./(root)/prisma";
+import { base64ToBlob } from "../util";
+import { put } from "@vercel/blob";
 
 export const editDailyProgressCompletion = async (
   progressInformation: DailyProgressOptionalDefaults
@@ -28,4 +30,15 @@ export const viewDailyProgressCompletion = async (
     where: whereClause,
     orderBy: { date: "desc" },
   });
+};
+
+export const uploadImage = async (base64: string, filename: string) => {
+  const mimeType = base64.split(";")[0].split(":")[1];
+  const inputBlob = base64ToBlob(base64, mimeType);
+
+  const blob = await put(filename, inputBlob, {
+    access: "public",
+  });
+
+  return blob.url;
 };
