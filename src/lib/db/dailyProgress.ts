@@ -12,12 +12,14 @@ export const editDailyProgressCompletion = async (
     },
     update: {
       completed: progressInformation.completed,
+      imageUrl: progressInformation.imageUrl,
     },
     create: {
       ...progressInformation,
       completed: progressInformation.completed ?? true, // Ensure `completed` is set for new records
     },
   });
+
   return data;
 };
 

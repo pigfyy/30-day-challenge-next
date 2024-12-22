@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@30-day-challenge/prisma-zod": "^1.0.19",
+    "@30-day-challenge/prisma-zod": "^1.0.24",
     "@clerk/nextjs": "^5.0.12",
     "@prisma/client": "^5.14.0",
     "@vercel/blob": "^0.23.3",

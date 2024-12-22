@@ -1,6 +1,4 @@
 import { uploadImage } from "@/lib/db/dailyProgress";
-import { base64ToBlob } from "@/lib/util";
-import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

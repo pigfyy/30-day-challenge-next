@@ -9,6 +9,7 @@ const schema = z.object({
   wish: z.string(),
   dailyAction: z.string(),
   icon: z.string(),
+  note: z.string().nullable(),
 });
 
 export async function PUT(req: Request) {

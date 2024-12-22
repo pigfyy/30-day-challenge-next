@@ -4,7 +4,7 @@ import { addDays } from "date-fns";
 
 export type CreateChallengeInput = Omit<
   Challenge,
-  "id" | "createdAt" | "updatedAt" | "startDate" | "endDate"
+  "id" | "createdAt" | "updatedAt" | "startDate" | "endDate" | "note"
 >;
 export const createChallenge = async (
   challengeInformation: CreateChallengeInput

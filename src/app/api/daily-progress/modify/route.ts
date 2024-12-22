@@ -17,7 +17,7 @@ type schema = z.infer<typeof schema>;
 
 const handleValidatedData = async (data: schema) => {
   try {
-    const { date, challengeId, clerkId, completed } = data;
+    const { date, challengeId, clerkId, completed, imageUrl } = data;
     const { id: userId } = await findUserByClerkId(clerkId);
 
     return await editDailyProgressCompletion({
@@ -25,6 +25,7 @@ const handleValidatedData = async (data: schema) => {
       challengeId,
       userId,
       completed,
+      imageUrl,
       ...(data.id && { id: data.id }),
     });
   } catch (e) {
