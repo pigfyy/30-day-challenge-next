@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev\" \"ngrok http --domain=quetzal-artistic-possibly.ngrok-free.app 3000\"",
+    "dev": "concurrently \"next dev\" \"ngrok http --url=mature-subtle-troll.ngrok-free.app 3000\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@30-day-challenge/prisma-zod": "^1.0.24",
+    "@30-day-challenge/prisma-zod": "^1.0.25",
     "@clerk/nextjs": "^5.0.12",
     "@prisma/client": "^5.14.0",
     "@vercel/blob": "^0.23.3",
