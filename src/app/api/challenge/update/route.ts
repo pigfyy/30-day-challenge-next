@@ -9,12 +9,12 @@ const schema = z.object({
   wish: z.string(),
   dailyAction: z.string(),
   icon: z.string(),
-  note: z.string().nullable(),
+  note: z.string(),
 });
 
 export async function PUT(req: Request) {
   try {
-    const parsedData = await validateRequest(schema, req);
+    const parsedData = await validateRequest(schema, req);    
 
     const data = await updateChallenge(parsedData);
 

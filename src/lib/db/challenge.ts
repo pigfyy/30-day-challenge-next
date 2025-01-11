@@ -38,7 +38,7 @@ export const updateChallenge = async (
 export const getChallenges = async (userId: string) => {
   const data = await prisma.challenge.findMany({
     where: { userId: userId },
-    orderBy: { startDate: "desc" },
+    orderBy: { startDate: "asc" },
   });
 
   return data;
