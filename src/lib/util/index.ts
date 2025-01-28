@@ -1,3 +1,9 @@
+import OpenAI from "openai";
+
+export const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || "",
+});
+
 export const base64ToBlob = (base64String: string, mimeType: string) => {
   const byteString = atob(base64String.split(",")[1]);
   const ab = new ArrayBuffer(byteString.length);
