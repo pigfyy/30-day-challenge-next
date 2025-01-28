@@ -21,7 +21,19 @@ const handleValidatedData = async (data: schema) => {
   try {
     const challenges = data;
 
-    return await generateChallengeIdeas(challenges);
+    return await generateChallengeIdeas(
+      challenges.map((challenge) => {
+        return {
+          index: challenge.index,
+          title: challenge.title,
+          wish: challenge.wish,
+          dailyAction: challenge.dailyAction,
+          description: challenge.description,
+          sourceName: challenge.source_name,
+          sourceLink: challenge.source_link,
+        };
+      })
+    );
   } catch (e) {
     throw new Error("Failed to create challenge");
   }

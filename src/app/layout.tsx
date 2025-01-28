@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>
+        <body className="min-h-screen flex flex-col">
           <header>
             <SignedOut>
               <SignInButton />
@@ -24,7 +24,7 @@ export default function RootLayout({
               <UserButton />
             </SignedIn>
           </header>
-          <main>{children}</main>
+          <main className="flex flex-1">{children}</main>
         </body>
       </html>
     </ClerkProvider>
