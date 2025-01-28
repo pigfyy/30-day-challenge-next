@@ -11,8 +11,13 @@ const schema = z.object({
 type schema = z.infer<typeof schema>;
 
 const handleValidatedData = async ({ clerkId }: schema) => {
-  const { id } = await findUserByClerkId(clerkId);
-  return getChallenges(id);
+  try {
+    const { id } = await findUserByClerkId(clerkId);
+    return getChallenges(id);
+  } catch (error) {
+    console.error("Error finding user by clerk ID:", error); // Log the error for debugging
+    return [];
+  }
 };
 
 export async function POST(req: Request) {
