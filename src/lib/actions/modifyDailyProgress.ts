@@ -19,8 +19,6 @@ export async function modifyDailyProgress(
     userId: challenge.userId,
   };
 
-  console.log(progressInformation);
-
   await editDailyProgressCompletion(progressInformation);
 
   revalidatePath("/");

@@ -16,11 +16,9 @@ const ViewChallenge = async ({ challenge }: { challenge: Challenge }) => {
     challenge.id
   );
 
-  const gridData = createCalendarDates(challenge, dailyProgress);
-
   return (
     <div>
-      <Calendar challenge={challenge} gridData={gridData} />
+      <Calendar challenge={challenge} dailyProgress={dailyProgress} />
     </div>
   );
 };

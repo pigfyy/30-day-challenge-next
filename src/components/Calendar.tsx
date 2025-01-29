@@ -1,16 +1,19 @@
 "use client";
 
-import { gridData, isDateValid } from "@/lib/util/dates";
-import { Challenge } from "@prisma/client";
+import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
+import { Challenge, DailyProgress } from "@prisma/client";
 import { getDate } from "date-fns";
 import { modifyDailyProgress } from "@/lib/actions/modifyDailyProgress";
+import { useOptimistic } from "react";
 
-interface CalendarProps {
-  gridData: gridData;
+type CalendarProps = {
   challenge: Challenge;
-}
+  dailyProgress: DailyProgress[];
+};
 
-export default function Calendar({ gridData, challenge }: CalendarProps) {
+export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
+  const gridData = createCalendarDates(challenge, dailyProgress);
+
   return (
     <div className="flex flex-col gap-2">
       <WeekDays />
@@ -67,17 +70,37 @@ type DayProps = {
 };
 
 function Day({ index, item, challenge }: DayProps) {
-  const completedClasses = item.dailyProgress?.completed
-    ? `bg-neutral-200 ${item.leftCompleted ? "rounded-r-xl" : ""} ${
-        item.rightCompleted ? "rounded-l-xl" : ""
-      } ${!item.leftCompleted && !item.rightCompleted ? "rounded-xl" : ""}`
-    : "";
+  const isLeftEdge = index % 7 == 0;
+  const isRightEdge = index % 7 == 6;
+
+  let completedClasses = "";
+
+  if (item.dailyProgress?.completed) {
+    completedClasses = "bg-neutral-200";
+    if (
+      (item.leftCompleted && !item.rightCompleted && !isLeftEdge) ||
+      isRightEdge
+    ) {
+      completedClasses += " rounded-r-xl";
+    }
+    if (
+      (item.rightCompleted && !item.leftCompleted && !isRightEdge) ||
+      isLeftEdge
+    ) {
+      completedClasses += " rounded-l-xl";
+    }
+    if (!item.leftCompleted && !item.rightCompleted) {
+      completedClasses += " rounded-xl";
+    }
+  }
 
   return (
     <button
       className="flex-1 aspect-square flex flex-row"
       key={index}
-      onClick={() => modifyDailyProgress(item, challenge)}
+      onClick={() => {
+        modifyDailyProgress(item, challenge);
+      }}
       disabled={!isDateValid(item.dateValue, challenge.startDate)}
       style={{ width: "100px", height: "100px" }} // Increased size
     >
