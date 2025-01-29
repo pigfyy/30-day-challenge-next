@@ -31,44 +31,50 @@ async function ChallengeIdeasDisplay({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mt-8">
-      {challengeIdeas.map((idea) => (
-        <div
-          key={idea.id}
-          className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-        >
-          <div className="p-6">
-            <h2 className="text-xl font-bold mb-2 text-gray-800">
-              {idea.title}
-            </h2>
-            <p className="text-gray-600 mb-4">{idea.description}</p>
-            <div className="space-y-2">
-              <p className="text-sm text-gray-700">
-                <span className="font-semibold">Wish:</span> {idea.wish}
-              </p>
-              <p className="text-sm text-gray-700">
-                <span className="font-semibold">Daily Action:</span>{" "}
-                {idea.dailyAction}
-              </p>
-              <p className="text-sm text-gray-700">
-                <span className="font-semibold">Source:</span>{" "}
-                <a
-                  href={idea.sourceLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
-                >
-                  {idea.sourceName}
-                </a>
-              </p>
-              {idea.score !== undefined && (
+      {queryString && challengeIdeas.length === 0 ? (
+        <div className="col-span-full w-full p-6 bg-red-50 border border-red-200 rounded-lg text-center text-red-600 font-semibold shadow-sm hover:shadow-md transition-shadow duration-300">
+          No challenge ideas found for the given query.
+        </div>
+      ) : (
+        challengeIdeas.map((idea) => (
+          <div
+            key={idea.id}
+            className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+          >
+            <div className="p-6">
+              <h2 className="text-xl font-bold mb-2 text-gray-800">
+                {idea.title}
+              </h2>
+              <p className="text-gray-600 mb-4">{idea.description}</p>
+              <div className="space-y-2">
                 <p className="text-sm text-gray-700">
-                  <span className="font-semibold">Score:</span> {idea.score}
+                  <span className="font-semibold">Wish:</span> {idea.wish}
                 </p>
-              )}
+                <p className="text-sm text-gray-700">
+                  <span className="font-semibold">Daily Action:</span>{" "}
+                  {idea.dailyAction}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <span className="font-semibold">Source:</span>{" "}
+                  <a
+                    href={idea.sourceLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    {idea.sourceName}
+                  </a>
+                </p>
+                {idea.score !== undefined && (
+                  <p className="text-sm text-gray-700">
+                    <span className="font-semibold">Score:</span> {idea.score}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
