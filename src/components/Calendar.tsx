@@ -2,24 +2,78 @@
 
 import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
 import { Challenge, DailyProgress } from "@prisma/client";
-import { getDate } from "date-fns";
+import { getDate, startOfDay } from "date-fns";
 import { modifyDailyProgress } from "@/lib/actions/modifyDailyProgress";
-import { useOptimistic } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 
 type CalendarProps = {
   challenge: Challenge;
   dailyProgress: DailyProgress[];
 };
 
+type OptimisticUpdate = Partial<DailyProgress> & {
+  date: Date;
+};
+
 export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
-  const gridData = createCalendarDates(challenge, dailyProgress);
+  const [optimisticDailyProgress, addOptimisticDailyProgress] = useOptimistic<
+    DailyProgress[],
+    OptimisticUpdate
+  >(
+    dailyProgress,
+    (
+      currentDailyProgress: DailyProgress[],
+      newDailyProgress: OptimisticUpdate
+    ) => {
+      // Ensure the date is the start of the day for comparison
+      const newDate = startOfDay(newDailyProgress.date);
+
+      const existingIndex = currentDailyProgress.findIndex((dp) => {
+        const dpDate = startOfDay(dp.date);
+        return dpDate.getTime() === newDate.getTime();
+      });
+
+      if (existingIndex > -1) {
+        // Update existing DailyProgress
+        return currentDailyProgress.map((dp) =>
+          dp.id === newDailyProgress.id
+            ? { ...dp, completed: newDailyProgress.completed || false }
+            : dp
+        );
+      } else {
+        // Add new DailyProgress, ensuring imageUrl is set
+        return [
+          ...currentDailyProgress,
+          {
+            id: `temp-${newDailyProgress.date.getTime()}`, // Temporary ID
+            date: newDailyProgress.date,
+            completed: newDailyProgress.completed || false,
+            imageUrl: "", // Provide a default value for imageUrl, or fetch it if necessary
+            challengeId: newDailyProgress.challengeId!,
+            userId: "", // Provide the appropriate userId
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ];
+      }
+    }
+  );
+
+  const gridData = createCalendarDates(challenge, optimisticDailyProgress);
 
   return (
     <div className="flex flex-col gap-2">
       <WeekDays />
       <div className="grid grid-cols-7 p-2">
         {gridData.map((item, index) => (
-          <Day key={index} index={index} item={item} challenge={challenge} />
+          <Day
+            key={index}
+            index={index}
+            item={item}
+            challenge={challenge}
+            optimisticDailyProgress={optimisticDailyProgress}
+            addOptimisticDailyProgress={addOptimisticDailyProgress}
+          />
         ))}
       </div>
     </div>
@@ -67,15 +121,31 @@ type DayProps = {
   index: number;
   item: gridData[number];
   challenge: Challenge;
+  optimisticDailyProgress: DailyProgress[];
+  addOptimisticDailyProgress: any;
 };
 
-function Day({ index, item, challenge }: DayProps) {
+function Day({
+  index,
+  item,
+  challenge,
+  optimisticDailyProgress,
+  addOptimisticDailyProgress,
+}: DayProps) {
+  const [isPending, startTransition] = useTransition();
+
   const isLeftEdge = index % 7 == 0;
   const isRightEdge = index % 7 == 6;
 
+  const localItem = optimisticDailyProgress.find(
+    (dp) => dp.date.toDateString() === item.dateValue.toDateString()
+  );
+
+  const isCompleted = !!localItem?.completed;
+
   let completedClasses = "";
 
-  if (item.dailyProgress?.completed) {
+  if (isCompleted) {
     completedClasses = "bg-neutral-200";
     if (
       (item.leftCompleted && !item.rightCompleted && !isLeftEdge) ||
@@ -94,15 +164,38 @@ function Day({ index, item, challenge }: DayProps) {
     }
   }
 
+  async function handleClick() {
+    if (!isDateValid(item.dateValue, challenge.startDate)) {
+      return;
+    }
+
+    startTransition(() => {
+      const optimisticUpdate: Partial<DailyProgress> = {
+        completed: !isCompleted,
+        date: item.dateValue,
+        challengeId: challenge.id,
+        id: localItem?.id,
+      };
+
+      addOptimisticDailyProgress(optimisticUpdate);
+
+      // Actual API call (modifyDailyProgress now returns the updated DailyProgress or throws an error)
+      try {
+        modifyDailyProgress(item, challenge);
+      } catch (error) {
+        console.error("Failed to update daily progress:", error);
+        // Consider showing an error message to the user here.
+      }
+    });
+  }
+
   return (
     <button
       className="flex-1 aspect-square flex flex-row"
       key={index}
-      onClick={() => {
-        modifyDailyProgress(item, challenge);
-      }}
+      onClick={handleClick}
       disabled={!isDateValid(item.dateValue, challenge.startDate)}
-      style={{ width: "100px", height: "100px" }} // Increased size
+      style={{ width: "100px", height: "100px" }}
     >
       <div className="w-full my-[3px] relative flex-1 flex">
         <StridePadding index={index} item={item} />
@@ -118,7 +211,7 @@ function Day({ index, item, challenge }: DayProps) {
           >
             {!item.isPadding ? getDate(item.dateValue) : null}
           </span>
-          <span>{item.dailyProgress?.completed ? challenge.icon : null}</span>
+          <span>{isCompleted ? challenge.icon : null}</span>
         </div>
       </div>
     </button>
