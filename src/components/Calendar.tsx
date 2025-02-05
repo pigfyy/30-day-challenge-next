@@ -148,14 +148,14 @@ function Day({
   if (isCompleted) {
     completedClasses = "bg-neutral-200";
 
-    const addRoundedClass = (condition: boolean, side: "l" | "r") => {
+    const addRoundedClass = (condition: boolean, className: string) => {
       if (condition) {
-        completedClasses += ` rounded-${side}-xl`;
+        completedClasses += ` ${className}`;
       }
     };
 
-    addRoundedClass(isLeftEdge || !item.leftCompleted, "l");
-    addRoundedClass(isRightEdge || !item.rightCompleted, "r");
+    addRoundedClass(isLeftEdge || !item.leftCompleted, "rounded-l-xl");
+    addRoundedClass(isRightEdge || !item.rightCompleted, "rounded-r-xl");
   }
 
   async function handleClick() {
