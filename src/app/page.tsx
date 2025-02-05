@@ -1,5 +1,6 @@
 import Calendar from "@/components/Calendar";
 import { CreateChallenge, EditChallenge } from "@/components/ChallengeForms";
+import { ViewChallengeHeader } from "@/components/ViewChallengeHeader";
 import { getChallenges } from "@/lib/db/challenge";
 import { viewDailyProgressCompletion } from "@/lib/db/dailyProgress";
 import { findUserByClerkId } from "@/lib/db/user";
@@ -17,8 +18,11 @@ const ViewChallenge = async ({ challenge }: { challenge: Challenge }) => {
   );
 
   return (
-    <div>
-      <Calendar challenge={challenge} dailyProgress={dailyProgress} />
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <ViewChallengeHeader challenge={challenge} />
+      <div className="bg-neutral-50 p-6 rounded-lg border border-neutral-100">
+        <Calendar challenge={challenge} dailyProgress={dailyProgress} />
+      </div>
     </div>
   );
 };

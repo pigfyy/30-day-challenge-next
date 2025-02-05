@@ -16,7 +16,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { handleSubmit } from "@/lib/actions/createChallenge";
 
-export const formSchema = z.object({
+type ChallengeFormProps = {
+  defaultValues?: z.infer<typeof challengeFormSchema>;
+  onSubmit: (values: z.infer<typeof challengeFormSchema>) => void;
+};
+
+export const challengeFormSchema = z.object({
   title: z.string().nonempty({
     message: "Title is required.",
   }),
@@ -31,14 +36,9 @@ export const formSchema = z.object({
   }),
 });
 
-type ChallengeFormProps = {
-  defaultValues?: z.infer<typeof formSchema>;
-  onSubmit: (values: z.infer<typeof formSchema>) => void;
-};
-
 function ChallengeForm({ defaultValues, onSubmit }: ChallengeFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof challengeFormSchema>>({
+    resolver: zodResolver(challengeFormSchema),
     defaultValues: defaultValues || {
       title: "",
       wish: "",
@@ -126,7 +126,7 @@ export function CreateChallenge() {
 }
 
 export function EditChallenge() {
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = (values: z.infer<typeof challengeFormSchema>) => {
     console.log("Updating challenge:", values);
   };
 
