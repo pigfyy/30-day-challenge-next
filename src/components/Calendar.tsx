@@ -188,13 +188,13 @@ function Day({
 
   return (
     <button
-      className="flex-1 aspect-square flex flex-row"
+      className="flex-1 aspect-square flex flex-row py-[3px]"
       key={index}
       onClick={handleClick}
       disabled={!isDateValid(item.dateValue, challenge.startDate)}
       style={{ width: "100px", height: "100px" }}
     >
-      <div className="w-full my-[3px] relative flex-1 flex">
+      <div className="w-full relative flex flex-1 h-full">
         <StridePadding index={index} item={item} />
         <div
           className={`flex flex-1 items-center justify-center mx-[3px] flex-col ${completedClasses}`}
