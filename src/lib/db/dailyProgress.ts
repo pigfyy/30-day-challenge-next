@@ -30,7 +30,7 @@ export const viewDailyProgressCompletion = async (
   const whereClause = challengeId ? { userId, challengeId } : { userId };
   return await prisma.dailyProgress.findMany({
     where: whereClause,
-    orderBy: { date: "desc" },
+    orderBy: { date: "asc" },
   });
 };
 

@@ -59,6 +59,8 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
     }
   );
 
+  // console.log(challenge);
+
   const gridData = createCalendarDates(challenge, optimisticDailyProgress);
 
   return (
@@ -133,6 +135,11 @@ function Day({
   addOptimisticDailyProgress,
 }: DayProps) {
   const [isPending, startTransition] = useTransition();
+  // console.log(
+  //   optimisticDailyProgress.map(
+  //     (a) => a.date.toLocaleDateString() + " " + a.completed
+  //   )
+  // );
 
   const isLeftEdge = index % 7 == 0;
   const isRightEdge = index % 7 == 6;
@@ -147,21 +154,15 @@ function Day({
 
   if (isCompleted) {
     completedClasses = "bg-neutral-200";
-    if (
-      (item.leftCompleted && !item.rightCompleted && !isLeftEdge) ||
-      isRightEdge
-    ) {
-      completedClasses += " rounded-r-xl";
-    }
-    if (
-      (item.rightCompleted && !item.leftCompleted && !isRightEdge) ||
-      isLeftEdge
-    ) {
-      completedClasses += " rounded-l-xl";
-    }
-    if (!item.leftCompleted && !item.rightCompleted) {
-      completedClasses += " rounded-xl";
-    }
+
+    const addRoundedClass = (condition: boolean, side: "l" | "r") => {
+      if (condition) {
+        completedClasses += ` rounded-${side}-xl`;
+      }
+    };
+
+    addRoundedClass(isLeftEdge || !item.leftCompleted, "l");
+    addRoundedClass(isRightEdge || !item.rightCompleted, "r");
   }
 
   async function handleClick() {
@@ -170,21 +171,29 @@ function Day({
     }
 
     startTransition(() => {
+      // Set the optimisticUpdate object first
       const optimisticUpdate: Partial<DailyProgress> = {
         completed: !isCompleted,
         date: item.dateValue,
         challengeId: challenge.id,
-        id: localItem?.id,
+        id: localItem?.id, // Set the ID directly
       };
 
+      // Check if the ID in optimisticUpdate starts with "temp-"
+      if (optimisticUpdate.id && /^temp-\d+$/.test(optimisticUpdate.id)) {
+        // If it's a temp ID, set the ID to undefined and throw an error
+        optimisticUpdate.id = undefined;
+        throw new Error("Attempted to use temporary ID in database operation");
+      }
+
+      // Proceed with the optimistic update
       addOptimisticDailyProgress(optimisticUpdate);
 
-      // Actual API call (modifyDailyProgress now returns the updated DailyProgress or throws an error)
       try {
         modifyDailyProgress(item, challenge);
       } catch (error) {
         console.error("Failed to update daily progress:", error);
-        // Consider showing an error message to the user here.
+        // Add error handling UI feedback here
       }
     });
   }
