@@ -11,7 +11,7 @@ const Page = async (props: {
   const queryString = (await props.searchParams)?.query;
 
   return (
-    <div className="flex items-center justify-center w-full flex-col p-4">
+    <div className="flex w-full flex-col items-center justify-center p-4">
       <Form />
       <Suspense key={queryString} fallback={<SkeletonLoader />}>
         <ChallengeIdeasDisplay queryString={queryString} />
@@ -30,22 +30,22 @@ async function ChallengeIdeasDisplay({
     : [];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mt-8">
+    <div className="mt-8 grid w-full max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {queryString && challengeIdeas.length === 0 ? (
-        <div className="col-span-full w-full p-6 bg-red-50 border border-red-200 rounded-lg text-center text-red-600 font-semibold shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="col-span-full w-full rounded-lg border border-red-200 bg-red-50 p-6 text-center font-semibold text-red-600 shadow-sm transition-shadow duration-300 hover:shadow-md">
           No challenge ideas found for the given query.
         </div>
       ) : (
         challengeIdeas.map((idea) => (
           <div
             key={idea.id}
-            className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+            className="overflow-hidden rounded-lg bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl"
           >
             <div className="p-6">
-              <h2 className="text-xl font-bold mb-2 text-gray-800">
+              <h2 className="mb-2 text-xl font-bold text-gray-800">
                 {idea.title}
               </h2>
-              <p className="text-gray-600 mb-4">{idea.description}</p>
+              <p className="mb-4 text-gray-600">{idea.description}</p>
               <div className="space-y-2">
                 <p className="text-sm text-gray-700">
                   <span className="font-semibold">Wish:</span> {idea.wish}
@@ -82,19 +82,19 @@ async function ChallengeIdeasDisplay({
 // Skeleton Loader Component
 function SkeletonLoader() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mt-8">
+    <div className="mt-8 grid w-full max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 10 }).map((_, index) => (
         <div
           key={index}
-          className="bg-white rounded-lg shadow-lg overflow-hidden animate-pulse"
+          className="animate-pulse overflow-hidden rounded-lg bg-white shadow-lg"
         >
           <div className="p-6">
-            <div className="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-            <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
-            <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
-            <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
-            <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
-            <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+            <div className="mb-4 h-6 w-3/4 rounded bg-gray-300"></div>
+            <div className="mb-2 h-4 w-full rounded bg-gray-300"></div>
+            <div className="mb-2 h-4 w-full rounded bg-gray-300"></div>
+            <div className="mb-2 h-4 w-1/2 rounded bg-gray-300"></div>
+            <div className="mb-2 h-4 w-1/2 rounded bg-gray-300"></div>
+            <div className="mb-2 h-4 w-1/2 rounded bg-gray-300"></div>
           </div>
         </div>
       ))}

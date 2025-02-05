@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 
 export async function modifyDailyProgress(
   item: gridData[number],
-  challenge: Challenge
+  challenge: Challenge,
 ) {
   const progressInformation: DailyProgressOptionalDefaults = {
     id: item.dailyProgress?.id,

@@ -4,7 +4,7 @@ import { base64ToBlob } from "../util";
 import { put } from "@vercel/blob";
 
 export const editDailyProgressCompletion = async (
-  progressInformation: DailyProgressOptionalDefaults
+  progressInformation: DailyProgressOptionalDefaults,
 ) => {
   const data = await prisma.dailyProgress.upsert({
     where: {
@@ -25,7 +25,7 @@ export const editDailyProgressCompletion = async (
 
 export const viewDailyProgressCompletion = async (
   userId: string,
-  challengeId: string | undefined
+  challengeId: string | undefined,
 ) => {
   const whereClause = challengeId ? { userId, challengeId } : { userId };
   return await prisma.dailyProgress.findMany({

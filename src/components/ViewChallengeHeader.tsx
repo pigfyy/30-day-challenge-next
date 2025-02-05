@@ -7,7 +7,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { handleChallengeUpdate } from "@/lib/actions/updateChallenge";
@@ -24,12 +23,12 @@ export const ViewChallengeHeader = ({
 
   return (
     <>
-      <section className="mb-8 flex justify-between items-center">
+      <section className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="mb-2 text-3xl font-bold text-gray-800">
             {challenge.title}
           </h1>
-          <h2 className="text-xl text-gray-600 mb-1">{challenge.wish}</h2>
+          <h2 className="mb-1 text-xl text-gray-600">{challenge.wish}</h2>
           <h2 className="text-xl text-gray-600">{challenge.dailyAction}</h2>
         </div>
         <Button variant="outline" onClick={() => setIsDialogOpen(true)}>

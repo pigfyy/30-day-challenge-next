@@ -51,7 +51,7 @@ function ChallengeForm({ defaultValues, onSubmit }: ChallengeFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-2 w-full"
+        className="flex w-full flex-col gap-2"
       >
         <FormField
           control={form.control}

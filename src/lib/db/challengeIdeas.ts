@@ -10,7 +10,7 @@ import { openai } from "@/lib/util";
 import { pc } from "@/lib/db/(root)/pinecone";
 
 export async function generateChallengeIdeas(
-  challenges: ChallengeIdeaOptionalDefaults[]
+  challenges: ChallengeIdeaOptionalDefaults[],
 ) {
   const data = prisma.challengeIdea.createMany({
     data: challenges,

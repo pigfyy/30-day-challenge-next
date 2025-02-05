@@ -11,7 +11,7 @@ import { DevDialog } from "@/components/DevDialog";
 
 const Header: React.FC = () => (
   <header className="w-full border-b bg-white shadow-sm">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+    <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
       <div className="text-lg font-semibold text-gray-900">Break it Down</div>
       <div className="flex items-center space-x-4">
         <SignedOut>
@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="min-h-screen flex flex-col bg-gray-50">
+        <body className="flex min-h-screen flex-col bg-gray-50">
           <Header />
           <SignedIn>
             <main className="flex flex-1">{children}</main>

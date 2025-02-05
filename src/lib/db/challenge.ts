@@ -7,7 +7,7 @@ export type CreateChallengeInput = Omit<
   "id" | "createdAt" | "updatedAt" | "startDate" | "endDate" | "note"
 >;
 export const createChallenge = async (
-  challengeInformation: CreateChallengeInput
+  challengeInformation: CreateChallengeInput,
 ) => {
   const data = await prisma.challenge.create({
     data: {
@@ -25,7 +25,7 @@ export type UpdateChallengeInput = Omit<
   "userId" | "createdAt" | "updatedAt" | "startDate" | "endDate"
 >;
 export const updateChallenge = async (
-  challengeInformation: UpdateChallengeInput
+  challengeInformation: UpdateChallengeInput,
 ) => {
   const data = await prisma.challenge.update({
     where: { id: challengeInformation.id },

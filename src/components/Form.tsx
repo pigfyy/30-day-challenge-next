@@ -9,7 +9,7 @@ export const Form = () => {
   const { replace } = useRouter();
 
   const [queryString, setQueryString] = useState(
-    searchParams.get("query")?.toString() || ""
+    searchParams.get("query")?.toString() || "",
   );
 
   const getChallengeIdea = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -26,22 +26,22 @@ export const Form = () => {
 
   return (
     <form
-      className="flex flex-col gap-2 w-full items-center"
+      className="flex w-full flex-col items-center gap-2"
       onSubmit={getChallengeIdea}
     >
-      <label htmlFor="challenge" className="font-bold text-lg">
+      <label htmlFor="challenge" className="text-lg font-bold">
         What are you searching for?
       </label>
-      <div className="flex w-1/3 mx-auto gap-2">
+      <div className="mx-auto flex w-1/3 gap-2">
         <input
           type="text"
           name="Challenge"
-          className="border rounded-md p-2 w-full"
+          className="w-full rounded-md border p-2"
           autoComplete="off"
           value={queryString}
           onChange={(e) => setQueryString(e.target.value)}
         />
-        <button className="p-2 border rounded-md" type="submit">
+        <button className="rounded-md border p-2" type="submit">
           Submit
         </button>
       </div>

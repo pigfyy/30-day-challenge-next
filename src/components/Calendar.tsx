@@ -1,10 +1,10 @@
 "use client";
 
+import { modifyDailyProgress } from "@/lib/actions/modifyDailyProgress";
 import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
 import { Challenge, DailyProgress } from "@prisma/client";
 import { getDate, startOfDay } from "date-fns";
-import { modifyDailyProgress } from "@/lib/actions/modifyDailyProgress";
-import { useOptimistic, useState, useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 
 type CalendarProps = {
   challenge: Challenge;
@@ -23,7 +23,7 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
     dailyProgress,
     (
       currentDailyProgress: DailyProgress[],
-      newDailyProgress: OptimisticUpdate
+      newDailyProgress: OptimisticUpdate,
     ) => {
       // Ensure the date is the start of the day for comparison
       const newDate = startOfDay(newDailyProgress.date);
@@ -38,7 +38,7 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
         return currentDailyProgress.map((dp) =>
           dp.id === newDailyProgress.id
             ? { ...dp, completed: newDailyProgress.completed || false }
-            : dp
+            : dp,
         );
       } else {
         // Add new DailyProgress, ensuring imageUrl is set
@@ -56,7 +56,7 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
           },
         ];
       }
-    }
+    },
   );
 
   const gridData = createCalendarDates(challenge, optimisticDailyProgress);
@@ -86,8 +86,8 @@ function WeekDays() {
   return (
     <div className="grid grid-cols-7 gap-2 p-2">
       {weekDays.map((day, index) => (
-        <div key={index} className="flex-1 flex items-center justify-center">
-          <span className="font-bold text-neutral-500 text-lg">{day}</span>{" "}
+        <div key={index} className="flex flex-1 items-center justify-center">
+          <span className="text-lg font-bold text-neutral-500">{day}</span>{" "}
         </div>
       ))}
     </div>
@@ -108,10 +108,10 @@ function StridePadding({
   return (
     <>
       {isNotLeftEdge && isCompleted && item.leftCompleted ? (
-        <div className="bg-neutral-200 absolute w-[3px] h-full left-0"></div>
+        <div className="absolute left-0 h-full w-[3px] bg-neutral-200"></div>
       ) : null}
       {isNotRightEdge && isCompleted && item.rightCompleted ? (
-        <div className="bg-neutral-200 absolute w-[3px] h-full right-0"></div>
+        <div className="absolute right-0 h-full w-[3px] bg-neutral-200"></div>
       ) : null}
     </>
   );
@@ -138,7 +138,7 @@ function Day({
   const isRightEdge = index % 7 == 6;
 
   const localItem = optimisticDailyProgress.find(
-    (dp) => dp.date.toDateString() === item.dateValue.toDateString()
+    (dp) => dp.date.toDateString() === item.dateValue.toDateString(),
   );
 
   const isCompleted = !!localItem?.completed;
@@ -188,22 +188,22 @@ function Day({
 
   return (
     <button
-      className="flex-1 aspect-square flex flex-row py-[3px]"
+      className="flex aspect-square flex-1 flex-row py-[3px]"
       key={index}
       onClick={handleClick}
       disabled={!isDateValid(item.dateValue, challenge.startDate)}
       style={{ width: "100px", height: "100px" }}
     >
-      <div className="w-full relative flex flex-1 h-full">
+      <div className="relative flex h-full w-full flex-1">
         <StridePadding index={index} item={item} />
         <div
-          className={`flex flex-1 items-center justify-center mx-[3px] flex-col ${completedClasses}`}
+          className={`mx-[3px] flex flex-1 flex-col items-center justify-center ${completedClasses}`}
         >
           <span
             className={
               isDateValid(item.dateValue, challenge.startDate)
-                ? "text-black font-bold text-lg"
-                : "text-gray-400 text-lg"
+                ? "text-lg font-bold text-black"
+                : "text-lg text-gray-400"
             }
           >
             {!item.isPadding ? getDate(item.dateValue) : null}

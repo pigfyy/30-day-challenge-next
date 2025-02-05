@@ -8,7 +8,7 @@ import { challengeFormSchema } from "@/components/ChallengeForms";
 import { revalidatePath } from "next/cache";
 
 export const handleSubmit = async (
-  values: z.infer<typeof challengeFormSchema>
+  values: z.infer<typeof challengeFormSchema>,
 ) => {
   const { userId: clerkId } = await auth();
 
