@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev\" \"ngrok http --domain=mature-subtle-troll.ngrok-free.app 3000\"",
+    "dev": "concurrently \"next dev --turbo\" \"ngrok http --domain=mature-subtle-troll.ngrok-free.app 3000\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

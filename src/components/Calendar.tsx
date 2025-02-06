@@ -3,7 +3,8 @@
 import { modifyDailyProgress } from "@/lib/actions/modifyDailyProgress";
 import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
 import { Challenge, DailyProgress } from "@prisma/client";
-import { getDate, startOfDay } from "date-fns";
+import { getDate, isDate, startOfDay } from "date-fns";
+import { Maximize2 } from "lucide-react";
 import { useOptimistic, useTransition } from "react";
 
 type CalendarProps = {
@@ -132,7 +133,7 @@ function Day({
   optimisticDailyProgress,
   addOptimisticDailyProgress,
 }: DayProps) {
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   const isLeftEdge = index % 7 == 0;
   const isRightEdge = index % 7 == 6;
@@ -186,6 +187,14 @@ function Day({
     });
   }
 
+  function handleMaximizeDay(
+    e: React.MouseEvent<HTMLOrSVGElement, MouseEvent>,
+  ) {
+    e.stopPropagation();
+
+    console.log("Maximizing day:", item.dateValue);
+  }
+
   return (
     <button
       className="flex aspect-square flex-1 flex-row py-[3px]"
@@ -197,8 +206,14 @@ function Day({
       <div className="relative flex h-full w-full flex-1">
         <StridePadding index={index} item={item} />
         <div
-          className={`mx-[3px] flex flex-1 flex-col items-center justify-center ${completedClasses}`}
+          className={`group relative mx-[3px] flex flex-1 flex-col items-center justify-center ${completedClasses}`}
         >
+          {isDateValid(item.dateValue, challenge.startDate) ? (
+            <Maximize2
+              className="absolute right-2 top-2 h-6 w-6 rounded-md p-1 text-neutral-400 opacity-0 transition-opacity duration-75 hover:bg-white group-hover:opacity-100"
+              onClick={handleMaximizeDay}
+            />
+          ) : null}
           <span
             className={
               isDateValid(item.dateValue, challenge.startDate)

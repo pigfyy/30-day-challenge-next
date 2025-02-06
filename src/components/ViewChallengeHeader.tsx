@@ -11,15 +11,18 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { handleChallengeUpdate } from "@/lib/actions/updateChallenge";
 import { Challenge } from "@prisma/client";
-import { Notebook } from "lucide-react";
+import { Notebook, Pencil } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { EditChallenge } from "./ChallengeForms";
 
 export const ViewChallengeHeader = ({
   challenge,
 }: {
   challenge: Challenge;
 }) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
+  const [isEditChallengeDialogOpen, setIsEditChallengeDialogOpen] =
+    useState(false);
 
   return (
     <>
@@ -31,16 +34,42 @@ export const ViewChallengeHeader = ({
           <h2 className="mb-1 text-xl text-gray-600">{challenge.wish}</h2>
           <h2 className="text-xl text-gray-600">{challenge.dailyAction}</h2>
         </div>
-        <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
-          <Notebook /> Add Note
-        </Button>
+        <div className="flex flex-col gap-3">
+          <Button
+            variant="outline"
+            onClick={() => setIsEditChallengeDialogOpen(true)}
+          >
+            <Pencil /> Edit Challenge
+          </Button>
+          <Button variant="outline" onClick={() => setIsNoteDialogOpen(true)}>
+            <Notebook /> Add Note
+          </Button>
+        </div>
       </section>
-      <DialogComponent
-        isDialogOpen={isDialogOpen}
-        setIsDialogOpen={setIsDialogOpen}
-      >
-        <DialogForm challenge={challenge} setIsDialogOpen={setIsDialogOpen} />
-      </DialogComponent>
+      <>
+        <DialogComponent
+          isDialogOpen={isNoteDialogOpen}
+          setIsDialogOpen={setIsNoteDialogOpen}
+          title="Add a Note"
+          description="Write a note for this challenge. Click save when you're done."
+        >
+          <EditNoteForm
+            challenge={challenge}
+            setIsDialogOpen={setIsNoteDialogOpen}
+          />
+        </DialogComponent>
+        <DialogComponent
+          isDialogOpen={isEditChallengeDialogOpen}
+          setIsDialogOpen={setIsEditChallengeDialogOpen}
+          title="Edit Challenge"
+          description="Update the details of this challenge. Click save when you're done."
+        >
+          <EditChallenge
+            challenge={challenge}
+            setIsDialogOpen={setIsEditChallengeDialogOpen}
+          />
+        </DialogComponent>
+      </>
     </>
   );
 };
@@ -48,20 +77,22 @@ export const ViewChallengeHeader = ({
 const DialogComponent = ({
   isDialogOpen,
   setIsDialogOpen,
+  title,
+  description,
   children,
 }: {
   isDialogOpen: boolean;
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  title: string;
+  description: string;
   children: React.ReactNode;
 }) => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add a Note</DialogTitle>
-          <DialogDescription>
-            Write a note for this challenge. Click save when you&apos;re done.
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         {children}
       </DialogContent>
@@ -69,7 +100,7 @@ const DialogComponent = ({
   );
 };
 
-const DialogForm = ({
+const EditNoteForm = ({
   challenge,
   setIsDialogOpen,
 }: {

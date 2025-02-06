@@ -15,10 +15,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { handleSubmit } from "@/lib/actions/createChallenge";
+import { Challenge } from "@prisma/client";
+import { handleChallengeUpdate } from "@/lib/actions/updateChallenge";
+import { useTransition } from "react";
 
 type ChallengeFormProps = {
   defaultValues?: z.infer<typeof challengeFormSchema>;
   onSubmit: (values: z.infer<typeof challengeFormSchema>) => void;
+  disabled?: boolean;
 };
 
 export const challengeFormSchema = z.object({
@@ -31,12 +35,24 @@ export const challengeFormSchema = z.object({
   dailyAction: z.string().nonempty({
     message: "Daily action is required.",
   }),
-  icon: z.string().nonempty({
-    message: "Icon is required.",
-  }),
+  icon: z
+    .string()
+    .nonempty({ message: "Icon is required." })
+    .refine(
+      (value) => {
+        const singleEmojiRegex =
+          /^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})?)$/u;
+        return singleEmojiRegex.test(value);
+      },
+      { message: "Icon must be a single emoji." },
+    ),
 });
 
-function ChallengeForm({ defaultValues, onSubmit }: ChallengeFormProps) {
+function ChallengeForm({
+  defaultValues,
+  onSubmit,
+  disabled,
+}: ChallengeFormProps) {
   const form = useForm<z.infer<typeof challengeFormSchema>>({
     resolver: zodResolver(challengeFormSchema),
     defaultValues: defaultValues || {
@@ -109,7 +125,9 @@ function ChallengeForm({ defaultValues, onSubmit }: ChallengeFormProps) {
           )}
         />
         <div className="mt-4">
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={disabled}>
+            Submit
+          </Button>
         </div>
       </form>
     </Form>
@@ -125,22 +143,38 @@ export function CreateChallenge() {
   );
 }
 
-export function EditChallenge() {
-  const handleSubmit = (values: z.infer<typeof challengeFormSchema>) => {
-    console.log("Updating challenge:", values);
+export function EditChallenge({
+  challenge,
+  setIsDialogOpen,
+}: {
+  challenge: Challenge;
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = async (values: z.infer<typeof challengeFormSchema>) => {
+    startTransition(async () => {
+      await handleChallengeUpdate({
+        ...challenge,
+        ...values,
+      });
+
+      setIsDialogOpen(false);
+    });
   };
 
   const defaultValues = {
-    title: "Existing Title",
-    wish: "Existing Wish",
-    dailyAction: "Existing Daily Action",
-    icon: "✅",
+    title: challenge.title,
+    wish: challenge.wish,
+    dailyAction: challenge.dailyAction,
+    icon: challenge.icon,
   };
 
   return (
-    <div className="w-1/4 space-y-5">
-      <h1 className="text-xl font-bold">Edit Challenge</h1>
-      <ChallengeForm defaultValues={defaultValues} onSubmit={handleSubmit} />
-    </div>
+    <ChallengeForm
+      defaultValues={defaultValues}
+      onSubmit={handleSubmit}
+      disabled={isPending}
+    />
   );
 }
