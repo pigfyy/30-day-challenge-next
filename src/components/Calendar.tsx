@@ -5,7 +5,8 @@ import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
 import { Challenge, DailyProgress } from "@prisma/client";
 import { getDate, isDate, startOfDay } from "date-fns";
 import { Maximize2 } from "lucide-react";
-import { useOptimistic, useTransition } from "react";
+import { useOptimistic, useState, useTransition } from "react";
+import { ViewDayDialog } from "./ViewDayDialog";
 
 type CalendarProps = {
   challenge: Challenge;
@@ -17,6 +18,11 @@ type OptimisticUpdate = Partial<DailyProgress> & {
 };
 
 export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
+  const [isViewDayDialogOpen, setIsViewDayDialogOpen] = useState(false);
+  const [viewDayDialogDate, setViewDayDialogDate] = useState<
+    undefined | Date
+  >();
+
   const [optimisticDailyProgress, addOptimisticDailyProgress] = useOptimistic<
     DailyProgress[],
     OptimisticUpdate
@@ -26,7 +32,6 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
       currentDailyProgress: DailyProgress[],
       newDailyProgress: OptimisticUpdate,
     ) => {
-      // Ensure the date is the start of the day for comparison
       const newDate = startOfDay(newDailyProgress.date);
 
       const existingIndex = currentDailyProgress.findIndex((dp) => {
@@ -35,23 +40,21 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
       });
 
       if (existingIndex > -1) {
-        // Update existing DailyProgress
         return currentDailyProgress.map((dp) =>
           dp.id === newDailyProgress.id
             ? { ...dp, completed: newDailyProgress.completed || false }
             : dp,
         );
       } else {
-        // Add new DailyProgress, ensuring imageUrl is set
         return [
           ...currentDailyProgress,
           {
-            id: `temp-${newDailyProgress.date.getTime()}`, // Temporary ID
+            id: `temp-${newDailyProgress.date.getTime()}`,
             date: newDailyProgress.date,
             completed: newDailyProgress.completed || false,
-            imageUrl: "", // Provide a default value for imageUrl, or fetch it if necessary
+            imageUrl: "",
             challengeId: newDailyProgress.challengeId!,
-            userId: "", // Provide the appropriate userId
+            userId: "",
             createdAt: new Date(),
             updatedAt: new Date(),
           },
@@ -63,21 +66,34 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
   const gridData = createCalendarDates(challenge, optimisticDailyProgress);
 
   return (
-    <div className="flex flex-col gap-2">
-      <WeekDays />
-      <div className="grid grid-cols-7 p-2">
-        {gridData.map((item, index) => (
-          <Day
-            key={index}
-            index={index}
-            item={item}
-            challenge={challenge}
-            optimisticDailyProgress={optimisticDailyProgress}
-            addOptimisticDailyProgress={addOptimisticDailyProgress}
-          />
-        ))}
+    <>
+      <div className="flex flex-col gap-2">
+        <WeekDays />
+        <div className="grid grid-cols-7 p-2">
+          {gridData.map((item, index) => (
+            <Day
+              key={index}
+              index={index}
+              item={item}
+              challenge={challenge}
+              optimisticDailyProgress={optimisticDailyProgress}
+              addOptimisticDailyProgress={addOptimisticDailyProgress}
+              setIsViewDayDialogOpen={setIsViewDayDialogOpen}
+              setViewDayDialogDate={setViewDayDialogDate}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+      <>
+        <ViewDayDialog
+          isOpen={isViewDayDialogOpen}
+          setIsOpen={setIsViewDayDialogOpen}
+          challenge={challenge}
+          dailyProgress={dailyProgress}
+          date={viewDayDialogDate}
+        />
+      </>
+    </>
   );
 }
 
@@ -124,6 +140,8 @@ type DayProps = {
   challenge: Challenge;
   optimisticDailyProgress: DailyProgress[];
   addOptimisticDailyProgress: any;
+  setIsViewDayDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setViewDayDialogDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
 };
 
 function Day({
@@ -132,6 +150,8 @@ function Day({
   challenge,
   optimisticDailyProgress,
   addOptimisticDailyProgress,
+  setIsViewDayDialogOpen,
+  setViewDayDialogDate,
 }: DayProps) {
   const [, startTransition] = useTransition();
 
@@ -145,7 +165,6 @@ function Day({
   const isCompleted = !!localItem?.completed;
 
   let completedClasses = "";
-
   if (isCompleted) {
     completedClasses = "bg-neutral-200";
 
@@ -192,7 +211,8 @@ function Day({
   ) {
     e.stopPropagation();
 
-    console.log("Maximizing day:", item.dateValue);
+    setIsViewDayDialogOpen(true);
+    setViewDayDialogDate(item.dateValue);
   }
 
   return (
