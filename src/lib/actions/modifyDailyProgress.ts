@@ -15,18 +15,25 @@ import { findUserByClerkId } from "../db/user";
 export async function modifyDailyProgress(
   item: gridData[number],
   challenge: Challenge,
+  overrideCompleted?: boolean,
 ) {
+  const newCompleted =
+    overrideCompleted !== undefined
+      ? overrideCompleted
+      : item.dailyProgress
+        ? !item.dailyProgress.completed
+        : true;
+
   const progressInformation: DailyProgressOptionalDefaults = {
     id: item.dailyProgress?.id,
     imageUrl: item.dailyProgress?.imageUrl,
-    completed: item.dailyProgress ? !item.dailyProgress?.completed : true,
+    completed: newCompleted,
     challengeId: challenge.id,
     date: item.dateValue,
     userId: challenge.userId,
   };
 
   await editDailyProgressCompletion(progressInformation);
-
   revalidatePath("/");
 }
 

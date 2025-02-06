@@ -5,8 +5,9 @@ import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
 import { Challenge, DailyProgress } from "@prisma/client";
 import { getDate, isDate, startOfDay } from "date-fns";
 import { Maximize2 } from "lucide-react";
-import { useOptimistic, useState, useTransition } from "react";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { ViewDayDialog } from "./ViewDayDialog";
+import { debounce } from "lodash";
 
 type CalendarProps = {
   challenge: Challenge;
@@ -155,9 +156,10 @@ function Day({
 }: DayProps) {
   const [, startTransition] = useTransition();
 
-  const isLeftEdge = index % 7 == 0;
-  const isRightEdge = index % 7 == 6;
+  const isLeftEdge = index % 7 === 0;
+  const isRightEdge = index % 7 === 6;
 
+  // Find the current optimistic record for this day
   const localItem = optimisticDailyProgress.find(
     (dp) => dp.date.toDateString() === item.dateValue.toDateString(),
   );
@@ -167,7 +169,6 @@ function Day({
   let completedClasses = "";
   if (isCompleted) {
     completedClasses = "bg-neutral-200";
-
     const addRoundedClass = (condition: boolean, className: string) => {
       if (condition) {
         completedClasses += ` ${className}`;
@@ -178,26 +179,33 @@ function Day({
     addRoundedClass(isRightEdge || !item.rightCompleted, "rounded-r-xl");
   }
 
+  // Local state to track a pending update if the record is temporary
+  const [pendingUpdate, setPendingUpdate] = useState<boolean | null>(null);
+
   async function handleClick() {
     if (!isDateValid(item.dateValue, challenge.startDate)) {
       return;
     }
 
     startTransition(() => {
+      const newCompleted = !isCompleted;
       const optimisticUpdate: Partial<DailyProgress> = {
-        completed: !isCompleted,
+        completed: newCompleted,
         date: item.dateValue,
         challengeId: challenge.id,
         id: localItem?.id,
       };
 
+      // If this day already has a temporary ID, record the new desired state locally.
       if (optimisticUpdate.id && /^temp-\d+$/.test(optimisticUpdate.id)) {
-        optimisticUpdate.id = undefined;
-        throw new Error("Attempted to use temporary ID in database operation");
+        addOptimisticDailyProgress(optimisticUpdate);
+        setPendingUpdate(newCompleted);
+        // Do not call modifyDailyProgress now since the DB record isn’t confirmed yet.
+        return;
       }
 
+      // Otherwise, update optimistically and immediately fire the server update.
       addOptimisticDailyProgress(optimisticUpdate);
-
       try {
         modifyDailyProgress(item, challenge);
       } catch (error) {
@@ -206,11 +214,30 @@ function Day({
     });
   }
 
+  // When the optimistic data updates (for example after a revalidation that replaces a temporary ID),
+  // check if there’s a pending update for this day and send it to the server.
+  useEffect(() => {
+    const currentItem = optimisticDailyProgress.find(
+      (dp) => dp.date.toDateString() === item.dateValue.toDateString(),
+    );
+    if (
+      pendingUpdate !== null &&
+      currentItem &&
+      !/^temp-\d+$/.test(currentItem.id)
+    ) {
+      // Here we assume that modifyDailyProgress has been updated to accept a third parameter
+      // representing the final desired state.
+      modifyDailyProgress(item, challenge, pendingUpdate).catch((error) =>
+        console.error("Failed to update pending daily progress:", error),
+      );
+      setPendingUpdate(null);
+    }
+  }, [optimisticDailyProgress, pendingUpdate, item, challenge]);
+
   function handleMaximizeDay(
     e: React.MouseEvent<HTMLOrSVGElement, MouseEvent>,
   ) {
     e.stopPropagation();
-
     setIsViewDayDialogOpen(true);
     setViewDayDialogDate(item.dateValue);
   }
