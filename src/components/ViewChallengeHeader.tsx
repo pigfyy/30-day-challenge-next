@@ -8,18 +8,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { handleChallengeUpdate } from "@/lib/actions/updateChallenge";
-import { Challenge } from "@prisma/client";
-import { Notebook, Pencil } from "lucide-react";
+import { Challenge, DailyProgress } from "@prisma/client";
+import { ImageIcon, Notebook, Pencil } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { EditChallenge } from "./ChallengeForms";
 
 export const ViewChallengeHeader = ({
   challenge,
+  dailyProgress,
 }: {
   challenge: Challenge;
+  dailyProgress: DailyProgress[];
 }) => {
+  const [isImagesSheetOpen, setIsImagesSheetOpen] = useState(false);
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
   const [isEditChallengeDialogOpen, setIsEditChallengeDialogOpen] =
     useState(false);
@@ -34,7 +44,7 @@ export const ViewChallengeHeader = ({
           <h2 className="mb-1 text-xl text-gray-600">{challenge.wish}</h2>
           <h2 className="text-xl text-gray-600">{challenge.dailyAction}</h2>
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <Button
             variant="outline"
             onClick={() => setIsEditChallengeDialogOpen(true)}
@@ -44,9 +54,18 @@ export const ViewChallengeHeader = ({
           <Button variant="outline" onClick={() => setIsNoteDialogOpen(true)}>
             <Notebook /> Add Note
           </Button>
+          <Button variant="outline" onClick={() => setIsImagesSheetOpen(true)}>
+            <ImageIcon /> View Images
+          </Button>
         </div>
       </section>
       <>
+        <SheetComponent
+          isOpen={isImagesSheetOpen}
+          setIsOpen={setIsImagesSheetOpen}
+        >
+          <ProgressImageDisplay dailyProgress={dailyProgress} />
+        </SheetComponent>
         <DialogComponent
           isDialogOpen={isNoteDialogOpen}
           setIsDialogOpen={setIsNoteDialogOpen}
@@ -71,6 +90,56 @@ export const ViewChallengeHeader = ({
         </DialogComponent>
       </>
     </>
+  );
+};
+
+const ProgressImageDisplay = ({
+  dailyProgress,
+}: {
+  dailyProgress: DailyProgress[];
+}) => {
+  return (
+    <div className="flex flex-col gap-3">
+      {dailyProgress.map((dp) => {
+        if (!dp.imageUrl) return null;
+
+        return (
+          <div key={dp.id} className="flex w-full flex-col gap-2">
+            <div className="font-semibold">{dp.date.toLocaleDateString()}</div>
+            <div className="relative h-48 w-full">
+              <Image
+                src={dp.imageUrl}
+                alt="Progress image"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-lg"
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const SheetComponent = ({
+  isOpen,
+  setIsOpen,
+  children,
+}: {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  children: React.ReactNode;
+}) => {
+  return (
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetContent className="sm:max-w-[480px]">
+        <SheetHeader>
+          <SheetTitle>View your challenge progress images here!</SheetTitle>
+        </SheetHeader>
+        <div className="mt-3">{children}</div>
+      </SheetContent>
+    </Sheet>
   );
 };
 
