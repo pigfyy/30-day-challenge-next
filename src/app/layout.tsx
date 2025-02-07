@@ -8,6 +8,7 @@ import {
 import "./globals.css";
 import { Button } from "@/components/ui/button"; // Assuming you're using shadcn's Button component
 import { DevDialog } from "@/components/DevDialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Header: React.FC = () => (
   <header className="w-full border-b bg-white shadow-sm">

@@ -5,7 +5,6 @@ import React, { Suspense } from "react";
 const Page = async (props: {
   searchParams?: Promise<{
     query?: string;
-    page?: string;
   }>;
 }) => {
   const queryString = (await props.searchParams)?.query;

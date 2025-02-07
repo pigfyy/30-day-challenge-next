@@ -1,35 +1,49 @@
 import { CreateChallenge } from "@/components/ChallengeForms";
 import { ChallengeListGrid } from "@/components/ChallengeListGrid";
 import { ViewChallenge } from "@/components/ViewChallenge";
-import { getChallenges } from "@/lib/db/challenge";
-import { findUserByClerkId } from "@/lib/db/user";
+import { CGetChallenges } from "@/lib/db/challenge";
+import { CFindUserByClerkId } from "@/lib/db/user";
 import { auth } from "@clerk/nextjs/server";
 
-const ChallengeList = async () => {
-  const { userId: clerkId } = await auth();
-  const user = await findUserByClerkId(clerkId!);
-
-  const challenges = await getChallenges(user.id);
-
-  return <ChallengeListGrid challenges={challenges} />;
+type ChallengePageProps = {
+  searchParams?: Promise<{
+    challenge?: string;
+  }>;
 };
 
-export default async function Page() {
-  const { userId: clerkId } = await auth();
-  const user = await findUserByClerkId(clerkId!);
+const Challenges = async ({
+  pageProps: props,
+}: {
+  pageProps: ChallengePageProps;
+}) => {
+  const challengeId = (await props.searchParams)?.challenge;
 
-  const challenges = await getChallenges(user.id);
+  const { userId: clerkId } = await auth();
+  const user = await CFindUserByClerkId(clerkId!);
+
+  const challenges = await CGetChallenges(user.id);
+
+  const currentChallenge = challenges.find((c) => c.id === challengeId);
+
+  if (challengeId === "new") {
+    return <CreateChallenge />;
+  }
 
   return (
-    <div className="flex flex-1 items-center justify-center">
-      {challenges.length ? (
-        <>
-          <ChallengeList />
-          {/* <ViewChallenge challenge={challenges[0]} /> */}
-        </>
+    <>
+      {currentChallenge ? (
+        <ViewChallenge challenge={currentChallenge} />
       ) : (
-        <CreateChallenge />
+        <ChallengeListGrid challenges={challenges} />
       )}
+    </>
+  );
+};
+
+export default async function Page(props: ChallengePageProps) {
+  return (
+    <div className="my-6 flex flex-1 items-center justify-center">
+      <Challenges pageProps={props} />
     </div>
   );
 }

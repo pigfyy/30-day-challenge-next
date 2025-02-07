@@ -9,13 +9,21 @@ import {
 } from "@/components/ui/dialog"; // shadcn Dialog
 import { Button } from "@/components/ui/button"; // shadcn Button
 import Link from "next/link";
+import { handleChallengeDelete } from "@/lib/actions/updateChallenge";
 
 const Content: React.FC<{
   setIsModalOpen: (isOpen: boolean) => void;
 }> = ({ setIsModalOpen }) => (
-  <div className="space-y-4">
+  <div className="flex flex-col items-start space-y-4">
     <Button variant="link" asChild>
       <Link href={"/challenge-display"}>challenge-display</Link>
+    </Button>
+    <Button
+      onClick={async () => {
+        await handleChallengeDelete("cm6u3vz4q0001rqnib8jjur0k");
+      }}
+    >
+      delete challenge id
     </Button>
     <Button onClick={() => setIsModalOpen(false)} className="w-full">
       Close

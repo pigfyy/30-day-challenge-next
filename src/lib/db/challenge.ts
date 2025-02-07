@@ -1,6 +1,7 @@
 import { Challenge } from "@prisma/client";
 import { prisma } from "./(root)/prisma";
 import { addDays } from "date-fns";
+import { cache } from "react";
 
 export type CreateChallengeInput = Omit<
   Challenge,
@@ -35,6 +36,21 @@ export const updateChallenge = async (
   return data;
 };
 
+export const deleteChallenge = async (challengeId: string) => {
+  try {
+    await prisma.dailyProgress.deleteMany({
+      where: { challengeId: challengeId },
+    });
+
+    await prisma.challenge.deleteMany({
+      where: { id: challengeId },
+    });
+  } catch (error) {
+    console.error("Error deleting challenge:", error);
+    throw error;
+  }
+};
+
 export const getChallenges = async (userId: string) => {
   const data = await prisma.challenge.findMany({
     where: { userId: userId },
@@ -43,3 +59,4 @@ export const getChallenges = async (userId: string) => {
 
   return data;
 };
+export const CGetChallenges = cache(getChallenges);

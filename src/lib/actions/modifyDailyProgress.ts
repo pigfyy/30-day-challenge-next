@@ -1,16 +1,14 @@
 "use server";
 
+import { DailyProgressOptionalDefaults } from "@30-day-challenge/prisma-zod";
 import { Challenge, DailyProgress } from "@prisma/client";
-import { gridData } from "../util/dates";
+import { revalidatePath } from "next/cache";
 import {
   deleteImage,
   editDailyProgressCompletion,
   uploadImage,
 } from "../db/dailyProgress";
-import { DailyProgressOptionalDefaults } from "@30-day-challenge/prisma-zod";
-import { revalidatePath } from "next/cache";
-import { auth } from "@clerk/nextjs/server";
-import { findUserByClerkId } from "../db/user";
+import { gridData } from "../util/dates";
 
 export async function modifyDailyProgress(
   item: gridData[number],

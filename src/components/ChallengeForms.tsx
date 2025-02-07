@@ -16,12 +16,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { handleSubmit } from "@/lib/actions/createChallenge";
 import { Challenge } from "@prisma/client";
-import { handleChallengeUpdate } from "@/lib/actions/updateChallenge";
+import {
+  handleChallengeDelete,
+  handleChallengeUpdate,
+} from "@/lib/actions/updateChallenge";
 import { useTransition } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { BackButton } from "./BackButton";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 type ChallengeFormProps = {
   defaultValues?: z.infer<typeof challengeFormSchema>;
   onSubmit: (values: z.infer<typeof challengeFormSchema>) => void;
+  onDelete?: () => void;
   disabled?: boolean;
 };
 
@@ -51,6 +64,7 @@ export const challengeFormSchema = z.object({
 function ChallengeForm({
   defaultValues,
   onSubmit,
+  onDelete,
   disabled,
 }: ChallengeFormProps) {
   const form = useForm<z.infer<typeof challengeFormSchema>>({
@@ -124,10 +138,20 @@ function ChallengeForm({
             </FormItem>
           )}
         />
-        <div className="mt-4">
+        <div className="mt-4 flex justify-between">
           <Button type="submit" disabled={disabled}>
             Submit
           </Button>
+          {defaultValues && onDelete && (
+            <Button
+              type="button"
+              onClick={onDelete}
+              variant="destructive"
+              disabled={disabled}
+            >
+              Delete
+            </Button>
+          )}
         </div>
       </form>
     </Form>
@@ -135,11 +159,30 @@ function ChallengeForm({
 }
 
 export function CreateChallenge() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof challengeFormSchema>) => {
+    await handleSubmit(values);
+    const params = new URLSearchParams(searchParams);
+    params.delete("challenge");
+    replace(`${pathname}?${params.toString()}`);
+  };
+
   return (
-    <div className="w-1/4 space-y-5">
-      <h1 className="text-xl font-bold">Create Challenge</h1>
-      <ChallengeForm onSubmit={handleSubmit} />
-    </div>
+    <Card className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3">
+      <CardHeader>
+        <div className="mb-6">
+          <BackButton />
+        </div>
+        <CardTitle className="text-xl font-bold">Create Challenge</CardTitle>
+        <CardDescription>Set up your new challenge details.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChallengeForm onSubmit={onSubmit} />
+      </CardContent>
+    </Card>
   );
 }
 
@@ -163,6 +206,14 @@ export function EditChallenge({
     });
   };
 
+  const handleDelete = () => {
+    startTransition(async () => {
+      await handleChallengeDelete(challenge.id);
+
+      setIsDialogOpen(false);
+    });
+  };
+
   const defaultValues = {
     title: challenge.title,
     wish: challenge.wish,
@@ -174,6 +225,7 @@ export function EditChallenge({
     <ChallengeForm
       defaultValues={defaultValues}
       onSubmit={handleSubmit}
+      onDelete={handleDelete}
       disabled={isPending}
     />
   );

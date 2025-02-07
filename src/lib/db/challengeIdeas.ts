@@ -1,13 +1,7 @@
-import { ChallengeIdea } from "@prisma/client";
-import { prisma } from "./(root)/prisma";
-import { ChallengeIdeaOptionalDefaults } from "@30-day-challenge/prisma-zod";
-import { getChallenges } from "@/lib/db/challenge";
-import { findUserByClerkId } from "@/lib/db/user";
-import { NextResponse } from "next/server";
-import { z } from "zod";
-import { validateRequest, handleError } from "@/lib/util/routeUtils";
-import { openai } from "@/lib/util";
 import { pc } from "@/lib/db/(root)/pinecone";
+import { openai } from "@/lib/util";
+import { ChallengeIdeaOptionalDefaults } from "@30-day-challenge/prisma-zod";
+import { prisma } from "./(root)/prisma";
 
 export async function generateChallengeIdeas(
   challenges: ChallengeIdeaOptionalDefaults[],
