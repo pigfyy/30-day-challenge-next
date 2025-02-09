@@ -1,7 +1,10 @@
 import { router, procedure } from "@/server/init";
 import { z } from "zod";
 import { prisma } from "@/lib/db/(root)/prisma";
-import { editDailyProgressCompletion } from "@/lib/db/dailyProgress";
+import {
+  deleteImage,
+  editDailyProgressCompletion,
+} from "@/lib/db/dailyProgress";
 import { DailyProgressOptionalDefaultsSchema } from "@30-day-challenge/prisma-zod";
 
 export const dailyProgressRouter = router({
@@ -42,5 +45,10 @@ export const dailyProgressRouter = router({
         userId: ctx.user.id,
       });
       return dailyProgress;
+    }),
+  deleteDailyProgressImage: procedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      await deleteImage(input);
     }),
 });

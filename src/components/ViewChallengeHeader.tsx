@@ -33,6 +33,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
+import { trpc } from "@/lib/util/trpc";
 
 export const ViewChallengeHeader = ({
   challenge,
@@ -112,20 +113,18 @@ const ProgressImageDisplay = ({
 }) => {
   const [aspectRatios, setAspectRatios] = useState<Record<string, number>>({});
 
-  // Initialize openCollapsibles state to `true` for all items
   const [openCollapsibles, setOpenCollapsibles] = useState<
     Record<string, boolean>
   >(
     dailyProgress.reduce(
       (acc, dp) => {
-        acc[dp.id] = true; // Set all collapsibles to open by default
+        acc[dp.id] = true;
         return acc;
       },
       {} as Record<string, boolean>,
     ),
   );
 
-  // Toggle collapsible state
   const toggleCollapsible = (id: string) => {
     setOpenCollapsibles((prev) => ({
       ...prev,
@@ -247,7 +246,14 @@ const EditNoteForm = ({
   challenge: Challenge;
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [isPending, startTransition] = useTransition();
+  const utils = trpc.useUtils();
+
+  const { mutate, isPending } = trpc.challenge.updateChallenge.useMutation({
+    onSettled: () => {
+      setIsDialogOpen(false);
+      utils.challenge.getChallenges.invalidate();
+    },
+  });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -262,14 +268,9 @@ const EditNoteForm = ({
     e.preventDefault();
 
     const note = textareaRef.current?.value || "";
-
-    startTransition(() => {
-      handleChallengeUpdate({
-        ...challenge,
-        note,
-      });
-
-      setIsDialogOpen(false);
+    mutate({
+      ...challenge,
+      note,
     });
   };
 
@@ -277,7 +278,6 @@ const EditNoteForm = ({
     <form onSubmit={handleSubmit}>
       <div className="grid gap-4 py-4">
         <Textarea
-          ref={textareaRef} // Attach the ref
           name="note"
           placeholder="Type your note here..."
           className="min-h-[100px]"

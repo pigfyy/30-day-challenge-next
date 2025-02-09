@@ -205,25 +205,39 @@ export function EditChallenge({
   challenge: Challenge;
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  const utils = trpc.useUtils();
+
+  const { mutate: updateChallenge, isPending: isUpdatePending } =
+    trpc.challenge.updateChallenge.useMutation({
+      onSettled: () => {
+        setIsDialogOpen(false);
+        utils.challenge.getChallenges.invalidate();
+      },
+    });
+  const { mutate: deleteChallenge, isPending: isDeletePending } =
+    trpc.challenge.deleteChallenge.useMutation({
+      onSettled: () => {
+        setIsDialogOpen(false);
+        utils.challenge.getChallenges.invalidate();
+
+        const params = new URLSearchParams(searchParams);
+        params.delete("challenge");
+        replace(`${pathname}?${params.toString()}`);
+      },
+    });
 
   const handleSubmit = async (values: z.infer<typeof challengeFormSchema>) => {
-    startTransition(async () => {
-      await handleChallengeUpdate({
-        ...challenge,
-        ...values,
-      });
-
-      setIsDialogOpen(false);
+    updateChallenge({
+      ...challenge,
+      ...values,
     });
   };
 
   const handleDelete = () => {
-    startTransition(async () => {
-      await handleChallengeDelete(challenge.id);
-
-      setIsDialogOpen(false);
-    });
+    deleteChallenge(challenge.id);
   };
 
   const defaultValues = {
@@ -238,7 +252,7 @@ export function EditChallenge({
       defaultValues={defaultValues}
       onSubmit={handleSubmit}
       onDelete={handleDelete}
-      disabled={isPending}
+      disabled={isUpdatePending || isDeletePending}
     />
   );
 }

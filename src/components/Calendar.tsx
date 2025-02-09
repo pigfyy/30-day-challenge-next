@@ -16,10 +16,6 @@ type CalendarProps = {
   dailyProgress: DailyProgress[];
 };
 
-type OptimisticUpdate = Partial<DailyProgress> & {
-  date: Date;
-};
-
 export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
   const [isViewDayDialogOpen, setIsViewDayDialogOpen] = useState(false);
   const [viewDayDialogDate, setViewDayDialogDate] = useState<
@@ -162,7 +158,6 @@ function Day({
   const isLeftEdge = index % 7 === 0;
   const isRightEdge = index % 7 === 6;
 
-  // Find the current optimistic record for this day
   const localItem = dailyProgress.find(
     (dp) => dp.date.toDateString() === item.dateValue.toDateString(),
   );

@@ -1,7 +1,8 @@
 import { router, procedure } from "@/server/init";
 import { z } from "zod";
 import { prisma } from "@/lib/db/(root)/prisma";
-import { createChallenge } from "@/lib/db/challenge";
+import { createChallenge, deleteChallenge } from "@/lib/db/challenge";
+import { ChallengeOptionalDefaultsSchema } from "@30-day-challenge/prisma-zod";
 
 export const challengeRouter = router({
   getChallenges: procedure.query(async ({ ctx }) => {
@@ -35,21 +36,16 @@ export const challengeRouter = router({
       return challenge;
     }),
   updateChallenge: procedure
-    .input(
-      z.object({
-        id: z.string(), // challengeId
-        title: z.string().optional(),
-        description: z.string().optional(),
-      }),
-    )
+    .input(ChallengeOptionalDefaultsSchema)
     .mutation(async ({ input }) => {
-      // const challenge = await prisma.challenge.update({
-      //   where: { id: input.id },
-      //   data: {
-      //     title: input.title,
-      //     description: input.description,
-      //   },
-      // });
-      // return challenge;
+      const challenge = await prisma.challenge.update({
+        where: { id: input.id },
+        data: input,
+      });
+      return challenge;
     }),
+  deleteChallenge: procedure.input(z.string()).mutation(async ({ input }) => {
+    const challenge = await deleteChallenge(input);
+    return challenge;
+  }),
 });

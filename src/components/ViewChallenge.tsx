@@ -16,8 +16,6 @@ export const ViewChallenge = () => {
     challengeId: challengeId,
   });
 
-  console.log(dailyProgress);
-
   if (!challenge || !dailyProgress) {
     return <div>Loading...</div>;
   }
