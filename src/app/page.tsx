@@ -41,6 +41,9 @@ const Challenges = async ({
 };
 
 export default async function Page(props: ChallengePageProps) {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) return null;
+
   return (
     <div className="my-6 flex flex-1 items-center justify-center">
       <Challenges pageProps={props} />
