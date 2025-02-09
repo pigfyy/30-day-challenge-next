@@ -18,13 +18,6 @@ const Content: React.FC<{
     <Button variant="link" asChild>
       <Link href={"/challenge-display"}>challenge-display</Link>
     </Button>
-    <Button
-      onClick={async () => {
-        await handleChallengeDelete("cm6u3vz4q0001rqnib8jjur0k");
-      }}
-    >
-      delete challenge id
-    </Button>
     <Button onClick={() => setIsModalOpen(false)} className="w-full">
       Close
     </Button>

@@ -17,10 +17,22 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { handleChallengeUpdate } from "@/lib/actions/updateChallenge";
 import { Challenge, DailyProgress } from "@prisma/client";
-import { ImageIcon, Notebook, Pencil } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ImageIcon,
+  Notebook,
+  Pencil,
+} from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { EditChallenge } from "./ChallengeForms";
+import { ScrollArea } from "./ui/scroll-area";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 
 export const ViewChallengeHeader = ({
   challenge,
@@ -98,6 +110,29 @@ const ProgressImageDisplay = ({
 }: {
   dailyProgress: DailyProgress[];
 }) => {
+  const [aspectRatios, setAspectRatios] = useState<Record<string, number>>({});
+
+  // Initialize openCollapsibles state to `true` for all items
+  const [openCollapsibles, setOpenCollapsibles] = useState<
+    Record<string, boolean>
+  >(
+    dailyProgress.reduce(
+      (acc, dp) => {
+        acc[dp.id] = true; // Set all collapsibles to open by default
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    ),
+  );
+
+  // Toggle collapsible state
+  const toggleCollapsible = (id: string) => {
+    setOpenCollapsibles((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   return (
     <div className="flex flex-col gap-3">
       {dailyProgress.map((dp) => {
@@ -105,16 +140,50 @@ const ProgressImageDisplay = ({
 
         return (
           <div key={dp.id} className="flex w-full flex-col gap-2">
-            <div className="font-semibold">{dp.date.toLocaleDateString()}</div>
-            <div className="relative h-48 w-full">
-              <Image
-                src={dp.imageUrl}
-                alt="Progress image"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg"
-              />
-            </div>
+            <Collapsible
+              open={openCollapsibles[dp.id]}
+              onOpenChange={() => toggleCollapsible(dp.id)}
+            >
+              <div className="flex items-center justify-between">
+                <div className="font-semibold">
+                  {dp.date.toLocaleDateString()}
+                </div>
+                <CollapsibleTrigger asChild>
+                  <button className="p-1">
+                    {openCollapsibles[dp.id] ? (
+                      <ChevronUp className="h-5 w-5" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5" />
+                    )}
+                  </button>
+                </CollapsibleTrigger>
+              </div>
+              <CollapsibleContent>
+                <div
+                  className="relative w-full"
+                  style={
+                    aspectRatios[dp.id]
+                      ? { aspectRatio: `${aspectRatios[dp.id]}` }
+                      : { height: "12rem" }
+                  }
+                >
+                  <Image
+                    src={dp.imageUrl}
+                    alt="Progress image"
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-lg"
+                    onLoadingComplete={(img) => {
+                      const aspectRatio = img.naturalWidth / img.naturalHeight;
+                      setAspectRatios((prev) => ({
+                        ...prev,
+                        [dp.id]: aspectRatio,
+                      }));
+                    }}
+                  />
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </div>
         );
       })}
@@ -133,11 +202,13 @@ const SheetComponent = ({
 }) => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="sm:max-w-[480px]">
-        <SheetHeader>
-          <SheetTitle>View your challenge progress images here!</SheetTitle>
-        </SheetHeader>
-        <div className="mt-3">{children}</div>
+      <SheetContent className="flex flex-col overflow-hidden p-0 sm:max-w-[480px]">
+        <ScrollArea className="flex-1 overflow-y-auto p-6">
+          <SheetHeader className="mb-3">
+            <SheetTitle>View your challenge progress images here!</SheetTitle>
+          </SheetHeader>
+          {children}
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   );
