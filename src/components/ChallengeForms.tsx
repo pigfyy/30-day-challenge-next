@@ -30,6 +30,8 @@ import {
 } from "./ui/card";
 import { BackButton } from "./BackButton";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { trpc } from "@/lib/util/trpc";
+import { createChallenge } from "@/lib/db/challenge";
 
 type ChallengeFormProps = {
   defaultValues?: z.infer<typeof challengeFormSchema>;
@@ -159,28 +161,41 @@ function ChallengeForm({
 }
 
 export function CreateChallenge() {
+  const utils = trpc.useUtils();
+
+  const { data: challenges, isLoading } =
+    trpc.challenge.getChallenges.useQuery();
+
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
+  const { mutate, isPending } = trpc.challenge.createChallenge.useMutation({
+    onSuccess: async (challenge) => {
+      await utils.challenge.getChallenges.invalidate();
+      const params = new URLSearchParams(searchParams);
+      params.set("challenge", challenge.id);
+      replace(`${pathname}?${params.toString()}`);
+    },
+  });
+
   const onSubmit = async (values: z.infer<typeof challengeFormSchema>) => {
-    const challenge = await handleSubmit(values);
-    const params = new URLSearchParams(searchParams);
-    params.set("challenge", challenge.id);
-    replace(`${pathname}?${params.toString()}`);
+    mutate(values);
   };
 
   return (
     <Card className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3">
       <CardHeader>
-        <div className="mb-6">
-          <BackButton />
-        </div>
+        {challenges?.length ? (
+          <div className="mb-6">
+            <BackButton />
+          </div>
+        ) : null}
         <CardTitle className="text-xl font-bold">Create Challenge</CardTitle>
         <CardDescription>Set up your new challenge details.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChallengeForm onSubmit={onSubmit} />
+        <ChallengeForm onSubmit={onSubmit} disabled={isPending} />
       </CardContent>
     </Card>
   );
@@ -193,25 +208,39 @@ export function EditChallenge({
   challenge: Challenge;
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  const utils = trpc.useUtils();
+
+  const { mutate: updateChallenge, isPending: isUpdatePending } =
+    trpc.challenge.updateChallenge.useMutation({
+      onSettled: async () => {
+        await utils.challenge.getChallenges.invalidate();
+        setIsDialogOpen(false);
+      },
+    });
+  const { mutate: deleteChallenge, isPending: isDeletePending } =
+    trpc.challenge.deleteChallenge.useMutation({
+      onSettled: async () => {
+        await utils.challenge.getChallenges.invalidate();
+        setIsDialogOpen(false);
+
+        const params = new URLSearchParams(searchParams);
+        params.delete("challenge");
+        replace(`${pathname}?${params.toString()}`);
+      },
+    });
 
   const handleSubmit = async (values: z.infer<typeof challengeFormSchema>) => {
-    startTransition(async () => {
-      await handleChallengeUpdate({
-        ...challenge,
-        ...values,
-      });
-
-      setIsDialogOpen(false);
+    updateChallenge({
+      ...challenge,
+      ...values,
     });
   };
 
   const handleDelete = () => {
-    startTransition(async () => {
-      await handleChallengeDelete(challenge.id);
-
-      setIsDialogOpen(false);
-    });
+    deleteChallenge(challenge.id);
   };
 
   const defaultValues = {
@@ -226,7 +255,7 @@ export function EditChallenge({
       defaultValues={defaultValues}
       onSubmit={handleSubmit}
       onDelete={handleDelete}
-      disabled={isPending}
+      disabled={isUpdatePending || isDeletePending}
     />
   );
 }

@@ -1,52 +1,52 @@
+"use client";
+
 import { CreateChallenge } from "@/components/ChallengeForms";
 import { ChallengeListGrid } from "@/components/ChallengeListGrid";
 import { ViewChallenge } from "@/components/ViewChallenge";
-import { CGetChallenges } from "@/lib/db/challenge";
-import { CFindUserByClerkId } from "@/lib/db/user";
-import { auth } from "@clerk/nextjs/server";
+import { toast } from "@/hooks/use-toast";
+import { trpc } from "@/lib/util/trpc";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
-type ChallengePageProps = {
-  searchParams?: Promise<{
-    challenge?: string;
-  }>;
-};
+const Challenges = () => {
+  const { data: challenges, isLoading: isChallengesLoading } =
+    trpc.challenge.getChallenges.useQuery();
 
-const Challenges = async ({
-  pageProps: props,
-}: {
-  pageProps: ChallengePageProps;
-}) => {
-  const challengeId = (await props.searchParams)?.challenge;
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
-  const { userId: clerkId } = await auth();
-  const user = await CFindUserByClerkId(clerkId!);
+  const challengeId = searchParams.get("challenge");
 
-  const challenges = await CGetChallenges(user.id);
-
-  const currentChallenge = challenges.find((c) => c.id === challengeId);
+  useEffect(() => {
+    if (!isChallengesLoading && (!challenges || !challenges.length)) {
+      const params = new URLSearchParams(searchParams);
+      params.set("challenge", "new");
+      replace(`${pathname}?${params.toString()}`);
+    }
+  }, [isChallengesLoading, challenges, searchParams, pathname, replace]);
 
   if (challengeId === "new") {
     return <CreateChallenge />;
   }
 
-  return (
-    <>
-      {currentChallenge ? (
-        <ViewChallenge challenge={currentChallenge} />
-      ) : (
-        <ChallengeListGrid challenges={challenges} />
-      )}
-    </>
-  );
+  if (!challengeId) {
+    return <ChallengeListGrid />;
+  }
+
+  return <ViewChallenge />;
 };
 
-export default async function Page(props: ChallengePageProps) {
-  const { userId: clerkId } = await auth();
-  if (!clerkId) return null;
+export default function Page() {
+  const { data: user, isLoading } = trpc.user.getUser.useQuery();
+
+  if (!isLoading && !user) {
+    throw new Error("User not found");
+  }
 
   return (
     <div className="my-6 flex flex-1 items-center justify-center">
-      <Challenges pageProps={props} />
+      <Challenges />
     </div>
   );
 }

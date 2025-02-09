@@ -75,3 +75,9 @@ export async function handleDailyProgressUpdateSubmit(
 
   revalidatePath("/");
 }
+
+export async function handleDailyProgressImageUpload(file: File) {
+  const url = await uploadImage(file, "progress-image.png");
+
+  return url;
+}

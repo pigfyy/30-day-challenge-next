@@ -10,8 +10,12 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Separator } from "./ui/separator";
-import { handleDailyProgressUpdateSubmit } from "@/lib/actions/modifyDailyProgress";
+import {
+  handleDailyProgressImageUpload,
+  handleDailyProgressUpdateSubmit,
+} from "@/lib/actions/modifyDailyProgress";
 import { isSameDay } from "date-fns";
+import { trpc } from "@/lib/util/trpc";
 
 export const UploadButton = ({
   setSelectedFile,
@@ -114,9 +118,23 @@ export const ViewDayDialog = ({
   dailyProgress: DailyProgress[];
   date: Date | undefined;
 }) => {
+  const utils = trpc.useUtils();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { selectedFile, setSelectedFile, previewUrl, dimensions } =
     useImagePreview();
-  const [isPending, startTransition] = useTransition();
+
+  const { mutateAsync: upsertDailyProgress, isPending: isPendingSubmit } =
+    trpc.dailyProgress.upsertDailyProgress.useMutation({
+      onSettled: () => {
+        utils.dailyProgress.getDailyProgress.invalidate({
+          challengeId: challenge.id,
+        });
+      },
+    });
+
+  const { mutateAsync: deleteDailyProgressImage, isPending: isPendingDelete } =
+    trpc.dailyProgress.deleteDailyProgressImage.useMutation();
 
   const day = date
     ? dailyProgress.find((dp) => isSameDay(dp.date, date))
@@ -161,6 +179,57 @@ export const ViewDayDialog = ({
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
 
     return diffInDays;
+  }
+
+  async function submitDailyProgressUpdate() {
+    if (
+      typeof selectedFile === "string" ||
+      (selectedFile === null && (!day || !day.imageUrl)) ||
+      !date
+    ) {
+      return setIsOpen(false);
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      let imageUrl = day?.imageUrl || "";
+      let oldImageUrlToDelete: string | null = null;
+
+      if (selectedFile) {
+        const newImageUrl = await handleDailyProgressImageUpload(selectedFile);
+
+        if (day?.imageUrl) {
+          oldImageUrlToDelete = day.imageUrl;
+        }
+
+        imageUrl = newImageUrl;
+      } else if (day && day.imageUrl) {
+        await deleteDailyProgressImage(day.imageUrl);
+        imageUrl = "";
+      }
+
+      const updateData = {
+        id: day?.id,
+        date: date,
+        challengeId: challenge.id,
+        completed: false,
+        ...(day || {}),
+        imageUrl: imageUrl,
+      };
+
+      await upsertDailyProgress(updateData);
+
+      if (oldImageUrlToDelete) {
+        await deleteDailyProgressImage(oldImageUrlToDelete);
+      }
+
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Submission failed:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   if (!date) {
@@ -222,21 +291,11 @@ export const ViewDayDialog = ({
             </CollapsibleContent>
           </Collapsible>
           <Button
-            onClick={() =>
-              startTransition(() => {
-                handleDailyProgressUpdateSubmit(
-                  selectedFile,
-                  challenge,
-                  day,
-                  date,
-                );
-                setIsOpen(false);
-              })
-            }
+            onClick={submitDailyProgressUpdate}
             className="mr-auto"
-            disabled={isPending}
+            disabled={isSubmitting || isPendingSubmit || isPendingDelete}
           >
-            Submit Changes
+            Submit
           </Button>
         </div>
       </DialogContent>
