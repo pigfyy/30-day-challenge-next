@@ -164,9 +164,9 @@ export function CreateChallenge() {
   const { replace } = useRouter();
 
   const onSubmit = async (values: z.infer<typeof challengeFormSchema>) => {
-    await handleSubmit(values);
+    const challenge = await handleSubmit(values);
     const params = new URLSearchParams(searchParams);
-    params.delete("challenge");
+    params.set("challenge", challenge.id);
     replace(`${pathname}?${params.toString()}`);
   };
 

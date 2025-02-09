@@ -14,10 +14,12 @@ export const handleSubmit = async (
 
   const userId = (await CFindUserByClerkId(clerkId!)).id;
 
-  await createChallenge({
+  const newChallenge = await createChallenge({
     ...values,
     userId,
   });
 
   revalidatePath("/");
+
+  return newChallenge;
 };
