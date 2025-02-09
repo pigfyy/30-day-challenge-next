@@ -1,21 +1,18 @@
-import { Challenge, DailyProgress } from "@prisma/client";
-import React, { useEffect, useRef, useState, useTransition } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import Image from "next/image";
-import { Button } from "./ui/button";
-import { ChevronsUpDown, X } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Separator } from "./ui/separator";
-import {
-  handleDailyProgressImageUpload,
-  handleDailyProgressUpdateSubmit,
-} from "@/lib/actions/modifyDailyProgress";
-import { isSameDay } from "date-fns";
+import { handleDailyProgressImageUpload } from "@/lib/actions";
 import { trpc } from "@/lib/util/trpc";
+import { Challenge, DailyProgress } from "@prisma/client";
+import { isSameDay } from "date-fns";
+import { ChevronsUpDown, X } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Separator } from "./ui/separator";
 
 export const UploadButton = ({
   setSelectedFile,

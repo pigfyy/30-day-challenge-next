@@ -15,7 +15,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { handleChallengeUpdate } from "@/lib/actions/updateChallenge";
+import { trpc } from "@/lib/util/trpc";
 import { Challenge, DailyProgress } from "@prisma/client";
 import {
   ChevronDown,
@@ -25,15 +25,14 @@ import {
   Pencil,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EditChallenge } from "./ChallengeForms";
-import { ScrollArea } from "./ui/scroll-area";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
-import { trpc } from "@/lib/util/trpc";
+import { ScrollArea } from "./ui/scroll-area";
 
 export const ViewChallengeHeader = ({
   challenge,

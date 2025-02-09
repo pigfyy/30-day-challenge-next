@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,12 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { PlusCircle } from "lucide-react";
-import { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { trpc } from "@/lib/util/trpc";
+import { PlusCircle } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const ChallengeListGrid = () => {
   const { data: challenges } = trpc.challenge.getChallenges.useQuery();

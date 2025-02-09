@@ -26,6 +26,10 @@ const Challenges = () => {
     }
   }, [isChallengesLoading, challenges, searchParams, pathname, replace]);
 
+  if (isChallengesLoading) {
+    return <div>Loading...</div>;
+  }
+
   if (challengeId === "new") {
     return <CreateChallenge />;
   }

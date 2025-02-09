@@ -1,15 +1,13 @@
 "use client";
 
-import { modifyDailyProgress } from "@/lib/actions/modifyDailyProgress";
-import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
-import { Challenge, DailyProgress } from "@prisma/client";
-import { getDate, isDate, startOfDay } from "date-fns";
-import { Maximize2 } from "lucide-react";
-import { useEffect, useOptimistic, useState, useTransition } from "react";
-import { ViewDayDialog } from "./ViewDayDialog";
-import { debounce } from "lodash";
-import { trpc } from "@/lib/util/trpc";
 import { toast } from "@/hooks/use-toast";
+import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
+import { trpc } from "@/lib/util/trpc";
+import { Challenge, DailyProgress } from "@prisma/client";
+import { getDate } from "date-fns";
+import { Maximize2 } from "lucide-react";
+import { useState } from "react";
+import { ViewDayDialog } from "./ViewDayDialog";
 
 type CalendarProps = {
   challenge: Challenge;

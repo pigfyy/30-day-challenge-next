@@ -14,13 +14,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { handleSubmit } from "@/lib/actions/createChallenge";
+import { trpc } from "@/lib/util/trpc";
 import { Challenge } from "@prisma/client";
-import {
-  handleChallengeDelete,
-  handleChallengeUpdate,
-} from "@/lib/actions/updateChallenge";
-import { useTransition } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { BackButton } from "./BackButton";
 import {
   Card,
   CardContent,
@@ -28,10 +25,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { BackButton } from "./BackButton";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { trpc } from "@/lib/util/trpc";
-import { createChallenge } from "@/lib/db/challenge";
 
 type ChallengeFormProps = {
   defaultValues?: z.infer<typeof challengeFormSchema>;

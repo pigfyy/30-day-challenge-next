@@ -1,28 +1,22 @@
 "use client"; // Mark this as a Client Component
 
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button"; // shadcn Button
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"; // shadcn Dialog
-import { Button } from "@/components/ui/button"; // shadcn Button
-import Link from "next/link";
-import { handleChallengeDelete } from "@/lib/actions/updateChallenge";
+} from "@/components/ui/dialog";
 import { trpc } from "@/lib/util/trpc";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const Content: React.FC<{
   setIsModalOpen: (isOpen: boolean) => void;
 }> = ({ setIsModalOpen }) => {
   const { data: challenges } = trpc.challenge.getChallenges.useQuery();
 
-  const handleDeleteAllChallenges = async () => {
-    console.log(challenges);
-    challenges?.forEach(async (challenge) => {
-      await handleChallengeDelete(challenge.id);
-    });
-  };
+  const handleDeleteAllChallenges = async () => {};
 
   return (
     <div className="flex flex-col items-start space-y-4">

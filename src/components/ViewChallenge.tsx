@@ -2,8 +2,8 @@ import Calendar from "@/components/Calendar";
 import { ViewChallengeHeader } from "@/components/ViewChallengeHeader";
 import { trpc } from "@/lib/util/trpc";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { BackButton } from "./BackButton";
 import { useEffect } from "react";
+import { BackButton } from "./BackButton";
 
 export const ViewChallenge = () => {
   const searchParams = useSearchParams();
