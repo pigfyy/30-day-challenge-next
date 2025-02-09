@@ -30,6 +30,8 @@ import {
 } from "./ui/card";
 import { BackButton } from "./BackButton";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { trpc } from "@/lib/util/trpc";
+import { createChallenge } from "@/lib/db/challenge";
 
 type ChallengeFormProps = {
   defaultValues?: z.infer<typeof challengeFormSchema>;
@@ -159,15 +161,25 @@ function ChallengeForm({
 }
 
 export function CreateChallenge() {
+  const utils = trpc.useUtils();
+
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
+  const { mutate } = trpc.challenge.createChallenge.useMutation({
+    onSuccess: async (challenge) => {
+      const params = new URLSearchParams(searchParams);
+      params.set("challenge", challenge.id);
+      replace(`${pathname}?${params.toString()}`);
+    },
+    onSettled: () => {
+      utils.challenge.getChallenges.invalidate();
+    },
+  });
+
   const onSubmit = async (values: z.infer<typeof challengeFormSchema>) => {
-    const challenge = await handleSubmit(values);
-    const params = new URLSearchParams(searchParams);
-    params.set("challenge", challenge.id);
-    replace(`${pathname}?${params.toString()}`);
+    mutate(values);
   };
 
   return (

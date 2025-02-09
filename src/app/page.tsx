@@ -1,48 +1,75 @@
 "use client";
 
-// import { CreateChallenge } from "@/components/ChallengeForms";
-// import { ChallengeListGrid } from "@/components/ChallengeListGrid";
-// import { ViewChallenge } from "@/components/ViewChallenge";
-// import { CGetChallenges } from "@/lib/db/challenge";
-// import { CFindUserByClerkId } from "@/lib/db/user";
-import { useUser } from "@clerk/nextjs";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
-// import { auth } from "@clerk/nextjs/server";
+import { CreateChallenge } from "@/components/ChallengeForms";
+import { ChallengeListGrid } from "@/components/ChallengeListGrid";
+import { ViewChallenge } from "@/components/ViewChallenge";
+import { trpc } from "@/lib/util/trpc";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 const Challenges = () => {
+  const { data: challenges, isLoading: isChallengesLoading } =
+    trpc.challenge.getChallenges.useQuery();
+
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
   const challengeId = searchParams.get("challenge");
 
-  // const challenges = await CGetChallenges(user.id);
+  useEffect(() => {
+    if (!isChallengesLoading && (!challenges || !challenges.length)) {
+      const params = new URLSearchParams(searchParams);
+      params.set("challenge", "new");
+      replace(`${pathname}?${params.toString()}`);
+    }
+  }, [isChallengesLoading, challenges, searchParams, pathname, replace]);
 
-  // const currentChallenge = challenges.find((c) => c.id === challengeId);
+  if (challengeId === "new") {
+    return <CreateChallenge />;
+  }
 
-  // if (challengeId === "new") {
-  //   return <CreateChallenge />;
-  // }
+  if (!challengeId) {
+    return <ChallengeListGrid />;
+  }
 
-  return (
-    <>
-      {/* {currentChallenge ? (
-        <ViewChallenge challenge={currentChallenge} />
-      ) : (
-        <ChallengeListGrid challenges={challenges} />
-      )} */}
-    </>
-  );
+  return <ViewChallenge />;
 };
 
-export default function Page(props: ChallengePageProps) {
-  const { user, isLoaded } = useUser();
+// const Challenges = () => {
+//   const searchParams = useSearchParams();
 
-  if (!isLoaded) {
-    return <div>Loading user data</div>;
+//   const challengeId = searchParams.get("challenge");
+
+//   const challenges = await CGetChallenges(user.id);
+
+//   const currentChallenge = challenges.find((c) => c.id === challengeId);
+
+//   if (challengeId === "new") {
+//     return <CreateChallenge />;
+//   }
+
+//   return (
+//     <>
+//       {currentChallenge ? (
+//         <ViewChallenge challenge={currentChallenge} />
+//       ) : (
+//         <ChallengeListGrid challenges={challenges} />
+//       )}
+//     </>
+//   );
+// };
+
+export default function Page() {
+  const { data: user, isLoading } = trpc.user.getUser.useQuery();
+
+  if (!isLoading && !user) {
+    throw new Error("User not found");
   }
 
   return (
     <div className="my-6 flex flex-1 items-center justify-center">
-      <Challenges pageProps={props} />
+      <Challenges />
     </div>
   );
 }

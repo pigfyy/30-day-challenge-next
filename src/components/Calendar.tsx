@@ -8,6 +8,8 @@ import { Maximize2 } from "lucide-react";
 import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { ViewDayDialog } from "./ViewDayDialog";
 import { debounce } from "lodash";
+import { trpc } from "@/lib/util/trpc";
+import { toast } from "@/hooks/use-toast";
 
 type CalendarProps = {
   challenge: Challenge;
@@ -24,47 +26,7 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
     undefined | Date
   >();
 
-  const [optimisticDailyProgress, addOptimisticDailyProgress] = useOptimistic<
-    DailyProgress[],
-    OptimisticUpdate
-  >(
-    dailyProgress,
-    (
-      currentDailyProgress: DailyProgress[],
-      newDailyProgress: OptimisticUpdate,
-    ) => {
-      const newDate = startOfDay(newDailyProgress.date);
-
-      const existingIndex = currentDailyProgress.findIndex((dp) => {
-        const dpDate = startOfDay(dp.date);
-        return dpDate.getTime() === newDate.getTime();
-      });
-
-      if (existingIndex > -1) {
-        return currentDailyProgress.map((dp) =>
-          dp.id === newDailyProgress.id
-            ? { ...dp, completed: newDailyProgress.completed || false }
-            : dp,
-        );
-      } else {
-        return [
-          ...currentDailyProgress,
-          {
-            id: `temp-${newDailyProgress.date.getTime()}`,
-            date: newDailyProgress.date,
-            completed: newDailyProgress.completed || false,
-            imageUrl: "",
-            challengeId: newDailyProgress.challengeId!,
-            userId: "",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ];
-      }
-    },
-  );
-
-  const gridData = createCalendarDates(challenge, optimisticDailyProgress);
+  const gridData = createCalendarDates(challenge, dailyProgress);
 
   return (
     <>
@@ -77,8 +39,7 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
               index={index}
               item={item}
               challenge={challenge}
-              optimisticDailyProgress={optimisticDailyProgress}
-              addOptimisticDailyProgress={addOptimisticDailyProgress}
+              dailyProgress={dailyProgress}
               setIsViewDayDialogOpen={setIsViewDayDialogOpen}
               setViewDayDialogDate={setViewDayDialogDate}
             />
@@ -139,8 +100,7 @@ type DayProps = {
   index: number;
   item: gridData[number];
   challenge: Challenge;
-  optimisticDailyProgress: DailyProgress[];
-  addOptimisticDailyProgress: any;
+  dailyProgress: DailyProgress[];
   setIsViewDayDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setViewDayDialogDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
 };
@@ -149,18 +109,61 @@ function Day({
   index,
   item,
   challenge,
-  optimisticDailyProgress,
-  addOptimisticDailyProgress,
+  dailyProgress,
   setIsViewDayDialogOpen,
   setViewDayDialogDate,
 }: DayProps) {
-  const [, startTransition] = useTransition();
+  const utils = trpc.useUtils();
+
+  const { mutate } = trpc.dailyProgress.upsertDailyProgress.useMutation({
+    onMutate: async (newDailyProgress) => {
+      const previousDailyProgress =
+        utils.dailyProgress.getDailyProgress.getData({
+          challengeId: challenge.id,
+        }) || [];
+
+      utils.dailyProgress.getDailyProgress.setData(
+        { challengeId: challenge.id },
+        (oldData) => {
+          const currentData = oldData ?? previousDailyProgress;
+          const newRecord = newDailyProgress as DailyProgress;
+
+          // Check if the record already exists and update if so; otherwise, append
+          if (currentData.find((dp) => dp.id === newRecord.id)) {
+            return currentData.map((dp) =>
+              dp.id === newRecord.id ? newRecord : dp,
+            );
+          }
+          return [...currentData, newRecord];
+        },
+      );
+
+      return { previousDailyProgress };
+    },
+    onError: (error, newDailyProgress, context) => {
+      if (context?.previousDailyProgress) {
+        utils.dailyProgress.getDailyProgress.setData(
+          { challengeId: challenge.id },
+          context.previousDailyProgress,
+        );
+      }
+      toast({
+        title: "Error updating daily progress",
+        description: error.message,
+      });
+    },
+    onSettled: () => {
+      utils.dailyProgress.getDailyProgress.invalidate({
+        challengeId: challenge.id,
+      });
+    },
+  });
 
   const isLeftEdge = index % 7 === 0;
   const isRightEdge = index % 7 === 6;
 
   // Find the current optimistic record for this day
-  const localItem = optimisticDailyProgress.find(
+  const localItem = dailyProgress.find(
     (dp) => dp.date.toDateString() === item.dateValue.toDateString(),
   );
 
@@ -179,60 +182,18 @@ function Day({
     addRoundedClass(isRightEdge || !item.rightCompleted, "rounded-r-xl");
   }
 
-  // Local state to track a pending update if the record is temporary
-  const [pendingUpdate, setPendingUpdate] = useState<boolean | null>(null);
-
   async function handleClick() {
     if (!isDateValid(item.dateValue, challenge.startDate)) {
       return;
     }
 
-    startTransition(() => {
-      const newCompleted = !isCompleted;
-      const optimisticUpdate: Partial<DailyProgress> = {
-        completed: newCompleted,
-        date: item.dateValue,
-        challengeId: challenge.id,
-        id: localItem?.id,
-      };
-
-      // If this day already has a temporary ID, record the new desired state locally.
-      if (optimisticUpdate.id && /^temp-\d+$/.test(optimisticUpdate.id)) {
-        addOptimisticDailyProgress(optimisticUpdate);
-        setPendingUpdate(newCompleted);
-        // Do not call modifyDailyProgress now since the DB record isn’t confirmed yet.
-        return;
-      }
-
-      // Otherwise, update optimistically and immediately fire the server update.
-      addOptimisticDailyProgress(optimisticUpdate);
-      try {
-        modifyDailyProgress(item, challenge);
-      } catch (error) {
-        console.error("Failed to update daily progress:", error);
-      }
+    mutate({
+      id: localItem?.id,
+      date: item.dateValue,
+      challengeId: challenge.id,
+      completed: !isCompleted,
     });
   }
-
-  // When the optimistic data updates (for example after a revalidation that replaces a temporary ID),
-  // check if there’s a pending update for this day and send it to the server.
-  useEffect(() => {
-    const currentItem = optimisticDailyProgress.find(
-      (dp) => dp.date.toDateString() === item.dateValue.toDateString(),
-    );
-    if (
-      pendingUpdate !== null &&
-      currentItem &&
-      !/^temp-\d+$/.test(currentItem.id)
-    ) {
-      // Here we assume that modifyDailyProgress has been updated to accept a third parameter
-      // representing the final desired state.
-      modifyDailyProgress(item, challenge, pendingUpdate).catch((error) =>
-        console.error("Failed to update pending daily progress:", error),
-      );
-      setPendingUpdate(null);
-    }
-  }, [optimisticDailyProgress, pendingUpdate, item, challenge]);
 
   function handleMaximizeDay(
     e: React.MouseEvent<HTMLOrSVGElement, MouseEvent>,

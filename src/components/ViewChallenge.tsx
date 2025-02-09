@@ -1,23 +1,26 @@
 import Calendar from "@/components/Calendar";
 import { ViewChallengeHeader } from "@/components/ViewChallengeHeader";
-import { viewDailyProgressCompletion } from "@/lib/db/dailyProgress";
-import { CFindUserByClerkId } from "@/lib/db/user";
-import { auth } from "@clerk/nextjs/server";
-import { type Challenge } from "@prisma/client";
+import { trpc } from "@/lib/util/trpc";
+import { useSearchParams } from "next/navigation";
 import { BackButton } from "./BackButton";
 
-export const ViewChallenge = async ({
-  challenge,
-}: {
-  challenge: Challenge;
-}) => {
-  const { userId: clerkId } = await auth();
-  const user = await CFindUserByClerkId(clerkId!);
+export const ViewChallenge = () => {
+  const searchParams = useSearchParams();
 
-  const dailyProgress = await viewDailyProgressCompletion(
-    user.id,
-    challenge.id,
-  );
+  const challengeId = searchParams.get("challenge");
+
+  const { data: challenges, isLoading: isChallengesLoading } =
+    trpc.challenge.getChallenges.useQuery();
+  const challenge = challenges?.find((c) => c.id === challengeId);
+  const { data: dailyProgress } = trpc.dailyProgress.getDailyProgress.useQuery({
+    challengeId: challengeId,
+  });
+
+  console.log(dailyProgress);
+
+  if (!challenge || !dailyProgress) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-lg">

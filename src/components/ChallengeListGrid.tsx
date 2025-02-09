@@ -13,20 +13,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { trpc } from "@/lib/util/trpc";
 
-interface Challenge {
-  id: string;
-  title: string;
-  wish: string;
-  dailyAction: string;
-  icon: React.ReactNode;
-}
+export const ChallengeListGrid = () => {
+  const { data: challenges } = trpc.challenge.getChallenges.useQuery();
 
-export const ChallengeListGrid = ({
-  challenges,
-}: {
-  challenges: Challenge[];
-}) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -106,7 +97,7 @@ export const ChallengeListGrid = ({
           </CardFooter>
         </Card>
 
-        {challenges.map((challenge) => (
+        {challenges?.map((challenge) => (
           <Card
             key={challenge.id}
             className="transition-shadow duration-200 hover:shadow-lg"
