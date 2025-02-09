@@ -249,9 +249,9 @@ const EditNoteForm = ({
   const utils = trpc.useUtils();
 
   const { mutate, isPending } = trpc.challenge.updateChallenge.useMutation({
-    onSettled: () => {
+    onSettled: async () => {
+      await utils.challenge.getChallenges.invalidate();
       setIsDialogOpen(false);
-      utils.challenge.getChallenges.invalidate();
     },
   });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -278,6 +278,7 @@ const EditNoteForm = ({
     <form onSubmit={handleSubmit}>
       <div className="grid gap-4 py-4">
         <Textarea
+          ref={textareaRef}
           name="note"
           placeholder="Type your note here..."
           className="min-h-[100px]"

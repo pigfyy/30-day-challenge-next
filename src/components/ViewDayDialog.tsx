@@ -295,7 +295,7 @@ export const ViewDayDialog = ({
             className="mr-auto"
             disabled={isSubmitting || isPendingSubmit || isPendingDelete}
           >
-            {isSubmitting ? "Submitting..." : "Submit Changes"}
+            Submit
           </Button>
         </div>
       </DialogContent>

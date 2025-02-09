@@ -67,7 +67,7 @@ export const deleteChallenge = async (challengeId: string) => {
 export const getChallenges = async (userId: string) => {
   const data = await prisma.challenge.findMany({
     where: { userId: userId },
-    orderBy: { startDate: "asc" },
+    orderBy: { startDate: "desc" },
   });
 
   return data;

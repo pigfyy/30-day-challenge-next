@@ -163,18 +163,19 @@ function ChallengeForm({
 export function CreateChallenge() {
   const utils = trpc.useUtils();
 
+  const { data: challenges, isLoading } =
+    trpc.challenge.getChallenges.useQuery();
+
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const { mutate } = trpc.challenge.createChallenge.useMutation({
+  const { mutate, isPending } = trpc.challenge.createChallenge.useMutation({
     onSuccess: async (challenge) => {
+      await utils.challenge.getChallenges.invalidate();
       const params = new URLSearchParams(searchParams);
       params.set("challenge", challenge.id);
       replace(`${pathname}?${params.toString()}`);
-    },
-    onSettled: () => {
-      utils.challenge.getChallenges.invalidate();
     },
   });
 
@@ -185,14 +186,16 @@ export function CreateChallenge() {
   return (
     <Card className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3">
       <CardHeader>
-        <div className="mb-6">
-          <BackButton />
-        </div>
+        {challenges?.length ? (
+          <div className="mb-6">
+            <BackButton />
+          </div>
+        ) : null}
         <CardTitle className="text-xl font-bold">Create Challenge</CardTitle>
         <CardDescription>Set up your new challenge details.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChallengeForm onSubmit={onSubmit} />
+        <ChallengeForm onSubmit={onSubmit} disabled={isPending} />
       </CardContent>
     </Card>
   );
@@ -212,16 +215,16 @@ export function EditChallenge({
 
   const { mutate: updateChallenge, isPending: isUpdatePending } =
     trpc.challenge.updateChallenge.useMutation({
-      onSettled: () => {
+      onSettled: async () => {
+        await utils.challenge.getChallenges.invalidate();
         setIsDialogOpen(false);
-        utils.challenge.getChallenges.invalidate();
       },
     });
   const { mutate: deleteChallenge, isPending: isDeletePending } =
     trpc.challenge.deleteChallenge.useMutation({
-      onSettled: () => {
+      onSettled: async () => {
+        await utils.challenge.getChallenges.invalidate();
         setIsDialogOpen(false);
-        utils.challenge.getChallenges.invalidate();
 
         const params = new URLSearchParams(searchParams);
         params.delete("challenge");

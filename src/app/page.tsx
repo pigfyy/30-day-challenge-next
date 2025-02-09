@@ -3,6 +3,7 @@
 import { CreateChallenge } from "@/components/ChallengeForms";
 import { ChallengeListGrid } from "@/components/ChallengeListGrid";
 import { ViewChallenge } from "@/components/ViewChallenge";
+import { toast } from "@/hooks/use-toast";
 import { trpc } from "@/lib/util/trpc";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -35,30 +36,6 @@ const Challenges = () => {
 
   return <ViewChallenge />;
 };
-
-// const Challenges = () => {
-//   const searchParams = useSearchParams();
-
-//   const challengeId = searchParams.get("challenge");
-
-//   const challenges = await CGetChallenges(user.id);
-
-//   const currentChallenge = challenges.find((c) => c.id === challengeId);
-
-//   if (challengeId === "new") {
-//     return <CreateChallenge />;
-//   }
-
-//   return (
-//     <>
-//       {currentChallenge ? (
-//         <ViewChallenge challenge={currentChallenge} />
-//       ) : (
-//         <ChallengeListGrid challenges={challenges} />
-//       )}
-//     </>
-//   );
-// };
 
 export default function Page() {
   const { data: user, isLoading } = trpc.user.getUser.useQuery();

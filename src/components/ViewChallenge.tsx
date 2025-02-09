@@ -1,22 +1,46 @@
 import Calendar from "@/components/Calendar";
 import { ViewChallengeHeader } from "@/components/ViewChallengeHeader";
 import { trpc } from "@/lib/util/trpc";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BackButton } from "./BackButton";
+import { useEffect } from "react";
 
 export const ViewChallenge = () => {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
   const challengeId = searchParams.get("challenge");
 
   const { data: challenges, isLoading: isChallengesLoading } =
     trpc.challenge.getChallenges.useQuery();
   const challenge = challenges?.find((c) => c.id === challengeId);
-  const { data: dailyProgress } = trpc.dailyProgress.getDailyProgress.useQuery({
-    challengeId: challengeId,
-  });
+  const { data: dailyProgress, isLoading: isDailyProgressLoading } =
+    trpc.dailyProgress.getDailyProgress.useQuery({
+      challengeId: challengeId,
+    });
 
-  if (!challenge || !dailyProgress) {
+  useEffect(() => {
+    if (!isChallengesLoading && !isDailyProgressLoading && !challenge) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("challenge");
+      replace(`${pathname}?${params.toString()}`);
+    }
+  }, [
+    isChallengesLoading,
+    isDailyProgressLoading,
+    challenge,
+    searchParams,
+    pathname,
+    replace,
+  ]);
+
+  if (
+    isChallengesLoading ||
+    isDailyProgressLoading ||
+    !challenge ||
+    !dailyProgress
+  ) {
     return <div>Loading...</div>;
   }
 

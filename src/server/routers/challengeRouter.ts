@@ -1,7 +1,11 @@
 import { router, procedure } from "@/server/init";
 import { z } from "zod";
 import { prisma } from "@/lib/db/(root)/prisma";
-import { createChallenge, deleteChallenge } from "@/lib/db/challenge";
+import {
+  createChallenge,
+  deleteChallenge,
+  getChallenges,
+} from "@/lib/db/challenge";
 import { ChallengeOptionalDefaultsSchema } from "@30-day-challenge/prisma-zod";
 
 export const challengeRouter = router({
@@ -10,9 +14,7 @@ export const challengeRouter = router({
       throw new Error("Not authenticated");
     }
 
-    const challenges = await prisma.challenge.findMany({
-      where: { userId: ctx.user.id },
-    });
+    const challenges = await getChallenges(ctx.user.id);
     return challenges;
   }),
   createChallenge: procedure
