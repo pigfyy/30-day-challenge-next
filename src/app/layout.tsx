@@ -6,9 +6,9 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import "./globals.css";
-import { Button } from "@/components/ui/button"; // Assuming you're using shadcn's Button component
+import { Button } from "@/components/ui/button";
 import { DevDialog } from "@/components/DevDialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Toaster } from "@/components/ui/toaster";
 
 const Header: React.FC = () => (
   <header className="w-full border-b bg-white shadow-sm">
@@ -55,6 +55,7 @@ export default function RootLayout({
               </div>
             </main>
           </SignedOut>
+          <Toaster />
           {/* DEVELOPER TOOLS */}
           <DevDialog />
         </body>

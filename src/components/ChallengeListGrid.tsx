@@ -7,10 +7,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"; // Assuming you have a Card component
-import { Button } from "@/components/ui/button"; // Assuming you have a Button component
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { PlusCircle } from "lucide-react"; // Or any other suitable icon
+import { PlusCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface Challenge {
   id: string;
@@ -28,6 +30,27 @@ export const ChallengeListGrid = ({
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
+  useEffect(() => {
+    const challengeId = searchParams.get("challenge");
+    if (challengeId && isMounted) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("challenge");
+      replace(`${pathname}?${params.toString()}`);
+
+      toast({
+        variant: "destructive",
+        title: "Challenge not found!",
+        duration: 1000,
+      });
+    }
+  }, [searchParams, replace, pathname, isMounted]);
 
   const handleViewClick = (challengeId: string) => {
     const params = new URLSearchParams(searchParams);
@@ -43,16 +66,26 @@ export const ChallengeListGrid = ({
 
   return (
     <section className="flex flex-col gap-6">
-      <h1 className="text-3xl font-bold">Welcome back!</h1>
+      <h1
+        className="text-3xl font-bold"
+        onClick={() => {
+          toast({
+            title: "Welcome back!",
+            description:
+              "You can now start your journey towards a healthier life.",
+          });
+        }}
+      >
+        Welcome back!
+      </h1>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Create Challenge Card */}
         <Card
           className="cursor-pointer transition-shadow duration-200 hover:shadow-lg"
           onClick={handleCreateChallengeClick}
         >
           <CardHeader>
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl">
-              <PlusCircle /> {/* Add icon */}
+              <PlusCircle />
             </div>
             <CardTitle className="text-lg font-semibold">
               Create New Challenge
@@ -73,10 +106,9 @@ export const ChallengeListGrid = ({
           </CardFooter>
         </Card>
 
-        {/* Existing Challenge Cards */}
         {challenges.map((challenge) => (
           <Card
-            key={challenge.id} // Removed crypto.randomUUID() from key.  This was the main issue.
+            key={challenge.id}
             className="transition-shadow duration-200 hover:shadow-lg"
           >
             <CardHeader>
