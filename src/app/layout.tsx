@@ -10,10 +10,10 @@ import { Button } from "@/components/ui/button";
 import { DevDialog } from "@/components/DevDialog";
 import { Toaster } from "@/components/ui/toaster";
 
-const Header: React.FC = () => (
+const Header = () => (
   <header className="w-full border-b bg-white shadow-sm">
     <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-      <div className="text-lg font-semibold text-gray-900">Break it Down</div>
+      <div className="text-lg font-semibold text-gray-900">30 Day Me</div>
       <div className="flex items-center space-x-4">
         <SignedOut>
           <SignInButton>
