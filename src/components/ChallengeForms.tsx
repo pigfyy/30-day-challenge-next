@@ -14,9 +14,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { trpc } from "@/lib/util/trpc";
 import { Challenge } from "@prisma/client";
+import { MoreVertical, Trash } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { BackButton } from "./BackButton";
 import {
   Card,
@@ -61,7 +68,19 @@ function ChallengeForm({
   onSubmit,
   onDelete,
   disabled,
-}: ChallengeFormProps) {
+  isDeleting = false, // Make isDeleting optional with a default value
+}: {
+  defaultValues?: {
+    title: string;
+    wish: string;
+    dailyAction: string;
+    icon: string;
+  };
+  onSubmit: (values: z.infer<typeof challengeFormSchema>) => void;
+  onDelete?: () => void; // Make onDelete optional
+  disabled: boolean;
+  isDeleting?: boolean; // Make isDeleting optional
+}) {
   const form = useForm<z.infer<typeof challengeFormSchema>>({
     resolver: zodResolver(challengeFormSchema),
     defaultValues: defaultValues || {
@@ -71,6 +90,9 @@ function ChallengeForm({
       icon: "✅",
     },
   });
+
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   return (
     <Form {...form}>
@@ -137,15 +159,59 @@ function ChallengeForm({
           <Button type="submit" disabled={disabled}>
             Submit
           </Button>
-          {defaultValues && onDelete && (
-            <Button
-              type="button"
-              onClick={onDelete}
-              variant="destructive"
-              disabled={disabled}
+          {/* Conditionally render the delete button if onDelete is provided */}
+          {onDelete && (
+            <Popover
+              open={isPopoverOpen} // Control the popover's open state
+              onOpenChange={(open) => {
+                if (!isDeleting) {
+                  setIsPopoverOpen(open); // Only allow closing if not deleting
+                }
+              }}
             >
-              Delete
-            </Button>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" disabled={disabled}>
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-2">
+                {isConfirmingDelete ? (
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm text-gray-600">Are you sure?</p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="flex-1"
+                        onClick={onDelete}
+                        disabled={isDeleting}
+                      >
+                        Confirm
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => setIsConfirmingDelete(false)}
+                        disabled={isDeleting}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start text-red-600 hover:bg-red-50"
+                    onClick={() => setIsConfirmingDelete(true)}
+                  >
+                    <Trash className="mr-2 h-4 w-4" />
+                    Delete
+                  </Button>
+                )}
+              </PopoverContent>
+            </Popover>
           )}
         </div>
       </form>
@@ -249,6 +315,7 @@ export function EditChallenge({
       onSubmit={handleSubmit}
       onDelete={handleDelete}
       disabled={isUpdatePending || isDeletePending}
+      isDeleting={isDeletePending}
     />
   );
 }
