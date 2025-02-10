@@ -64,7 +64,7 @@ export const ViewChallengeHeader = ({
             <Pencil /> Edit Challenge
           </Button>
           <Button variant="outline" onClick={() => setIsNoteDialogOpen(true)}>
-            <Notebook /> Add Note
+            <Notebook /> Reflect
           </Button>
           <Button variant="outline" onClick={() => setIsImagesSheetOpen(true)}>
             <ImageIcon /> View Images
@@ -81,8 +81,8 @@ export const ViewChallengeHeader = ({
         <DialogComponent
           isDialogOpen={isNoteDialogOpen}
           setIsDialogOpen={setIsNoteDialogOpen}
-          title="Add a Note"
-          description="Write a note for this challenge. Click save when you're done."
+          title="Add a reflection"
+          description="Write a reflection for this challenge. Click save when you're done."
         >
           <EditNoteForm
             challenge={challenge}
@@ -279,7 +279,7 @@ const EditNoteForm = ({
         <Textarea
           ref={textareaRef}
           name="note"
-          placeholder="Type your note here..."
+          placeholder="Type your reflection here..."
           className="min-h-[100px]"
           defaultValue={challenge.note || ""}
         />
