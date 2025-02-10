@@ -33,13 +33,6 @@ import {
   CardTitle,
 } from "./ui/card";
 
-type ChallengeFormProps = {
-  defaultValues?: z.infer<typeof challengeFormSchema>;
-  onSubmit: (values: z.infer<typeof challengeFormSchema>) => void;
-  onDelete?: () => void;
-  disabled?: boolean;
-};
-
 export const challengeFormSchema = z.object({
   title: z.string().nonempty({
     message: "Title is required.",
@@ -63,12 +56,12 @@ export const challengeFormSchema = z.object({
     ),
 });
 
-function ChallengeForm({
+const ChallengeForm = ({
   defaultValues,
   onSubmit,
   onDelete,
   disabled,
-  isDeleting = false, // Make isDeleting optional with a default value
+  isDeleting = false,
 }: {
   defaultValues?: {
     title: string;
@@ -76,12 +69,12 @@ function ChallengeForm({
     dailyAction: string;
     icon: string;
   };
-  onSubmit: (values: z.infer<typeof challengeFormSchema>) => void;
-  onDelete?: () => void; // Make onDelete optional
+  onSubmit: (values: any) => void;
+  onDelete?: () => void;
   disabled: boolean;
-  isDeleting?: boolean; // Make isDeleting optional
-}) {
-  const form = useForm<z.infer<typeof challengeFormSchema>>({
+  isDeleting?: boolean;
+}) => {
+  const form = useForm({
     resolver: zodResolver(challengeFormSchema),
     defaultValues: defaultValues || {
       title: "",
@@ -159,13 +152,12 @@ function ChallengeForm({
           <Button type="submit" disabled={disabled}>
             Submit
           </Button>
-          {/* Conditionally render the delete button if onDelete is provided */}
           {onDelete && (
             <Popover
-              open={isPopoverOpen} // Control the popover's open state
+              open={isPopoverOpen}
               onOpenChange={(open) => {
                 if (!isDeleting) {
-                  setIsPopoverOpen(open); // Only allow closing if not deleting
+                  setIsPopoverOpen(open);
                 }
               }}
             >
@@ -203,7 +195,7 @@ function ChallengeForm({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start text-red-600 hover:bg-red-50"
+                    className="w-full justify-start text-red-600 hover:text-red-500"
                     onClick={() => setIsConfirmingDelete(true)}
                   >
                     <Trash className="mr-2 h-4 w-4" />
@@ -217,13 +209,12 @@ function ChallengeForm({
       </form>
     </Form>
   );
-}
+};
 
 export function CreateChallenge() {
   const utils = trpc.useUtils();
 
-  const { data: challenges, isLoading } =
-    trpc.challenge.getChallenges.useQuery();
+  const { data: challenges } = trpc.challenge.getChallenges.useQuery();
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
