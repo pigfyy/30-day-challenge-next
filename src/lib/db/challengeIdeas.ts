@@ -2,6 +2,7 @@ import { pc } from "@/lib/db/(root)/pinecone";
 import { openai } from "@/lib/util";
 import { ChallengeIdeaOptionalDefaults } from "@30-day-challenge/prisma-zod";
 import { prisma } from "./(root)/prisma";
+import { ChallengeIdea } from "@prisma/client";
 
 export async function generateChallengeIdeas(
   challenges: ChallengeIdeaOptionalDefaults[],
@@ -13,7 +14,12 @@ export async function generateChallengeIdeas(
   return data;
 }
 
-export async function getChallengeIdeas(inputString: string) {
+export type ChallengeIdeaResult = ChallengeIdea & {
+  score?: number;
+};
+export async function getChallengeIdeas(
+  inputString: string,
+): Promise<ChallengeIdeaResult[]> {
   const vector = await openai.embeddings.create({
     model: "text-embedding-3-large",
     input: inputString,

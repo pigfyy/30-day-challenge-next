@@ -1,10 +1,14 @@
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
+import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import ExpandableText from "@/components/ui/expandable-text";
 import {
   Form,
   FormControl,
@@ -19,19 +23,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
-import { Challenge } from "@prisma/client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Challenge, ChallengeIdea } from "@prisma/client";
 import { MoreVertical, Trash } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { BackButton } from "./BackButton";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 export const challengeFormSchema = z.object({
   title: z.string().nonempty({
@@ -83,6 +85,12 @@ const ChallengeForm = ({
       icon: "✅",
     },
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      form.reset(defaultValues);
+    }
+  }, [defaultValues, form]);
 
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -211,11 +219,119 @@ const ChallengeForm = ({
   );
 };
 
+const ChallengeSearch = ({
+  onJoinChallenge,
+}: {
+  onJoinChallenge: (challengeIdea: ChallengeIdea) => void;
+}) => {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<ChallengeIdeaResult[]>([]);
+
+  const { mutateAsync: searchChallenges, isPending } =
+    trpc.challengeIdea.search.useMutation();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!query) {
+      setResults([]);
+      return;
+    }
+
+    const response = await searchChallenges(query);
+    setResults(response);
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <form onSubmit={handleSubmit} className="flex gap-2 px-6">
+        <Input
+          placeholder="Search challenges..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <Button type="submit">Search</Button>
+      </form>
+
+      <div className="relative">
+        <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-8 bg-gradient-to-b from-white to-transparent" />
+
+        <ScrollArea className="mt-4 h-96 overflow-y-auto px-6">
+          {isPending ? (
+            <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+              {Array.from({ length: 10 }).map((_, index) => (
+                <Card
+                  key={index}
+                  className="overflow-hidden transition-shadow duration-300 hover:shadow-xl"
+                >
+                  <CardHeader>
+                    <Skeleton className="h-6 w-1/2" />
+                    <Skeleton className="mt-2 h-4 w-full" />
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </CardContent>
+                  <CardFooter>
+                    <Skeleton className="h-8 w-32" />
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+              {results.map((result) => (
+                <Card
+                  key={result.id}
+                  className="transition-shadow duration-300 hover:shadow-xl"
+                >
+                  <CardHeader>
+                    <CardTitle className="text-xl text-gray-800">
+                      {result.title}
+                    </CardTitle>
+                    <CardDescription>
+                      <ExpandableText text={result.description} />
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Wish: </span>
+                      {result.wish}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Daily Action: </span>
+                      {result.dailyAction}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Source: </span>
+                      <a
+                        href={result.sourceLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        {result.sourceName}
+                      </a>
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    <Button onClick={() => onJoinChallenge(result)}>
+                      Join Challenge
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          )}
+        </ScrollArea>
+      </div>
+    </div>
+  );
+};
+
 export function CreateChallenge() {
   const utils = trpc.useUtils();
-
   const { data: challenges } = trpc.challenge.getChallenges.useQuery();
-
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -229,25 +345,59 @@ export function CreateChallenge() {
     },
   });
 
+  const [selectedChallenge, setSelectedChallenge] =
+    useState<ChallengeIdeaResult | null>(null);
+
+  const handleJoinChallenge = (challenge: ChallengeIdeaResult) => {
+    setSelectedChallenge(challenge);
+  };
+
+  const formDefaultValues = selectedChallenge
+    ? {
+        title: selectedChallenge.title,
+        wish: selectedChallenge.wish,
+        dailyAction: selectedChallenge.dailyAction,
+        icon: "✅",
+      }
+    : undefined;
+
   const onSubmit = async (values: z.infer<typeof challengeFormSchema>) => {
     mutate(values);
   };
 
   return (
-    <Card className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3">
-      <CardHeader>
-        {challenges?.length ? (
-          <div className="mb-6">
-            <BackButton />
-          </div>
-        ) : null}
-        <CardTitle className="text-xl font-bold">Create Challenge</CardTitle>
-        <CardDescription>Set up your new challenge details.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChallengeForm onSubmit={onSubmit} disabled={isPending} />
-      </CardContent>
-    </Card>
+    <div className="flex w-full flex-wrap justify-center gap-6">
+      <Card className="w-full md:w-1/3">
+        <CardHeader>
+          {challenges?.length ? (
+            <div className="mb-6">
+              <BackButton />
+            </div>
+          ) : null}
+          <CardTitle className="text-xl font-bold">Create Challenge</CardTitle>
+          <CardDescription>Set up your new challenge details.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ChallengeForm
+            onSubmit={onSubmit}
+            disabled={isPending}
+            defaultValues={formDefaultValues}
+          />
+        </CardContent>
+      </Card>
+      <Card className="flex w-full flex-col items-center justify-center md:w-1/3">
+        <CardHeader className="w-full">
+          <CardTitle className="text-xl font-bold">Find Challenges</CardTitle>
+          <CardDescription>
+            Looking for inspiration? Find challenge ideas to kickstart your
+            journey to a healthier lifestyle.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="w-full p-0">
+          <ChallengeSearch onJoinChallenge={handleJoinChallenge} />
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
