@@ -63,11 +63,11 @@ export const ViewChallengeHeader = ({
           >
             <Pencil /> Edit Challenge
           </Button>
-          <Button variant="outline" onClick={() => setIsNoteDialogOpen(true)}>
-            <Notebook /> Reflect
-          </Button>
           <Button variant="outline" onClick={() => setIsImagesSheetOpen(true)}>
             <ImageIcon /> View Images
+          </Button>
+          <Button variant="outline" onClick={() => setIsNoteDialogOpen(true)}>
+            <Notebook /> Reflect
           </Button>
         </div>
       </section>
