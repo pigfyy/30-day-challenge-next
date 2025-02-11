@@ -25,13 +25,14 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/hooks/use-toast";
 import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Challenge, ChallengeIdea } from "@prisma/client";
 import { MoreVertical, Trash } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -176,7 +177,7 @@ const ChallengeForm = ({
               </PopoverTrigger>
               <PopoverContent className="w-48 p-2">
                 {isConfirmingDelete ? (
-                  <div className="flex flex-col gap-2">
+                  <div className="flex h-full flex-col gap-2">
                     <p className="text-sm text-gray-600">Are you sure?</p>
                     <div className="flex gap-2">
                       <Button
@@ -219,7 +220,7 @@ const ChallengeForm = ({
   );
 };
 
-export const ChallengeSearchContent = ({
+const ChallengeSearch = ({
   onJoinChallenge,
 }: {
   onJoinChallenge: (challengeIdea: ChallengeIdea) => void;
@@ -236,13 +237,14 @@ export const ChallengeSearchContent = ({
       setResults([]);
       return;
     }
+
     const response = await searchChallenges(query);
     setResults(response);
   };
 
   return (
-    <div className="mt-[1px] flex flex-col gap-2">
-      <form onSubmit={handleSubmit} className="flex gap-2 px-6">
+    <>
+      <form onSubmit={handleSubmit} className="mb-6 flex w-full gap-2 px-6">
         <Input
           placeholder="Search challenges..."
           value={query}
@@ -250,104 +252,82 @@ export const ChallengeSearchContent = ({
         />
         <Button type="submit">Search</Button>
       </form>
-
-      <div className="relative px-6">
-        {/* Optional gradient overlay */}
-        <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 mx-6 h-8 bg-gradient-to-b from-white to-transparent" />
-        {(results.length > 0 || isPending) && (
-          <div className="mt-4">
-            {isPending ? (
-              <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-                {Array.from({ length: 10 }).map((_, index) => (
-                  <Card
-                    key={index}
-                    className="overflow-hidden transition-shadow duration-300 hover:shadow-xl"
-                  >
-                    <CardHeader>
-                      <Skeleton className="h-6 w-1/2" />
-                      <Skeleton className="mt-2 h-4 w-full" />
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <Skeleton className="h-4 w-2/3" />
-                      <Skeleton className="h-4 w-2/3" />
-                      <Skeleton className="h-4 w-1/2" />
-                    </CardContent>
-                    <CardFooter>
-                      <Skeleton className="h-8 w-32" />
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-                {results.map((result) => (
-                  <Card
-                    key={result.id}
-                    className="transition-shadow duration-300 hover:shadow-xl"
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-xl text-gray-800">
-                        {result.title}
-                      </CardTitle>
-                      <CardDescription>
-                        <ExpandableText text={result.description} />
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">Wish: </span>
-                        {result.wish}
-                      </p>
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">Daily Action: </span>
-                        {result.dailyAction}
-                      </p>
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">Source: </span>
-                        <a
-                          href={result.sourceLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
-                          {result.sourceName}
-                        </a>
-                      </p>
-                    </CardContent>
-                    <CardFooter>
-                      <Button onClick={() => onJoinChallenge(result)}>
-                        Join Challenge
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+      {results.length || isPending ? (
+        <ScrollArea className="flex h-full w-full flex-col items-center justify-center px-6">
+          {!isPending ? (
+            <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+              {results.map((result) => (
+                <Card
+                  key={result.id}
+                  className="transition-shadow duration-300 hover:shadow-xl"
+                >
+                  <CardHeader>
+                    <CardTitle className="text-xl text-gray-800">
+                      {result.title}
+                    </CardTitle>
+                    <CardDescription>
+                      <ExpandableText text={result.description} />
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Wish: </span>
+                      {result.wish}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Daily Action: </span>
+                      {result.dailyAction}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Source: </span>
+                      <a
+                        href={result.sourceLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        {result.sourceName}
+                      </a>
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    <Button onClick={() => onJoinChallenge(result)}>
+                      Join Challenge
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+              {Array.from({ length: 10 }).map((_, index) => (
+                <Card
+                  key={index}
+                  className="overflow-hidden transition-shadow duration-300 hover:shadow-xl"
+                >
+                  <CardHeader>
+                    <Skeleton className="h-6 w-1/2" />
+                    <Skeleton className="mt-2 h-4 w-full" />
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </CardContent>
+                  <CardFooter>
+                    <Skeleton className="h-8 w-32" />
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          )}
+        </ScrollArea>
+      ) : null}
+    </>
   );
 };
 
 export function CreateChallenge() {
-  const leftCardRef = useRef<HTMLDivElement>(null);
-  const [cardHeight, setCardHeight] = useState<number>(0);
-
-  useLayoutEffect(() => {
-    if (!leftCardRef.current) return;
-    setCardHeight(leftCardRef.current.clientHeight);
-    const resizeObserver = new ResizeObserver(() => {
-      if (leftCardRef.current) {
-        setCardHeight(leftCardRef.current.clientHeight);
-      }
-    });
-    resizeObserver.observe(leftCardRef.current);
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
-
   const utils = trpc.useUtils();
   const { data: challenges } = trpc.challenge.getChallenges.useQuery();
   const searchParams = useSearchParams();
@@ -366,8 +346,33 @@ export function CreateChallenge() {
   const [selectedChallenge, setSelectedChallenge] =
     useState<ChallengeIdeaResult | null>(null);
 
+  const [leftCardHeight, setLeftCardHeight] = useState<number>(0);
+  const leftCardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = leftCardRef.current;
+    if (!el) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === el) {
+          setLeftCardHeight(entry.contentRect.height);
+        }
+      }
+    });
+
+    resizeObserver.observe(el);
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   const handleJoinChallenge = (challenge: ChallengeIdeaResult) => {
     setSelectedChallenge(challenge);
+    toast({
+      title: "Joined challenge",
+      description: "The challenge has been successfully added to the form!",
+    });
   };
 
   const formDefaultValues = selectedChallenge
@@ -384,43 +389,39 @@ export function CreateChallenge() {
   };
 
   return (
-    <div className="flex w-full flex-wrap items-stretch justify-center gap-6">
-      {/* Left Card (ChallengeForm) */}
-      <Card ref={leftCardRef} className="flex w-full flex-col md:w-1/3">
-        <CardHeader>
-          {challenges?.length ? (
-            <div className="mb-6">
-              <BackButton />
-            </div>
-          ) : null}
-          <CardTitle className="text-xl font-bold">Create Challenge</CardTitle>
-          <CardDescription>Set up your new challenge details.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex-1">
-          <ChallengeForm
-            onSubmit={onSubmit}
-            disabled={isPending}
-            defaultValues={formDefaultValues}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Right Card (ChallengeSearch) */}
-      <Card className="relative flex w-full flex-col md:w-1/3">
-        <div className="absolute inset-0 flex flex-col">
-          <CardHeader className="flex-shrink-0">
-            <CardTitle className="text-xl font-bold">Find Challenges</CardTitle>
+    <div className="flex w-full flex-wrap justify-center gap-6">
+      <div ref={leftCardRef} className="w-full md:w-1/3">
+        <Card className="w-full">
+          <CardHeader>
+            {challenges?.length ? (
+              <div className="mb-6">
+                <BackButton />
+              </div>
+            ) : null}
+            <CardTitle className="text-xl font-bold">
+              Create Challenge
+            </CardTitle>
             <CardDescription>
-              Looking for inspiration? Find challenge ideas to kickstart your
-              journey to a healthier lifestyle.
+              Set up your new challenge details.
             </CardDescription>
           </CardHeader>
-          <div className="min-h-0 flex-1">
-            <ScrollArea className="h-full overflow-y-auto">
-              <ChallengeSearchContent onJoinChallenge={handleJoinChallenge} />
-            </ScrollArea>
-          </div>
-        </div>
+          <CardContent>
+            <ChallengeForm
+              onSubmit={onSubmit}
+              disabled={isPending}
+              defaultValues={formDefaultValues}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card
+        className="flex w-full flex-col md:w-1/3"
+        style={{ height: leftCardHeight }}
+      >
+        <CardContent className="flex h-full flex-col items-center justify-center p-0 pt-6">
+          <ChallengeSearch onJoinChallenge={handleJoinChallenge} />
+        </CardContent>
       </Card>
     </div>
   );
