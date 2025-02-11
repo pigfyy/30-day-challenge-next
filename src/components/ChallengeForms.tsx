@@ -255,7 +255,7 @@ const ChallengeSearch = ({
       <div className="relative">
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-8 bg-gradient-to-b from-white to-transparent" />
 
-        {results.length > 0 ? (
+        {results.length > 0 || isPending ? (
           <ScrollArea className="mt-4 h-96 overflow-y-auto px-6">
             {isPending ? (
               <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
