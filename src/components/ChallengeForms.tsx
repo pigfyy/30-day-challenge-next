@@ -255,75 +255,77 @@ const ChallengeSearch = ({
       <div className="relative">
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-8 bg-gradient-to-b from-white to-transparent" />
 
-        <ScrollArea className="mt-4 h-96 overflow-y-auto px-6">
-          {isPending ? (
-            <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-              {Array.from({ length: 10 }).map((_, index) => (
-                <Card
-                  key={index}
-                  className="overflow-hidden transition-shadow duration-300 hover:shadow-xl"
-                >
-                  <CardHeader>
-                    <Skeleton className="h-6 w-1/2" />
-                    <Skeleton className="mt-2 h-4 w-full" />
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <Skeleton className="h-4 w-2/3" />
-                    <Skeleton className="h-4 w-2/3" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </CardContent>
-                  <CardFooter>
-                    <Skeleton className="h-8 w-32" />
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-              {results.map((result) => (
-                <Card
-                  key={result.id}
-                  className="transition-shadow duration-300 hover:shadow-xl"
-                >
-                  <CardHeader>
-                    <CardTitle className="text-xl text-gray-800">
-                      {result.title}
-                    </CardTitle>
-                    <CardDescription>
-                      <ExpandableText text={result.description} />
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p className="text-sm text-gray-700">
-                      <span className="font-semibold">Wish: </span>
-                      {result.wish}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-semibold">Daily Action: </span>
-                      {result.dailyAction}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-semibold">Source: </span>
-                      <a
-                        href={result.sourceLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                      >
-                        {result.sourceName}
-                      </a>
-                    </p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button onClick={() => onJoinChallenge(result)}>
-                      Join Challenge
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
-        </ScrollArea>
+        {results.length > 0 ? (
+          <ScrollArea className="mt-4 h-96 overflow-y-auto px-6">
+            {isPending ? (
+              <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+                {Array.from({ length: 10 }).map((_, index) => (
+                  <Card
+                    key={index}
+                    className="overflow-hidden transition-shadow duration-300 hover:shadow-xl"
+                  >
+                    <CardHeader>
+                      <Skeleton className="h-6 w-1/2" />
+                      <Skeleton className="mt-2 h-4 w-full" />
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <Skeleton className="h-4 w-2/3" />
+                      <Skeleton className="h-4 w-2/3" />
+                      <Skeleton className="h-4 w-1/2" />
+                    </CardContent>
+                    <CardFooter>
+                      <Skeleton className="h-8 w-32" />
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+                {results.map((result) => (
+                  <Card
+                    key={result.id}
+                    className="transition-shadow duration-300 hover:shadow-xl"
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-xl text-gray-800">
+                        {result.title}
+                      </CardTitle>
+                      <CardDescription>
+                        <ExpandableText text={result.description} />
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">Wish: </span>
+                        {result.wish}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">Daily Action: </span>
+                        {result.dailyAction}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">Source: </span>
+                        <a
+                          href={result.sourceLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
+                          {result.sourceName}
+                        </a>
+                      </p>
+                    </CardContent>
+                    <CardFooter>
+                      <Button onClick={() => onJoinChallenge(result)}>
+                        Join Challenge
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        ) : null}
       </div>
     </div>
   );
