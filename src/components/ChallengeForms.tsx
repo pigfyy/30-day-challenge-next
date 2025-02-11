@@ -414,11 +414,17 @@ export function CreateChallenge() {
           </CardContent>
         </Card>
       </div>
-
       <Card
         className="flex w-full flex-col md:w-1/3"
         style={{ height: leftCardHeight }}
       >
+        <CardHeader className="w-full">
+          <CardTitle className="text-xl font-bold">Find Challenges</CardTitle>
+          <CardDescription>
+            Looking for inspiration? Find challenge ideas to kickstart your
+            journey to a healthier lifestyle.
+          </CardDescription>
+        </CardHeader>
         <CardContent className="flex h-full flex-col items-center justify-center p-0 pt-6">
           <ChallengeSearch onJoinChallenge={handleJoinChallenge} />
         </CardContent>
