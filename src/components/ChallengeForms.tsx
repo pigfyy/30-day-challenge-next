@@ -25,12 +25,11 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/hooks/use-toast";
 import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Challenge, type ChallengeIdea } from "@prisma/client";
-import { MoreVertical, Trash } from "lucide-react";
+import { Challenge } from "@prisma/client";
+import { Loader2, MoreVertical, Trash } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -220,31 +219,19 @@ const ChallengeForm = ({
   );
 };
 
-const ChallengeIdea = ({
-  challengeIdea,
-}: {
+interface ChallengeIdeaProps {
   challengeIdea: ChallengeIdeaResult;
-}) => {
-  const utils = trpc.useUtils();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-  const { mutateAsync: createChallenge, isPending: isCreateChallengePending } =
-    trpc.challenge.createChallenge.useMutation();
+  activeChallengeId: number | null;
+  onJoinChallenge: (challengeIdea: ChallengeIdeaResult) => void;
+}
 
-  const handleJoinChallenge = async (challengeIdea: ChallengeIdea) => {
-    const challenge = await createChallenge({
-      title: challengeIdea.title,
-      wish: challengeIdea.wish,
-      dailyAction: challengeIdea.dailyAction,
-      icon: "✅",
-    });
-
-    await utils.challenge.getChallenges.invalidate();
-    const params = new URLSearchParams(searchParams);
-    params.set("challenge", challenge.id);
-    replace(`${pathname}?${params.toString()}`);
-  };
+export const ChallengeIdea = ({
+  challengeIdea,
+  activeChallengeId,
+  onJoinChallenge,
+}: ChallengeIdeaProps) => {
+  const isActive = activeChallengeId === challengeIdea.id;
+  const disabled = activeChallengeId !== null;
 
   return (
     <Card
@@ -281,22 +268,62 @@ const ChallengeIdea = ({
         </p>
       </CardContent>
       <CardFooter>
-        <Button onClick={() => handleJoinChallenge(challengeIdea)}>
-          Join Challenge
+        <Button
+          onClick={() => onJoinChallenge(challengeIdea)}
+          disabled={disabled}
+        >
+          {isActive ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            "Join Challenge"
+          )}
         </Button>
       </CardFooter>
     </Card>
   );
 };
 
-const ChallengeSearch = () => {
+export const ChallengeSearch = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ChallengeIdeaResult[]>([]);
+  const [activeChallengeId, setActiveChallengeId] = useState<number | null>(
+    null,
+  );
+
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  const utils = trpc.useUtils();
+
+  const { mutate: createChallenge } =
+    trpc.challenge.createChallenge.useMutation({
+      onSuccess: async (challenge) => {
+        await utils.challenge.getChallenges.invalidate();
+        const params = new URLSearchParams(searchParams);
+        params.set("challenge", challenge.id);
+        replace(`${pathname}?${params.toString()}`);
+        setActiveChallengeId(null);
+      },
+      onError: () => {
+        setActiveChallengeId(null);
+      },
+    });
 
   const {
     mutateAsync: searchChallenges,
     isPending: isSearchChallengesPending,
   } = trpc.challengeIdea.search.useMutation();
+
+  const handleJoinChallenge = (challengeIdea: ChallengeIdeaResult) => {
+    if (activeChallengeId !== null) return;
+    setActiveChallengeId(challengeIdea.id);
+    createChallenge({
+      title: challengeIdea.title,
+      wish: challengeIdea.wish,
+      dailyAction: challengeIdea.dailyAction,
+      icon: "✅",
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -304,7 +331,6 @@ const ChallengeSearch = () => {
       setResults([]);
       return;
     }
-
     const response = await searchChallenges(query);
     setResults(response);
   };
@@ -320,6 +346,7 @@ const ChallengeSearch = () => {
           </CardDescription>
         </CardHeader>
       )}
+
       <form onSubmit={handleSubmit} className="mb-6 flex w-full gap-2 px-6">
         <Input
           placeholder="Search challenges..."
@@ -328,12 +355,18 @@ const ChallengeSearch = () => {
         />
         <Button type="submit">Search</Button>
       </form>
-      {results.length || isSearchChallengesPending ? (
+
+      {(results.length || isSearchChallengesPending) && (
         <ScrollArea className="flex h-full w-full flex-col items-center justify-center px-6">
           {!isSearchChallengesPending ? (
             <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
               {results.map((result) => (
-                <ChallengeIdea key={result.id} challengeIdea={result} />
+                <ChallengeIdea
+                  key={result.id}
+                  challengeIdea={result}
+                  activeChallengeId={activeChallengeId}
+                  onJoinChallenge={handleJoinChallenge}
+                />
               ))}
             </div>
           ) : (
@@ -360,7 +393,7 @@ const ChallengeSearch = () => {
             </div>
           )}
         </ScrollArea>
-      ) : null}
+      )}
     </>
   );
 };
