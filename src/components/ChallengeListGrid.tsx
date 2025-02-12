@@ -56,7 +56,7 @@ export const ChallengeListGrid = () => {
   };
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex w-11/12 flex-col gap-6 md:w-2/3">
       <h1
         className="text-3xl font-bold"
         onClick={() => {
