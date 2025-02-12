@@ -220,11 +220,7 @@ const ChallengeForm = ({
   );
 };
 
-const ChallengeSearch = ({
-  onJoinChallenge,
-}: {
-  onJoinChallenge: (challengeIdea: ChallengeIdea) => void;
-}) => {
+const ChallengeSearch = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ChallengeIdeaResult[]>([]);
 
@@ -240,6 +236,10 @@ const ChallengeSearch = ({
 
     const response = await searchChallenges(query);
     setResults(response);
+  };
+
+  const handleJoinChallenge = (challengeIdea: ChallengeIdea) => {
+    console.log("Join Challenge clicked for:", challengeIdea.title);
   };
 
   return (
@@ -300,7 +300,7 @@ const ChallengeSearch = ({
                     </p>
                   </CardContent>
                   <CardFooter>
-                    <Button onClick={() => onJoinChallenge(result)}>
+                    <Button onClick={() => handleJoinChallenge(result)}>
                       Join Challenge
                     </Button>
                   </CardFooter>
@@ -352,9 +352,6 @@ export function CreateChallenge() {
     },
   });
 
-  const [selectedChallenge, setSelectedChallenge] =
-    useState<ChallengeIdeaResult | null>(null);
-
   const [leftCardHeight, setLeftCardHeight] = useState<number>(0);
   const leftCardRef = useRef<HTMLDivElement>(null);
 
@@ -375,23 +372,6 @@ export function CreateChallenge() {
       resizeObserver.disconnect();
     };
   }, []);
-
-  const handleJoinChallenge = (challenge: ChallengeIdeaResult) => {
-    setSelectedChallenge(challenge);
-    toast({
-      title: "Joined challenge",
-      description: "The challenge has been successfully added to the form!",
-    });
-  };
-
-  const formDefaultValues = selectedChallenge
-    ? {
-        title: selectedChallenge.title,
-        wish: selectedChallenge.wish,
-        dailyAction: selectedChallenge.dailyAction,
-        icon: "✅",
-      }
-    : undefined;
 
   const onSubmit = async (values: z.infer<typeof challengeFormSchema>) => {
     mutate(values);
@@ -415,11 +395,7 @@ export function CreateChallenge() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ChallengeForm
-              onSubmit={onSubmit}
-              disabled={isPending}
-              defaultValues={formDefaultValues}
-            />
+            <ChallengeForm onSubmit={onSubmit} disabled={isPending} />
           </CardContent>
         </Card>
       </div>
@@ -429,7 +405,7 @@ export function CreateChallenge() {
         style={{ height: leftCardHeight }}
       >
         <CardContent className="flex h-full flex-col items-center justify-center p-0 pt-6">
-          <ChallengeSearch onJoinChallenge={handleJoinChallenge} />
+          <ChallengeSearch />
         </CardContent>
       </Card>
     </div>
