@@ -115,13 +115,17 @@ function Day({
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const bind = useGesture({
-    onDragEnd: ({ movement: [, y], direction: [, dy], event }) => {
-      if (dy === -1 && Math.abs(y) > 50) {
-        handleMaximizeDay();
-      }
-    },
-  });
+  const bind = useGesture(
+    isMobile
+      ? {
+          onDragEnd: ({ movement: [, y], direction: [, dy], event }) => {
+            if (dy === -1 && Math.abs(y) > 50) {
+              handleMaximizeDay();
+            }
+          },
+        }
+      : {},
+  );
 
   const { mutate } = trpc.dailyProgress.upsertDailyProgress.useMutation({
     onMutate: async (newDailyProgress) => {
