@@ -6,8 +6,10 @@ import { trpc } from "@/lib/util/trpc";
 import { Challenge, DailyProgress } from "@prisma/client";
 import { getDate } from "date-fns";
 import { Maximize2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { ViewDayDialog } from "./ViewDayDialog";
+import { useGesture } from "@use-gesture/react";
 
 type CalendarProps = {
   challenge: Challenge;
@@ -26,7 +28,7 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
     <>
       <div className="flex flex-col gap-2">
         <WeekDays />
-        <div className="grid grid-cols-7 p-2">
+        <div className="grid grid-cols-7">
           {gridData.map((item, index) => (
             <Day
               key={index}
@@ -57,10 +59,12 @@ function WeekDays() {
   const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"] as const;
 
   return (
-    <div className="grid grid-cols-7 gap-2 p-2">
+    <div className="grid grid-cols-7 gap-2">
       {weekDays.map((day, index) => (
         <div key={index} className="flex flex-1 items-center justify-center">
-          <span className="text-lg font-bold text-neutral-500">{day}</span>{" "}
+          <span className="text-sm font-bold text-neutral-500 sm:text-lg">
+            {day}
+          </span>
         </div>
       ))}
     </div>
@@ -108,6 +112,16 @@ function Day({
   setViewDayDialogDate,
 }: DayProps) {
   const utils = trpc.useUtils();
+
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const bind = useGesture({
+    onDragEnd: ({ movement: [, y], direction: [, dy], event }) => {
+      if (dy === -1 && Math.abs(y) > 50) {
+        handleMaximizeDay();
+      }
+    },
+  });
 
   const { mutate } = trpc.dailyProgress.upsertDailyProgress.useMutation({
     onMutate: async (newDailyProgress) => {
@@ -189,42 +203,45 @@ function Day({
   }
 
   function handleMaximizeDay(
-    e: React.MouseEvent<HTMLOrSVGElement, MouseEvent>,
+    e?: React.MouseEvent<HTMLOrSVGElement, MouseEvent>,
   ) {
-    e.stopPropagation();
+    e?.stopPropagation();
     setIsViewDayDialogOpen(true);
     setViewDayDialogDate(item.dateValue);
   }
 
   return (
     <button
-      className="flex aspect-square flex-1 flex-row py-[3px]"
       key={index}
+      className="flex aspect-square w-full flex-1 touch-none flex-row py-[3px]"
       onClick={handleClick}
       disabled={!isDateValid(item.dateValue, challenge.startDate)}
-      style={{ width: "100px", height: "100px" }}
+      ref={buttonRef}
+      {...bind()}
     >
       <div className="relative flex h-full w-full flex-1">
         <StridePadding index={index} item={item} />
         <div
           className={`group relative mx-[3px] flex flex-1 flex-col items-center justify-center ${completedClasses}`}
         >
-          {isDateValid(item.dateValue, challenge.startDate) ? (
+          {isDateValid(item.dateValue, challenge.startDate) && !isMobile ? (
             <Maximize2
               className="absolute right-2 top-2 h-6 w-6 rounded-md p-1 text-neutral-400 opacity-0 transition-opacity duration-75 hover:bg-white group-hover:opacity-100"
               onClick={handleMaximizeDay}
             />
           ) : null}
           <span
-            className={
+            className={`text-sm leading-4 sm:text-lg sm:leading-normal ${
               isDateValid(item.dateValue, challenge.startDate)
-                ? "text-lg font-bold text-black"
-                : "text-lg text-gray-400"
-            }
+                ? "font-bold text-black"
+                : "text-gray-400"
+            }`}
           >
             {!item.isPadding ? getDate(item.dateValue) : null}
           </span>
-          <span>{isCompleted ? challenge.icon : null}</span>
+          <span className="text-[12px] leading-4 sm:text-base sm:leading-normal">
+            {isCompleted ? challenge.icon : null}
+          </span>
         </div>
       </div>
     </button>

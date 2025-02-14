@@ -56,18 +56,27 @@ export const ViewChallengeHeader = ({
           <h2 className="mb-1 text-xl text-gray-600">{challenge.wish}</h2>
           <h2 className="text-xl text-gray-600">{challenge.dailyAction}</h2>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-end gap-2 sm:items-stretch">
           <Button
+            className="h-9 w-9 sm:h-auto sm:w-auto"
             variant="outline"
             onClick={() => setIsEditChallengeDialogOpen(true)}
           >
-            <Pencil /> Edit Challenge
+            <Pencil /> <span className="hidden sm:block">Edit Challenge</span>
           </Button>
-          <Button variant="outline" onClick={() => setIsImagesSheetOpen(true)}>
-            <ImageIcon /> View Images
+          <Button
+            className="h-9 w-9 sm:h-auto sm:w-auto"
+            variant="outline"
+            onClick={() => setIsImagesSheetOpen(true)}
+          >
+            <ImageIcon /> <span className="hidden sm:block">View Images</span>
           </Button>
-          <Button variant="outline" onClick={() => setIsNoteDialogOpen(true)}>
-            <Notebook /> Reflect
+          <Button
+            className="h-9 w-9 sm:h-auto sm:w-auto"
+            variant="outline"
+            onClick={() => setIsNoteDialogOpen(true)}
+          >
+            <Notebook /> <span className="hidden sm:block">Reflect</span>
           </Button>
         </div>
       </section>
@@ -227,7 +236,7 @@ const DialogComponent = ({
 }) => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

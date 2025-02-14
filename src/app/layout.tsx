@@ -49,6 +49,12 @@ export default function RootLayout({
       <QueryClientProvider client={queryClient}>
         <ClerkProvider>
           <html lang="en">
+            <head>
+              <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0"
+              />
+            </head>
             <body className="flex min-h-screen flex-col bg-gray-50">
               <Header />
               <SignedIn>

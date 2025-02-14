@@ -45,7 +45,7 @@ export const ViewChallenge = () => {
   }
 
   return (
-    <div className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-lg">
+    <div className="m-2 w-full rounded-lg bg-white p-2 shadow-lg sm:p-4 md:mx-auto md:w-5/6 md:p-5 lg:w-2/3 lg:p-6 xl:w-1/2 2xl:w-[45%]">
       <div className="mb-6 flex items-start justify-between">
         <BackButton />
       </div>
@@ -53,7 +53,7 @@ export const ViewChallenge = () => {
         challenge={challenge}
         dailyProgress={dailyProgress}
       />
-      <div className="mt-6 rounded-lg border border-neutral-100 bg-neutral-50 p-6">
+      <div className="mt-6 rounded-lg border border-neutral-100 bg-neutral-50 p-1 sm:p-4 lg:p-8">
         <Calendar challenge={challenge} dailyProgress={dailyProgress} />
       </div>
     </div>

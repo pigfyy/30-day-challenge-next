@@ -235,7 +235,7 @@ export const ViewDayDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-h-[80vh] max-w-[60%] overflow-y-auto">
+      <DialogContent className="max-h-[80vh] overflow-y-auto lg:max-w-[60%]">
         <DialogHeader>
           <DialogTitle>
             Day {getChallengeDay(challenge, date)} ---{" "}
