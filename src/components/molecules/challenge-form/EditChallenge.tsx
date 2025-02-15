@@ -1,3 +1,5 @@
+"use client";
+
 import { trpc } from "@/lib/util/trpc";
 import { Challenge } from "@prisma/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
