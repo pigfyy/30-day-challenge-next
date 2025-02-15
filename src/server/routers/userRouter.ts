@@ -1,4 +1,3 @@
-// server/routers/userRouter.ts
 import { router, procedure } from "@/server/init";
 import { z } from "zod";
 import { prisma } from "@/lib/db/(root)/prisma";

@@ -41,7 +41,6 @@ export const createCalendarDates = (
 
   const gridData: gridData = [];
 
-  // Add padding before dates
   for (let i = 0; i < paddingBefore; i++) {
     const date = subDays(challenge.startDate, paddingBefore - i);
     gridData.push({
@@ -49,15 +48,13 @@ export const createCalendarDates = (
       isPadding: true,
       dailyProgress: undefined,
       challengeId: challenge.id,
-      dailyProgressId: cuid(), // Generate a unique ID for padding dates
+      dailyProgressId: cuid(),
     });
   }
 
-  // Add actual dates
   dates.forEach((date) => {
     let dailyProgress: DailyProgress | undefined = undefined;
 
-    // Check if there's existing dailyProgress for this date
     const existingProgress = dailyProgressData.find(
       (dailyProgressDay) =>
         isSameDay(date, dailyProgressDay.date) &&
@@ -73,11 +70,10 @@ export const createCalendarDates = (
       isPadding: false,
       dailyProgress,
       challengeId: challenge.id,
-      dailyProgressId: dailyProgress ? dailyProgress.id : cuid(), // Use existing ID if dailyProgress exists, otherwise generate a new cuid()
+      dailyProgressId: dailyProgress ? dailyProgress.id : cuid(),
     });
   });
 
-  // Add padding after dates
   for (let i = 0; i < paddingAfter; i++) {
     const date = addDays(challenge.endDate, i + 1);
     gridData.push({
@@ -85,11 +81,10 @@ export const createCalendarDates = (
       isPadding: true,
       dailyProgress: undefined,
       challengeId: challenge.id,
-      dailyProgressId: cuid(), // Generate a unique ID for padding dates
+      dailyProgressId: cuid(),
     });
   }
 
-  // After constructing the initial data, determine left and right completion status
   for (let i = 0; i < gridData.length; i++) {
     const current = gridData[i];
     const previous = gridData[i - 1];

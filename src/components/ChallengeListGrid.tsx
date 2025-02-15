@@ -63,7 +63,7 @@ export const ChallengeListGrid = () => {
 
   const handleCreateChallengeClick = () => {
     const params = new URLSearchParams(searchParams);
-    params.set("challenge", "new"); // Use a special keyword like "new"
+    params.set("challenge", "new");
     replace(`${pathname}?${params.toString()}`);
   };
 

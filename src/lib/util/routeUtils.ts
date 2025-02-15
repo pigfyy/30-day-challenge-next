@@ -1,16 +1,18 @@
-// lib/util/routeUtils.ts
 import { z, ZodSchema } from "zod";
 import { NextResponse } from "next/server";
 
 export class ValidationError extends Error {
-  constructor(message: string, public errors: any) {
+  constructor(
+    message: string,
+    public errors: any,
+  ) {
     super(message);
   }
 }
 
 export async function validateRequest<T>(
   schema: ZodSchema<T>,
-  req: Request
+  req: Request,
 ): Promise<T> {
   try {
     const body = await req.json();
@@ -29,12 +31,12 @@ export function handleError(error: unknown) {
   if (error instanceof ValidationError) {
     return NextResponse.json(
       { message: error.message, errors: error.errors },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   return NextResponse.json(
     { message: "Internal Server Error" },
-    { status: 500 }
+    { status: 500 },
   );
 }

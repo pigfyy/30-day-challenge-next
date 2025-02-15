@@ -134,44 +134,29 @@ function Day({
           challengeId: challenge.id,
         }) || [];
 
-      console.log("Previous Data:", previousDailyProgress); // Debugging
-
-      // Generate a cuid for new records (if id is not provided)
       const newRecord = {
         ...newDailyProgress,
         id: newDailyProgress.id || cuid(),
-        imageUrl: newDailyProgress.imageUrl || "", // Default empty string
-        userId: newDailyProgress.userId || "current-user-id", // Replace with actual user ID
+        imageUrl: newDailyProgress.imageUrl || "",
+        userId: newDailyProgress.userId || "current-user-id",
         createdAt: newDailyProgress.createdAt || new Date(),
         updatedAt: newDailyProgress.updatedAt || new Date(),
       };
 
-      // Immediately update the local state
       utils.dailyProgress.getDailyProgress.setData(
         { challengeId: challenge.id },
         (oldData) => {
           const currentData = oldData ?? previousDailyProgress;
 
-          console.log("Current Data:", currentData); // Debugging
-          console.log("New Record:", newRecord); // Debugging
-
-          // Check if the record already exists using the id
           const existingRecordIndex = currentData.findIndex(
             (dp) => dp.id === newRecord.id,
           );
 
           if (existingRecordIndex !== -1) {
-            console.log(
-              "Record already exists in old data:",
-              currentData[existingRecordIndex],
-            ); // Debugging
-            // Update existing record
             const updatedData = [...currentData];
             updatedData[existingRecordIndex] = newRecord;
             return updatedData;
           } else {
-            console.log("Record does not exist in old data, adding new record"); // Debugging
-            // Append new record
             return [...currentData, newRecord];
           }
         },

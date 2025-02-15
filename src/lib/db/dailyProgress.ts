@@ -8,7 +8,7 @@ export const editDailyProgressCompletion = async (
 ) => {
   const data = await prisma.dailyProgress.upsert({
     where: {
-      id: progressInformation.id ?? "", // Provide a fallback for `id` when it's undefined
+      id: progressInformation.id ?? "",
     },
     update: {
       completed: progressInformation.completed,
@@ -16,7 +16,7 @@ export const editDailyProgressCompletion = async (
     },
     create: {
       ...progressInformation,
-      completed: progressInformation.completed ?? true, // Ensure `completed` is set for new records
+      completed: progressInformation.completed ?? true,
     },
   });
 

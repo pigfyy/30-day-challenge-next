@@ -1,6 +1,6 @@
-"use client"; // Mark this as a Client Component
+"use client";
 
-import { Button } from "@/components/ui/button"; // shadcn Button
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -45,7 +45,6 @@ const Content: React.FC<{
 export function DevDialog() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Handle keydown event for Alt + I
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.altKey && event.key === "i") {
