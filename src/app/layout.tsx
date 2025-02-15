@@ -26,7 +26,6 @@ export default function RootLayout({
                 name="viewport"
                 content="width=device-width, initial-scale=1.0"
               />
-              <title>30 Day Me</title>
               <link rel="icon" href="/favicon.ico" />
             </head>
             <body className="flex min-h-screen flex-col bg-gray-50">

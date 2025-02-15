@@ -1,5 +1,5 @@
-import { EditChallenge } from "@/components/molecules/challenge-form/EditChallenge";
-import { DialogComponent } from "@/components/molecules/DialogComponent";
+import { EditChallenge } from "@/components/molecule/challenge-form/EditChallenge";
+import { DialogComponent } from "@/components/molecule/DialogComponent";
 import { Challenge } from "@prisma/client";
 
 export const EditChallengeDialog = ({

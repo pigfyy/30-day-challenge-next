@@ -1,13 +1,12 @@
 "use client";
 
-import { CreateChallenge } from "@/components/molecules/challenge-form/CreateChallenge";
 import { ChallengeListGrid } from "@/components/ChallengeListGrid";
+import { CreateChallenge } from "@/components/molecule/challenge-form/CreateChallenge";
 import { ViewChallenge } from "@/components/ViewChallenge";
-import { toast } from "@/hooks/use-toast";
 import { trpc } from "@/lib/util/trpc";
+import { Loader2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { Loader2 } from "lucide-react";
 
 const Challenges = () => {
   const { data: challenges, isLoading: isChallengesLoading } =
@@ -50,8 +49,10 @@ export default function Page() {
   }
 
   return (
-    <div className="my-6 flex flex-1 items-center justify-center">
-      <Challenges />
-    </div>
+    <>
+      <div className="my-6 flex flex-1 items-center justify-center">
+        <Challenges />
+      </div>
+    </>
   );
 }

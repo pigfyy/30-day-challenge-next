@@ -4,8 +4,8 @@ import { BackButton } from "@/components/BackButton";
 import {
   ChallengeForm,
   challengeFormSchema,
-} from "@/components/molecules/challenge-form/ChallengeForm";
-import { ChallengeSearchCard } from "@/components/molecules/challenge-form/SearchChallenge";
+} from "@/components/molecule/challenge-form/ChallengeForm";
+import { ChallengeSearchCard } from "@/components/molecule/challenge-form/SearchChallenge";
 import {
   Card,
   CardContent,

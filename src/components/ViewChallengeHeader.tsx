@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { EditChallenge } from "@/components/molecules/challenge-form/EditChallenge";
+import { EditChallenge } from "@/components/molecule/challenge-form/EditChallenge";
 import {
   Collapsible,
   CollapsibleContent,

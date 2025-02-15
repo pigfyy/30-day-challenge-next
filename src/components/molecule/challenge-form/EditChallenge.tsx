@@ -7,7 +7,7 @@ import { z } from "zod";
 import {
   ChallengeForm,
   challengeFormSchema,
-} from "@/components/molecules/challenge-form/ChallengeForm";
+} from "@/components/molecule/challenge-form/ChallengeForm";
 import { useMemo } from "react";
 
 export const EditChallenge = ({
