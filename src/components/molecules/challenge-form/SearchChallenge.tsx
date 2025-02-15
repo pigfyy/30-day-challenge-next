@@ -139,76 +139,74 @@ export const ChallengeSearchCard = ({
   };
 
   return (
-    <>
-      <Card
-        className="flex w-full flex-col md:w-1/3"
-        style={{
-          height:
-            isMobile && !(results.length || isSearchChallengesPending)
-              ? "auto"
-              : leftCardHeight,
-        }}
-      >
-        <CardContent className="flex h-full flex-col items-center justify-center p-0 pt-6">
-          {!results.length && !isSearchChallengesPending && (
-            <CardHeader className="w-full pb-3 text-left">
-              <CardTitle>Find Challenges</CardTitle>
-              <CardDescription>
-                Looking for inspiration? Find challenge ideas to kickstart your
-                journey to a healthier lifestyle.
-              </CardDescription>
-            </CardHeader>
-          )}
+    <Card
+      className="flex w-full flex-col md:w-1/3"
+      style={{
+        height:
+          isMobile && !(results.length || isSearchChallengesPending)
+            ? "auto"
+            : leftCardHeight,
+      }}
+    >
+      <CardContent className="flex h-full flex-col items-center justify-center p-0 pt-6">
+        {!results.length && !isSearchChallengesPending && (
+          <CardHeader className="w-full pb-3 text-left">
+            <CardTitle>Find Challenges</CardTitle>
+            <CardDescription>
+              Looking for inspiration? Find challenge ideas to kickstart your
+              journey to a healthier lifestyle.
+            </CardDescription>
+          </CardHeader>
+        )}
 
-          <form onSubmit={handleSubmit} className="mb-6 flex w-full gap-2 px-6">
-            <Input
-              placeholder="Search challenges..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <Button type="submit">Search</Button>
-          </form>
+        <form onSubmit={handleSubmit} className="mb-6 flex w-full gap-2 px-6">
+          <Input
+            placeholder="Search challenges..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <Button type="submit">Search</Button>
+        </form>
 
-          {(results.length || isSearchChallengesPending) && (
-            <ScrollArea className="flex h-full w-full flex-col items-center justify-center px-6">
-              {!isSearchChallengesPending ? (
-                <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-                  {results.map((result) => (
-                    <ChallengeIdea
-                      key={result.id}
-                      challengeIdea={result}
-                      activeChallengeId={activeChallengeId}
-                      onJoinChallenge={handleJoinChallenge}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-                  {Array.from({ length: 10 }).map((_, index) => (
-                    <Card
-                      key={index}
-                      className="overflow-hidden transition-shadow duration-300 hover:shadow-xl"
-                    >
-                      <CardHeader>
-                        <Skeleton className="h-6 w-1/2" />
-                        <Skeleton className="mt-2 h-4 w-full" />
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        <Skeleton className="h-4 w-2/3" />
-                        <Skeleton className="h-4 w-2/3" />
-                        <Skeleton className="h-4 w-1/2" />
-                      </CardContent>
-                      <CardFooter>
-                        <Skeleton className="h-8 w-32" />
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </ScrollArea>
-          )}
-        </CardContent>
-      </Card>
-    </>
+        {(results.length || isSearchChallengesPending) && (
+          <ScrollArea className="flex h-full w-full flex-col items-center justify-center px-6">
+            {!isSearchChallengesPending ? (
+              <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+                {results.map((result) => (
+                  <ChallengeIdea
+                    key={result.id}
+                    challengeIdea={result}
+                    activeChallengeId={activeChallengeId}
+                    onJoinChallenge={handleJoinChallenge}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+                {Array.from({ length: 10 }).map((_, index) => (
+                  <Card
+                    key={index}
+                    className="overflow-hidden transition-shadow duration-300 hover:shadow-xl"
+                  >
+                    <CardHeader>
+                      <Skeleton className="h-6 w-1/2" />
+                      <Skeleton className="mt-2 h-4 w-full" />
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <Skeleton className="h-4 w-2/3" />
+                      <Skeleton className="h-4 w-2/3" />
+                      <Skeleton className="h-4 w-1/2" />
+                    </CardContent>
+                    <CardFooter>
+                      <Skeleton className="h-8 w-32" />
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        )}
+      </CardContent>
+    </Card>
   );
 };

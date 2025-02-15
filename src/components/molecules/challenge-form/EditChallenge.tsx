@@ -6,6 +6,7 @@ import {
   ChallengeForm,
   challengeFormSchema,
 } from "@/components/molecules/challenge-form/ChallengeForm";
+import { useMemo } from "react";
 
 export const EditChallenge = ({
   challenge,
@@ -49,12 +50,14 @@ export const EditChallenge = ({
     deleteChallenge(challenge.id);
   };
 
-  const defaultValues = {
-    title: challenge.title,
-    wish: challenge.wish,
-    dailyAction: challenge.dailyAction,
-    icon: challenge.icon,
-  };
+  const defaultValues = useMemo(() => {
+    return {
+      title: challenge.title,
+      wish: challenge.wish,
+      dailyAction: challenge.dailyAction,
+      icon: challenge.icon,
+    };
+  }, [challenge]);
 
   return (
     <ChallengeForm
