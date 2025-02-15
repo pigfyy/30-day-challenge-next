@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateChallenge } from "@/components/ChallengeForms";
+import { CreateChallenge } from "@/components/molecules/challenge-form/CreateChallenge";
 import { ChallengeListGrid } from "@/components/ChallengeListGrid";
 import { ViewChallenge } from "@/components/ViewChallenge";
 import { toast } from "@/hooks/use-toast";
