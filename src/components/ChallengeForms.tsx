@@ -29,12 +29,12 @@ import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Challenge } from "@prisma/client";
-import { Loader2, MoreVertical, Trash } from "lucide-react";
+import { Loader2, Trash } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useMediaQuery } from "react-responsive";
+import { z } from "zod";
 
 export const challengeFormSchema = z.object({
   title: z.string().nonempty({
@@ -93,7 +93,6 @@ const ChallengeForm = ({
     }
   }, [defaultValues, form]);
 
-  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   return (
@@ -158,9 +157,6 @@ const ChallengeForm = ({
           )}
         />
         <div className="mt-4 flex justify-between">
-          <Button type="submit" disabled={disabled}>
-            Submit
-          </Button>
           {onDelete && (
             <Popover
               open={isPopoverOpen}
@@ -171,49 +167,49 @@ const ChallengeForm = ({
               }}
             >
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" disabled={disabled}>
-                  <MoreVertical className="h-4 w-4" />
+                <Button
+                  variant="outline"
+                  className="text-red-600 hover:text-red-500"
+                  disabled={disabled}
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  Delete
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-48 p-2">
-                {isConfirmingDelete ? (
-                  <div className="flex h-full flex-col gap-2">
-                    <p className="text-sm text-gray-600">Are you sure?</p>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        className="flex-1"
-                        onClick={onDelete}
-                        disabled={isDeleting}
-                      >
-                        Confirm
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => setIsConfirmingDelete(false)}
-                        disabled={isDeleting}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
+                <div className="flex h-full flex-col gap-2">
+                  <p className="text-sm text-gray-600">Are you sure?</p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => {
+                        onDelete();
+                        setIsPopoverOpen(false);
+                      }}
+                      disabled={isDeleting}
+                    >
+                      Confirm
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => setIsPopoverOpen(false)}
+                      disabled={isDeleting}
+                    >
+                      Cancel
+                    </Button>
                   </div>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full justify-start text-red-600 hover:text-red-500"
-                    onClick={() => setIsConfirmingDelete(true)}
-                  >
-                    <Trash className="mr-2 h-4 w-4" />
-                    Delete
-                  </Button>
-                )}
+                </div>
               </PopoverContent>
             </Popover>
           )}
+
+          <Button type="submit" disabled={disabled}>
+            Submit
+          </Button>
         </div>
       </form>
     </Form>
