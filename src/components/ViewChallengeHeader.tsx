@@ -49,7 +49,7 @@ export const ViewChallengeHeader = ({
 
   return (
     <>
-      <section className="mb-8 flex items-center justify-between">
+      <section className="mb-8 flex items-center justify-between gap-2">
         <div>
           <h1 className="mb-2 text-3xl font-bold text-gray-800">
             {challenge.title}

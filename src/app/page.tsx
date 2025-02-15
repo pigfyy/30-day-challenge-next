@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import { trpc } from "@/lib/util/trpc";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 const Challenges = () => {
   const { data: challenges, isLoading: isChallengesLoading } =
@@ -27,7 +28,7 @@ const Challenges = () => {
   }, [isChallengesLoading, challenges, searchParams, pathname, replace]);
 
   if (isChallengesLoading) {
-    return <div>Loading...</div>;
+    return <Loader2 className="h-12 w-12 animate-spin" />;
   }
 
   if (challengeId === "new") {

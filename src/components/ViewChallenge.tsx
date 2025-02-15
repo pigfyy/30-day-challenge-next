@@ -4,6 +4,7 @@ import { trpc } from "@/lib/util/trpc";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { BackButton } from "./BackButton";
+import { Loader2 } from "lucide-react";
 
 export const ViewChallenge = () => {
   const searchParams = useSearchParams();
@@ -41,7 +42,7 @@ export const ViewChallenge = () => {
     !challenge ||
     !dailyProgress
   ) {
-    return <div>Loading...</div>;
+    return <Loader2 className="h-12 w-12 animate-spin" />;
   }
 
   return (
