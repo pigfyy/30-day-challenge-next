@@ -1,10 +1,9 @@
 import Calendar from "@/components/Calendar";
 import { ViewChallengeHeader } from "@/components/ViewChallengeHeader";
 import { trpc } from "@/lib/util/trpc";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import { BackButton } from "./BackButton";
 import { Loader2 } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { BackButton } from "./BackButton";
 
 export const ViewChallenge = () => {
   const searchParams = useSearchParams();
@@ -16,6 +15,7 @@ export const ViewChallenge = () => {
   const { data: challenges, isLoading: isChallengesLoading } =
     trpc.challenge.getChallenges.useQuery();
   const challenge = challenges?.find((c) => c.id === challengeId);
+
   const { data: dailyProgress, isLoading: isDailyProgressLoading } =
     trpc.dailyProgress.getDailyProgress.useQuery(
       {
@@ -28,27 +28,16 @@ export const ViewChallenge = () => {
       },
     );
 
-  useEffect(() => {
-    if (!isChallengesLoading && !isDailyProgressLoading && !challenge) {
-      const params = new URLSearchParams(searchParams);
-      params.delete("challenge");
-      replace(`${pathname}?${params.toString()}`);
-    }
-  }, [
-    isChallengesLoading,
-    isDailyProgressLoading,
-    challenge,
-    searchParams,
-    pathname,
-    replace,
-  ]);
+  const isLoading = isChallengesLoading || isDailyProgressLoading;
 
-  if (
-    isChallengesLoading ||
-    isDailyProgressLoading ||
-    !challenge ||
-    !dailyProgress
-  ) {
+  if (!isLoading && !challenge) {
+    const params = new URLSearchParams(searchParams);
+    params.delete("challenge");
+    replace(`${pathname}?${params.toString()}`);
+    return null;
+  }
+
+  if (isLoading || !challenge || !dailyProgress) {
     return <Loader2 className="h-12 w-12 animate-spin" />;
   }
 
