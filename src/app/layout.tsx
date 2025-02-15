@@ -16,28 +16,11 @@ import { httpBatchLink } from "@trpc/client";
 import { trpc } from "@/lib/util/trpc";
 import superjson from "superjson";
 import { trpcClient } from "@/lib/util/trpc";
+import Image from "next/image";
+import Link from "next/link";
+import { Header } from "@/components/Header";
 
 export const queryClient = new QueryClient();
-
-const Header = () => (
-  <header className="w-full border-b bg-white shadow-sm">
-    <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-      <div className="text-lg font-semibold text-gray-900">30 Day Me</div>
-      <div className="flex items-center space-x-4">
-        <SignedOut>
-          <SignInButton>
-            <Button variant="outline" className="text-gray-700">
-              Sign In
-            </Button>
-          </SignInButton>
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-      </div>
-    </div>
-  </header>
-);
 
 export default function RootLayout({
   children,
@@ -54,6 +37,8 @@ export default function RootLayout({
                 name="viewport"
                 content="width=device-width, initial-scale=1.0"
               />
+              <title>30 Day Me</title>
+              <link rel="icon" href="/favicon.svg" />
             </head>
             <body className="flex min-h-screen flex-col bg-gray-50">
               <Header />
@@ -63,9 +48,7 @@ export default function RootLayout({
               <SignedOut>
                 <main className="flex flex-1 items-center justify-center">
                   <div className="text-center">
-                    <h1 className="text-3xl font-bold">
-                      Welcome to the 30 Day Challenge
-                    </h1>
+                    <h1 className="text-3xl font-bold">Welcome to 30 Day Me</h1>
                     <p className="text-gray-700">
                       Sign in to start your journey towards a healthier life.
                     </p>
