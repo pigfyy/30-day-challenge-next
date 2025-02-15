@@ -73,3 +73,14 @@ export const getChallenges = async (userId: string) => {
   return data;
 };
 export const CGetChallenges = cache(getChallenges);
+
+export const getChallenge = async (challengeId: string) => {
+  const data = await prisma.challenge.findUnique({
+    where: { id: challengeId },
+    include: {
+      dailyProgress: true,
+    },
+  });
+
+  return data;
+};
