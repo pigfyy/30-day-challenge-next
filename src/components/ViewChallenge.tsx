@@ -17,9 +17,16 @@ export const ViewChallenge = () => {
     trpc.challenge.getChallenges.useQuery();
   const challenge = challenges?.find((c) => c.id === challengeId);
   const { data: dailyProgress, isLoading: isDailyProgressLoading } =
-    trpc.dailyProgress.getDailyProgress.useQuery({
-      challengeId: challengeId,
-    });
+    trpc.dailyProgress.getDailyProgress.useQuery(
+      {
+        challengeId: challengeId,
+      },
+      {
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        staleTime: Infinity,
+      },
+    );
 
   useEffect(() => {
     if (!isChallengesLoading && !isDailyProgressLoading && !challenge) {

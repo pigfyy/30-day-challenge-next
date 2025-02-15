@@ -14,6 +14,7 @@ import {
   DailyProgressSchema,
 } from "@30-day-challenge/prisma-zod";
 import { z } from "zod";
+import cuid from "cuid";
 
 export type gridData = {
   dateValue: Date;
@@ -22,11 +23,12 @@ export type gridData = {
   leftCompleted?: boolean;
   rightCompleted?: boolean;
   challengeId: string;
+  dailyProgressId: string;
 }[];
 
 export const createCalendarDates = (
   challenge: z.infer<typeof ChallengeSchema>,
-  dailyProgressData: z.infer<typeof DailyProgressSchema>[]
+  dailyProgressData: z.infer<typeof DailyProgressSchema>[],
 ): gridData => {
   const dates = eachDayOfInterval({
     start: challenge.startDate,
@@ -47,26 +49,31 @@ export const createCalendarDates = (
       isPadding: true,
       dailyProgress: undefined,
       challengeId: challenge.id,
+      dailyProgressId: cuid(), // Generate a unique ID for padding dates
     });
   }
 
   // Add actual dates
   dates.forEach((date) => {
-    let dailyProgress = undefined;
+    let dailyProgress: DailyProgress | undefined = undefined;
 
-    dailyProgressData.forEach((dailyProgressDay) => {
-      if (
+    // Check if there's existing dailyProgress for this date
+    const existingProgress = dailyProgressData.find(
+      (dailyProgressDay) =>
         isSameDay(date, dailyProgressDay.date) &&
-        dailyProgressDay.challengeId === challenge.id
-      )
-        dailyProgress = dailyProgressDay;
-    });
+        dailyProgressDay.challengeId === challenge.id,
+    );
+
+    if (existingProgress) {
+      dailyProgress = existingProgress;
+    }
 
     gridData.push({
       dateValue: date,
       isPadding: false,
       dailyProgress,
       challengeId: challenge.id,
+      dailyProgressId: dailyProgress ? dailyProgress.id : cuid(), // Use existing ID if dailyProgress exists, otherwise generate a new cuid()
     });
   });
 
@@ -78,6 +85,7 @@ export const createCalendarDates = (
       isPadding: true,
       dailyProgress: undefined,
       challengeId: challenge.id,
+      dailyProgressId: cuid(), // Generate a unique ID for padding dates
     });
   }
 

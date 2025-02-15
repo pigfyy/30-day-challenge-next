@@ -10,6 +10,7 @@ import { useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { ViewDayDialog } from "./ViewDayDialog";
 import { useGesture } from "@use-gesture/react";
+import cuid from "cuid";
 
 type CalendarProps = {
   challenge: Challenge;
@@ -112,7 +113,6 @@ function Day({
   setViewDayDialogDate,
 }: DayProps) {
   const utils = trpc.useUtils();
-
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const bind = useGesture(
@@ -134,19 +134,46 @@ function Day({
           challengeId: challenge.id,
         }) || [];
 
+      console.log("Previous Data:", previousDailyProgress); // Debugging
+
+      // Generate a cuid for new records (if id is not provided)
+      const newRecord = {
+        ...newDailyProgress,
+        id: newDailyProgress.id || cuid(),
+        imageUrl: newDailyProgress.imageUrl || "", // Default empty string
+        userId: newDailyProgress.userId || "current-user-id", // Replace with actual user ID
+        createdAt: newDailyProgress.createdAt || new Date(),
+        updatedAt: newDailyProgress.updatedAt || new Date(),
+      };
+
+      // Immediately update the local state
       utils.dailyProgress.getDailyProgress.setData(
         { challengeId: challenge.id },
         (oldData) => {
           const currentData = oldData ?? previousDailyProgress;
-          const newRecord = newDailyProgress as DailyProgress;
 
-          // Check if the record already exists and update if so; otherwise, append
-          if (currentData.find((dp) => dp.id === newRecord.id)) {
-            return currentData.map((dp) =>
-              dp.id === newRecord.id ? newRecord : dp,
-            );
+          console.log("Current Data:", currentData); // Debugging
+          console.log("New Record:", newRecord); // Debugging
+
+          // Check if the record already exists using the id
+          const existingRecordIndex = currentData.findIndex(
+            (dp) => dp.id === newRecord.id,
+          );
+
+          if (existingRecordIndex !== -1) {
+            console.log(
+              "Record already exists in old data:",
+              currentData[existingRecordIndex],
+            ); // Debugging
+            // Update existing record
+            const updatedData = [...currentData];
+            updatedData[existingRecordIndex] = newRecord;
+            return updatedData;
+          } else {
+            console.log("Record does not exist in old data, adding new record"); // Debugging
+            // Append new record
+            return [...currentData, newRecord];
           }
-          return [...currentData, newRecord];
         },
       );
 
@@ -162,11 +189,6 @@ function Day({
       toast({
         title: "Error updating daily progress",
         description: error.message,
-      });
-    },
-    onSettled: () => {
-      utils.dailyProgress.getDailyProgress.invalidate({
-        challengeId: challenge.id,
       });
     },
   });
@@ -199,7 +221,7 @@ function Day({
     }
 
     mutate({
-      id: localItem?.id,
+      id: localItem?.id || item.dailyProgressId,
       date: item.dateValue,
       challengeId: challenge.id,
       completed: !isCompleted,
