@@ -12,3 +12,10 @@ export const createUser = async (userInformation: User) => {
   const data = await prisma.user.create({ data: userInformation });
   return data;
 };
+
+export const deleteUser = async (clerkId: string) => {
+  const userId = await findUserByClerkId(clerkId);
+  await prisma.dailyProgress.deleteMany({ where: { userId: userId.id } });
+  await prisma.challenge.deleteMany({ where: { userId: userId.id } });
+  await prisma.user.delete({ where: { id: userId.id } });
+};

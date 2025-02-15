@@ -2,6 +2,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db/(root)/prisma";
+import { deleteUser } from "@/lib/db/user";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -9,7 +10,7 @@ export async function POST(req: Request) {
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
-      "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
+      "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local",
     );
   }
 
@@ -67,6 +68,41 @@ export async function POST(req: Request) {
         },
       });
       return new Response("New user created!", { status: 200 });
+    } catch (e: unknown) {
+      console.error(e);
+      return new Response("", { status: 500 });
+    }
+  } else if (eventType == "user.deleted") {
+    const { id } = evt.data;
+
+    try {
+      if (!id) {
+        throw new Error("No id provided");
+      }
+
+      await deleteUser(id);
+
+      return new Response("User deleted!", { status: 200 });
+    } catch (e: unknown) {
+      console.error(e);
+      return new Response("", { status: 500 });
+    }
+  } else if (eventType == "user.updated") {
+    const { id, email_addresses, username, updated_at, image_url } = evt.data;
+
+    try {
+      await prisma.user.update({
+        where: {
+          clerkId: id,
+        },
+        data: {
+          email: email_addresses[0].email_address,
+          username: username!,
+          imageUrl: image_url,
+          updatedAt: new Date(updated_at),
+        },
+      });
+      return new Response("User updated!", { status: 200 });
     } catch (e: unknown) {
       console.error(e);
       return new Response("", { status: 500 });
