@@ -2,6 +2,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db/(root)/prisma";
+import ky from "ky";
 import { deleteUser } from "@/lib/db/user";
 
 export async function POST(req: Request) {
@@ -57,16 +58,46 @@ export async function POST(req: Request) {
       evt.data;
 
     try {
-      await prisma.user.create({
-        data: {
-          email: email_addresses[0].email_address,
-          username: username!,
-          imageUrl: image_url,
-          clerkId: id,
-          createdAt: new Date(created_at),
-          updatedAt: new Date(updated_at),
-        },
-      });
+      if (
+        id &&
+        email_addresses &&
+        username &&
+        created_at &&
+        updated_at &&
+        image_url
+      ) {
+        await prisma.user.create({
+          data: {
+            email: email_addresses[0].email_address,
+            username: username!,
+            imageUrl: image_url,
+            clerkId: id,
+            createdAt: new Date(created_at),
+            updatedAt: new Date(updated_at),
+          },
+        });
+      }
+
+      if (process.env.DISCORD_WEBHOOK_URL) {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+          message: `New user created! Email address: ${email_addresses[0].email_address}`,
+        });
+
+        const requestOptions: any = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow",
+        };
+
+        fetch(process.env.DISCORD_WEBHOOK_URL, requestOptions).catch((error) =>
+          console.error(error),
+        );
+      }
+
       return new Response("New user created!", { status: 200 });
     } catch (e: unknown) {
       console.error(e);
