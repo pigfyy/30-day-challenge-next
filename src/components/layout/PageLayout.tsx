@@ -9,8 +9,13 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 const Challenges = () => {
-  const { data: challenges, isLoading: isChallengesLoading } =
-    trpc.challenge.getChallenges.useQuery();
+  const {
+    data: challenges,
+    isLoading: isChallengesLoading,
+    error,
+  } = trpc.challenge.getChallenges.useQuery(undefined, {
+    retry: false,
+  });
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -28,6 +33,10 @@ const Challenges = () => {
 
   if (isChallengesLoading) {
     return <Loader2 className="h-12 w-12 animate-spin" />;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
   }
 
   if (challengeId === "new") {
