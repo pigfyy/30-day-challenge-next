@@ -7,7 +7,6 @@ export const findUserByClerkId = async (clerkId: string) => {
   if (!data) throw Error(`User with clerkId ${clerkId} not found`);
   return data;
 };
-export const CFindUserByClerkId = cache(findUserByClerkId);
 
 export const createUser = async (userInformation: User) => {
   const data = await prisma.user.create({ data: userInformation });
