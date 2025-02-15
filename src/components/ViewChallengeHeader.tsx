@@ -33,6 +33,7 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { ScrollArea } from "./ui/scroll-area";
+import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
 
 export const ViewChallengeHeader = ({
   challenge,
@@ -98,17 +99,11 @@ export const ViewChallengeHeader = ({
             setIsDialogOpen={setIsNoteDialogOpen}
           />
         </DialogComponent>
-        <DialogComponent
-          isDialogOpen={isEditChallengeDialogOpen}
-          setIsDialogOpen={setIsEditChallengeDialogOpen}
-          title="Edit Challenge"
-          description="Update the details of this challenge. Click save when you're done."
-        >
-          <EditChallenge
-            challenge={challenge}
-            setIsDialogOpen={setIsEditChallengeDialogOpen}
-          />
-        </DialogComponent>
+        <EditChallengeDialog
+          challenge={challenge}
+          isEditChallengeDialogOpen={isEditChallengeDialogOpen}
+          setIsEditChallengeDialogOpen={setIsEditChallengeDialogOpen}
+        />
       </>
     </>
   );
