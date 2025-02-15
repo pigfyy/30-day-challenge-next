@@ -78,25 +78,25 @@ export async function POST(req: Request) {
         });
       }
 
-      if (process.env.DISCORD_WEBHOOK_URL) {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+      // if (process.env.DISCORD_WEBHOOK_URL) {
+      //   const myHeaders = new Headers();
+      //   myHeaders.append("Content-Type", "application/json");
 
-        const raw = JSON.stringify({
-          message: `New user created! Email address: ${email_addresses[0].email_address}`,
-        });
+      //   const raw = JSON.stringify({
+      //     message: `New user created! Email address: ${email_addresses[0].email_address}`,
+      //   });
 
-        const requestOptions: any = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
+      //   const requestOptions: any = {
+      //     method: "POST",
+      //     headers: myHeaders,
+      //     body: raw,
+      //     redirect: "follow",
+      //   };
 
-        fetch(process.env.DISCORD_WEBHOOK_URL, requestOptions).catch((error) =>
-          console.error(error),
-        );
-      }
+      //   fetch(process.env.DISCORD_WEBHOOK_URL, requestOptions).catch((error) =>
+      //     console.error(error),
+      //   );
+      // }
 
       return new Response("New user created!", { status: 200 });
     } catch (e: unknown) {
