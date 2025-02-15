@@ -92,8 +92,8 @@ export async function POST(req: Request) {
           redirect: "follow",
         };
 
-        fetch(process.env.DISCORD_WEBHOOK_URL, requestOptions).catch((error) =>
-          console.error(error),
+        await fetch(process.env.DISCORD_WEBHOOK_URL, requestOptions).catch(
+          (error) => console.error(error),
         );
       }
 
