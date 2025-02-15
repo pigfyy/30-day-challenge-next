@@ -14,10 +14,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash } from "lucide-react";
+import { Info, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const challengeFormSchema = z.object({
   title: z.string().nonempty({
@@ -84,60 +90,33 @@ export const ChallengeForm = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex w-full flex-col gap-2"
       >
-        <FormField
+        <CustomFormField
           control={form.control}
           name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Hydration Challenge" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Title"
+          placeholder="Hydration Challenge"
+          tooltipContent="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt corrupti praesentium ex cumque tempore eaque officiis tenetur voluptates, dolorum vitae modi. Accusamus dolorum quia vel dicta? Enim eligendi distinctio harum!"
         />
-        <FormField
+        <CustomFormField
           control={form.control}
           name="wish"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Wish</FormLabel>
-              <FormControl>
-                <Input placeholder="Drinking more water every day" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Wish"
+          placeholder="Drinking more water every day"
+          tooltipContent="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt corrupti praesentium ex cumque tempore eaque officiis tenetur voluptates, dolorum vitae modi. Accusamus dolorum quia vel dicta? Enim eligendi distinctio harum!"
         />
-        <FormField
+        <CustomFormField
           control={form.control}
           name="dailyAction"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Daily Action</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="I will drink 8 glasses of water every day"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Daily Action"
+          placeholder="I will drink 8 glasses of water every day"
+          tooltipContent="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt corrupti praesentium ex cumque tempore eaque officiis tenetur voluptates, dolorum vitae modi. Accusamus dolorum quia vel dicta? Enim eligendi distinctio harum!"
         />
-        <FormField
+        <CustomFormField
           control={form.control}
           name="icon"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Icon</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Icon"
+          placeholder="✅"
+          tooltipContent="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt corrupti praesentium ex cumque tempore eaque officiis tenetur voluptates, dolorum vitae modi. Accusamus dolorum quia vel dicta? Enim eligendi distinctio harum!"
         />
         <div className="mt-4 flex justify-between">
           {onDelete && (
@@ -196,5 +175,48 @@ export const ChallengeForm = ({
         </div>
       </form>
     </Form>
+  );
+};
+
+interface CustomFormFieldProps {
+  control: any;
+  name: string;
+  label: string;
+  placeholder: string;
+  tooltipContent: string;
+}
+export const CustomFormField = ({
+  control,
+  name,
+  label,
+  placeholder,
+  tooltipContent,
+}: CustomFormFieldProps) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <div className="flex items-center gap-1">
+            <FormLabel className="leading-4">{label}</FormLabel>
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger type="button" tabIndex={-1}>
+                  <Info className="mt-0.5 h-3 w-3" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[200px] whitespace-normal">
+                  <p>{tooltipContent}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <FormControl>
+            <Input placeholder={placeholder} {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 };

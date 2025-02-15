@@ -28,7 +28,7 @@ export const Header = () => {
               alt="30 Day Challenge Logo"
               width={36}
               height={36}
-              className="rounded-full"
+              className="rounded-md"
             />
           </button>
           <div className="text-xl font-bold text-gray-900">30 Day Me</div>
