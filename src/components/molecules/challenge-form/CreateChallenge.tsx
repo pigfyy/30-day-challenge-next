@@ -23,6 +23,10 @@ export function CreateChallenge() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
+  const [defaultValues, setDefaultValues] = useState<
+    z.infer<typeof challengeFormSchema> | undefined
+  >(undefined);
+
   const { mutate, isPending } = trpc.challenge.createChallenge.useMutation({
     onSuccess: async (challenge) => {
       await utils.challenge.getChallenges.invalidate();
@@ -75,12 +79,19 @@ export function CreateChallenge() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ChallengeForm onSubmit={onSubmit} disabled={isPending} />
+            <ChallengeForm
+              onSubmit={onSubmit}
+              disabled={isPending}
+              defaultValues={defaultValues}
+            />
           </CardContent>
         </Card>
       </div>
 
-      <ChallengeSearchCard leftCardHeight={leftCardHeight} />
+      <ChallengeSearchCard
+        leftCardHeight={leftCardHeight}
+        setDefaultValues={setDefaultValues}
+      />
     </div>
   );
 }

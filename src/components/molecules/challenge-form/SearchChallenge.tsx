@@ -11,9 +11,10 @@ import ExpandableText from "@/components/ui/expandable-text";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/hooks/use-toast";
 import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
-import { Loader2 } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
@@ -22,10 +23,12 @@ const ChallengeIdea = ({
   challengeIdea,
   activeChallengeId,
   onJoinChallenge,
+  onApplyChallenge,
 }: {
   challengeIdea: ChallengeIdeaResult;
   activeChallengeId: number | null;
   onJoinChallenge: (challengeIdea: ChallengeIdeaResult) => void;
+  onApplyChallenge: (challengeIdea: ChallengeIdeaResult) => void;
 }) => {
   const isActive = activeChallengeId === challengeIdea.id;
   const disabled = activeChallengeId !== null;
@@ -64,7 +67,7 @@ const ChallengeIdea = ({
           </a>
         </p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex justify-between">
         <Button
           onClick={() => onJoinChallenge(challengeIdea)}
           disabled={disabled}
@@ -75,6 +78,14 @@ const ChallengeIdea = ({
             "Join Challenge"
           )}
         </Button>
+        <Button
+          variant={"outline"}
+          size={"icon"}
+          onClick={() => onApplyChallenge(challengeIdea)}
+          disabled={disabled}
+        >
+          <Pencil />
+        </Button>
       </CardFooter>
     </Card>
   );
@@ -82,8 +93,10 @@ const ChallengeIdea = ({
 
 export const ChallengeSearchCard = ({
   leftCardHeight,
+  setDefaultValues,
 }: {
   leftCardHeight: number;
+  setDefaultValues: React.Dispatch<React.SetStateAction<any>>;
 }) => {
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
@@ -125,6 +138,20 @@ export const ChallengeSearchCard = ({
       wish: challengeIdea.wish,
       dailyAction: challengeIdea.dailyAction,
       icon: "✅",
+    });
+  };
+
+  const handleApplyChallenge = (challengeIdea: ChallengeIdeaResult) => {
+    if (activeChallengeId !== null) return;
+    setDefaultValues({
+      title: challengeIdea.title,
+      wish: challengeIdea.wish,
+      dailyAction: challengeIdea.dailyAction,
+      icon: "✅",
+    });
+    toast({
+      title: "Success!",
+      description: `Information from ${challengeIdea.title} has been applied to the form`,
     });
   };
 
@@ -178,6 +205,7 @@ export const ChallengeSearchCard = ({
                     challengeIdea={result}
                     activeChallengeId={activeChallengeId}
                     onJoinChallenge={handleJoinChallenge}
+                    onApplyChallenge={handleApplyChallenge}
                   />
                 ))}
               </div>
