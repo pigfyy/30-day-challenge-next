@@ -216,17 +216,15 @@ const ChallengeForm = ({
   );
 };
 
-interface ChallengeIdeaProps {
-  challengeIdea: ChallengeIdeaResult;
-  activeChallengeId: number | null;
-  onJoinChallenge: (challengeIdea: ChallengeIdeaResult) => void;
-}
-
 export const ChallengeIdea = ({
   challengeIdea,
   activeChallengeId,
   onJoinChallenge,
-}: ChallengeIdeaProps) => {
+}: {
+  challengeIdea: ChallengeIdeaResult;
+  activeChallengeId: number | null;
+  onJoinChallenge: (challengeIdea: ChallengeIdeaResult) => void;
+}) => {
   const isActive = activeChallengeId === challengeIdea.id;
   const disabled = activeChallengeId !== null;
 
