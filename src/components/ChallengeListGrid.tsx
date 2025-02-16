@@ -125,6 +125,11 @@ export const ChallengeListGrid = () => {
                 <CardDescription className="text-base text-foreground">
                   {challenge.wish}
                 </CardDescription>
+                {/* Elegant Date Range Display */}
+                <div className="mt-2 text-sm text-muted-foreground">
+                  {new Date(challenge.startDate).toLocaleDateString()} -{" "}
+                  {new Date(challenge.endDate).toLocaleDateString()}
+                </div>
               </CardHeader>
               <CardContent className="mt-2">
                 <p className="text-base text-muted-foreground">

@@ -63,9 +63,13 @@ export const ViewChallengeHeader = () => {
     <>
       <section className="mb-8 flex items-center justify-between gap-2">
         <div>
-          <h1 className="mb-2 text-3xl font-bold text-gray-800">
+          <h1 className="mb-1 text-3xl font-bold text-gray-800">
             {challenge.title}
           </h1>
+          <p className="mb-2 text-sm text-gray-500">
+            {new Date(challenge.startDate).toLocaleDateString()} -{" "}
+            {new Date(challenge.endDate).toLocaleDateString()}
+          </p>
           <h2 className="mb-1 text-xl text-gray-600">{challenge.wish}</h2>
           <h2 className="text-xl text-gray-600">{challenge.dailyAction}</h2>
         </div>
