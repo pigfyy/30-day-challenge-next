@@ -30,7 +30,7 @@ export async function getChallengeIdeas(
     .namespace("challenges-ideas")
     .query({
       vector: vector.data[0].embedding,
-      topK: 10,
+      topK: 15,
       includeMetadata: true,
     });
 
