@@ -50,6 +50,26 @@ export async function POST(req: Request) {
     const { id, email_addresses, username, created_at, updated_at, image_url } =
       evt.data;
 
+    if (process.env.DISCORD_WEBHOOK_URL) {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({
+        message: `New user created! Email address: ${email_addresses[0].email_address}`,
+      });
+
+      const requestOptions: any = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      await fetch(process.env.DISCORD_WEBHOOK_URL, requestOptions).catch(
+        (error) => console.error(error),
+      );
+    }
+
     try {
       if (
         id &&
@@ -69,26 +89,6 @@ export async function POST(req: Request) {
             updatedAt: new Date(updated_at),
           },
         });
-      }
-
-      if (process.env.DISCORD_WEBHOOK_URL) {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        const raw = JSON.stringify({
-          message: `New user created! Email address: ${email_addresses[0].email_address}`,
-        });
-
-        const requestOptions: any = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
-
-        await fetch(process.env.DISCORD_WEBHOOK_URL, requestOptions).catch(
-          (error) => console.error(error),
-        );
       }
 
       return new Response("New user created!", { status: 200 });
