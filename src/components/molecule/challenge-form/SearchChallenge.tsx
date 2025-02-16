@@ -220,7 +220,7 @@ export const ChallengeSearchCard = ({
               </>
             ) : (
               <>
-                <div className="mb-4 w-full text-left">
+                <div className="mb-4 mt-1.5 w-full text-left">
                   <Skeleton className="h-4 w-20" />
                 </div>
                 <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
