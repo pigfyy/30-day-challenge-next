@@ -26,6 +26,9 @@ export const dailyProgressRouter = router({
           userId: ctx.user.id,
           challengeId: input.challengeId,
         },
+        orderBy: {
+          date: "asc",
+        },
       });
       return dailyProgress;
     }),
