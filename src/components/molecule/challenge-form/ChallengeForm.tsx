@@ -95,28 +95,28 @@ export const ChallengeForm = ({
           name="title"
           label="Title"
           placeholder="Hydration Challenge"
-          tooltipContent="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt corrupti praesentium ex cumque tempore eaque officiis tenetur voluptates, dolorum vitae modi. Accusamus dolorum quia vel dicta? Enim eligendi distinctio harum!"
+          tooltipContent="Find a title for the challenge that will make it easy to remember."
         />
         <CustomFormField
           control={form.control}
           name="wish"
           label="Wish"
           placeholder="Drinking more water every day"
-          tooltipContent="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt corrupti praesentium ex cumque tempore eaque officiis tenetur voluptates, dolorum vitae modi. Accusamus dolorum quia vel dicta? Enim eligendi distinctio harum!"
+          tooltipContent="Find a change you want to make or a skill you want to learn most."
         />
         <CustomFormField
           control={form.control}
           name="dailyAction"
           label="Daily Action"
           placeholder="I will drink 8 glasses of water every day"
-          tooltipContent="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt corrupti praesentium ex cumque tempore eaque officiis tenetur voluptates, dolorum vitae modi. Accusamus dolorum quia vel dicta? Enim eligendi distinctio harum!"
+          tooltipContent="Have an action plan for every day. Make it simple and doable. How would you like to work towards your wish?"
         />
         <CustomFormField
           control={form.control}
           name="icon"
           label="Icon"
           placeholder="✅"
-          tooltipContent="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt corrupti praesentium ex cumque tempore eaque officiis tenetur voluptates, dolorum vitae modi. Accusamus dolorum quia vel dicta? Enim eligendi distinctio harum!"
+          tooltipContent="Find an icon that best respresents your challenge"
         />
         <div className="mt-4 flex justify-between">
           {onDelete && (
