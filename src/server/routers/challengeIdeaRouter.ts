@@ -34,7 +34,7 @@ export const challengeIdeaRouter = router({
 
     try {
       const completion = await openai.beta.chat.completions.parse({
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -65,7 +65,7 @@ export const challengeIdeaRouter = router({
       if (result.length < 4) {
         const additionalCount = 4 - result.length;
         const additionalCompletion = await openai.beta.chat.completions.parse({
-          model: "gpt-4o",
+          model: "gpt-4o-mini",
           messages: [
             {
               role: "system",
