@@ -212,7 +212,11 @@ export const CustomFormField = ({
             </TooltipProvider>
           </div>
           <FormControl>
-            <Input placeholder={placeholder} {...field} />
+            <Input
+              placeholder={placeholder}
+              {...field}
+              className={label === "Icon" ? "placeholder:opacity-15" : ""}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
