@@ -34,18 +34,30 @@ import {
 } from "./ui/collapsible";
 import { ScrollArea } from "./ui/scroll-area";
 import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
+import { useSearchParams } from "next/navigation";
 
-export const ViewChallengeHeader = ({
-  challenge,
-  dailyProgress,
-}: {
-  challenge: Challenge;
-  dailyProgress: DailyProgress[];
-}) => {
+export const ViewChallengeHeader = () => {
+  const searchParams = useSearchParams();
+
+  const challengeId = searchParams.get("challenge");
+
+  const { data: challenges, isLoading: isChallengesLoading } =
+    trpc.challenge.getChallenges.useQuery();
+  const challenge = challenges?.find((c) => c.id === challengeId);
+
+  const { data: dailyProgress, isLoading: isDailyProgressLoading } =
+    trpc.dailyProgress.getDailyProgress.useQuery({
+      challengeId: challengeId,
+    });
+
   const [isImagesSheetOpen, setIsImagesSheetOpen] = useState(false);
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
   const [isEditChallengeDialogOpen, setIsEditChallengeDialogOpen] =
     useState(false);
+
+  if (challenge == undefined || dailyProgress == undefined) {
+    return null;
+  }
 
   return (
     <>

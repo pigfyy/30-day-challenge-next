@@ -46,10 +46,7 @@ export const ViewChallenge = () => {
       <div className="mb-6 flex items-start justify-between">
         <BackButton />
       </div>
-      <ViewChallengeHeader
-        challenge={challenge}
-        dailyProgress={dailyProgress}
-      />
+      <ViewChallengeHeader />
       <div className="mt-6 rounded-lg border border-neutral-100 bg-neutral-50 p-1 sm:p-4 lg:p-8">
         <Calendar challenge={challenge} dailyProgress={dailyProgress} />
       </div>
