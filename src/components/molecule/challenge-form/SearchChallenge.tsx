@@ -177,7 +177,9 @@ export const ChallengeSearchCard = ({
             : leftCardHeight,
       }}
     >
-      <CardContent className="flex h-full flex-col items-center justify-center p-0 pt-6">
+      <CardContent
+        className={`flex h-full flex-col items-center justify-center p-0 pt-6 ${!results.length && !isSearchChallengesPending ? "pb-6" : ""}`}
+      >
         {!results.length && !isSearchChallengesPending && (
           <CardHeader className="w-full pb-3 text-left">
             <CardTitle>Find Challenges</CardTitle>
