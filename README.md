@@ -18,3 +18,42 @@ https://vercel.com/pigfyys-projects/30-day-challenge-next/deployments
 ## Github Link
 
 https://github.com/pigfyy/30-day-challenge-next/tree/master
+
+## Installation Instructions
+
+1. **Prerequisites**:
+
+   - Ensure you have Node.js and npm installed on your machine.
+
+2. **Clone the Repository**:
+
+   ```bash
+   git clone https://github.com/pigfyy/30-day-challenge-next.git
+   cd 30-day-challenge-next
+   ```
+
+3. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+## Usage
+
+1. **Run the Development Server**:
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+2. **Build for Production**:
+
+   ```bash
+   npm run build
+   ```
+
+3. **Start the Production Server**:
+   ```bash
+   npm start
+   ```
