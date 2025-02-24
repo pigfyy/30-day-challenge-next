@@ -1,16 +1,14 @@
 import Calendar from "@/components/Calendar";
 import { ViewChallengeHeader } from "@/components/ViewChallengeHeader";
+import { useUrlState } from "@/hooks/use-url-state";
 import { trpc } from "@/lib/util/trpc";
 import { Loader2 } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BackButton } from "./BackButton";
 
 export const ViewChallenge = () => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const { searchParams, getQueryParam, removeQueryParam } = useUrlState();
 
-  const challengeId = searchParams.get("challenge");
+  const challengeId = getQueryParam("challenge");
 
   const { data: challenges, isLoading: isChallengesLoading } =
     trpc.challenge.getChallenges.useQuery();
@@ -31,9 +29,7 @@ export const ViewChallenge = () => {
   const isLoading = isChallengesLoading || isDailyProgressLoading;
 
   if (!isLoading && !challenge) {
-    const params = new URLSearchParams(searchParams);
-    params.delete("challenge");
-    replace(`${pathname}?${params.toString()}`);
+    removeQueryParam("challenge");
     return null;
   }
 

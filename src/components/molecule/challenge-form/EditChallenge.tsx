@@ -2,7 +2,7 @@
 
 import { trpc } from "@/lib/util/trpc";
 import { Challenge } from "@prisma/client";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useUrlState } from "@/hooks/use-url-state";
 import { z } from "zod";
 import {
   ChallengeForm,
@@ -17,9 +17,7 @@ export const EditChallenge = ({
   challenge: Challenge;
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const { removeQueryParam } = useUrlState();
   const utils = trpc.useUtils();
 
   const { mutate: updateChallenge, isPending: isUpdatePending } =
@@ -34,10 +32,7 @@ export const EditChallenge = ({
       onSettled: async () => {
         await utils.challenge.getChallenges.invalidate();
         setIsDialogOpen(false);
-
-        const params = new URLSearchParams(searchParams);
-        params.delete("challenge");
-        replace(`${pathname}?${params.toString()}`);
+        removeQueryParam("challenge");
       },
     });
 

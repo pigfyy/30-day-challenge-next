@@ -17,9 +17,9 @@ import { toast } from "@/hooks/use-toast";
 import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
 import { Loader2, Pencil } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
+import { useState } from "react";
+import { useUrlState } from "@/hooks/use-url-state";
 
 const ChallengeIdea = ({
   challengeIdea,
@@ -108,18 +108,14 @@ export const ChallengeSearchCard = ({
     null,
   );
 
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const { updateQueryParam } = useUrlState();
   const utils = trpc.useUtils();
 
   const { mutate: createChallenge } =
     trpc.challenge.createChallenge.useMutation({
       onSuccess: async (challenge) => {
         await utils.challenge.getChallenges.invalidate();
-        const params = new URLSearchParams(searchParams);
-        params.set("challenge", challenge.id);
-        replace(`${pathname}?${params.toString()}`);
+        updateQueryParam("challenge", challenge.id);
         setActiveChallengeId(null);
       },
       onError: () => {

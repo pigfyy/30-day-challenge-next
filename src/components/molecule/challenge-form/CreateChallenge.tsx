@@ -13,17 +13,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useUrlState } from "@/hooks/use-url-state";
 import { trpc } from "@/lib/util/trpc";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 
 export function CreateChallenge() {
   const utils = trpc.useUtils();
   const { data: challenges } = trpc.challenge.getChallenges.useQuery();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const { updateQueryParam } = useUrlState();
 
   const [defaultValues, setDefaultValues] = useState<
     z.infer<typeof challengeFormSchema> | undefined
@@ -32,9 +30,7 @@ export function CreateChallenge() {
   const { mutate, isPending } = trpc.challenge.createChallenge.useMutation({
     onSuccess: async (challenge) => {
       await utils.challenge.getChallenges.invalidate();
-      const params = new URLSearchParams(searchParams);
-      params.set("challenge", challenge.id);
-      replace(`${pathname}?${params.toString()}`);
+      updateQueryParam("challenge", challenge.id);
     },
   });
 

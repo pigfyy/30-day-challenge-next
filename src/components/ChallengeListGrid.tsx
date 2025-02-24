@@ -10,19 +10,24 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
+import { useUrlState } from "@/hooks/use-url-state";
 import { trpc } from "@/lib/util/trpc";
 import { Pencil, PlusCircle } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
 import { Challenge } from "@prisma/client";
 
 export const ChallengeListGrid = () => {
   const { data: challenges } = trpc.challenge.getChallenges.useQuery();
+  const {
+    pathname,
+    searchParams,
+    setQueryParam,
+    removeQueryParam,
+    getQueryParam,
+    updateQueryParam,
+  } = useUrlState();
 
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [isEditChallengeDialogOpen, setIsEditChallengeDialogOpen] =
     useState(false);
@@ -36,11 +41,9 @@ export const ChallengeListGrid = () => {
   }, []);
 
   useEffect(() => {
-    const challengeId = searchParams.get("challenge");
+    const challengeId = getQueryParam("challenge");
     if (challengeId && isMounted) {
-      const params = new URLSearchParams(searchParams);
-      params.delete("challenge");
-      replace(`${pathname}?${params.toString()}`);
+      removeQueryParam("challenge");
 
       toast({
         variant: "destructive",
@@ -48,12 +51,10 @@ export const ChallengeListGrid = () => {
         duration: 1000,
       });
     }
-  }, [searchParams, replace, pathname, isMounted]);
+  }, [searchParams, removeQueryParam, getQueryParam, isMounted]);
 
   const handleViewClick = (challengeId: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("challenge", challengeId);
-    replace(`${pathname}?${params.toString()}`);
+    setQueryParam("challenge", challengeId);
   };
 
   const handleEditClick = (challenge: Challenge) => {
@@ -62,9 +63,7 @@ export const ChallengeListGrid = () => {
   };
 
   const handleCreateChallengeClick = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set("challenge", "new");
-    replace(`${pathname}?${params.toString()}`);
+    updateQueryParam("challenge", "new");
   };
 
   return (

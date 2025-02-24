@@ -3,9 +3,9 @@
 import { ChallengeListGrid } from "@/components/ChallengeListGrid";
 import { CreateChallenge } from "@/components/molecule/challenge-form/CreateChallenge";
 import { ViewChallenge } from "@/components/ViewChallenge";
+import { useUrlState } from "@/hooks/use-url-state";
 import { trpc } from "@/lib/util/trpc";
 import { Loader2 } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 const Challenges = () => {
@@ -17,19 +17,15 @@ const Challenges = () => {
     retry: false,
   });
 
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const { getQueryParam, updateQueryParam } = useUrlState();
 
-  const challengeId = searchParams.get("challenge");
+  const challengeId = getQueryParam("challenge");
 
   useEffect(() => {
     if (!isChallengesLoading && (!challenges || !challenges.length)) {
-      const params = new URLSearchParams(searchParams);
-      params.set("challenge", "new");
-      replace(`${pathname}?${params.toString()}`);
+      updateQueryParam("challenge", "new");
     }
-  }, [isChallengesLoading, challenges, searchParams, pathname, replace]);
+  }, [isChallengesLoading, challenges, updateQueryParam]);
 
   if (isChallengesLoading) {
     return <Loader2 className="h-12 w-12 animate-spin" />;

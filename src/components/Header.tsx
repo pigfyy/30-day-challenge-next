@@ -5,17 +5,13 @@ import Image from "next/image";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useUrlState } from "@/hooks/use-url-state";
 
 export const Header = () => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const { removeQueryParam } = useUrlState();
 
   const resetChallengeId = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete("challenge");
-    replace(`${pathname}?${params.toString()}`);
+    removeQueryParam("challenge");
   };
 
   return (
