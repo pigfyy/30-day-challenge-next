@@ -4,6 +4,7 @@ import { useUrlState } from "@/hooks/use-url-state";
 import { trpc } from "@/lib/util/trpc";
 import { Loader2 } from "lucide-react";
 import { BackButton } from "./BackButton";
+import { useEffect } from "react";
 
 export const ViewChallenge = () => {
   const { searchParams, getQueryParam, removeQueryParam } = useUrlState();
@@ -28,10 +29,12 @@ export const ViewChallenge = () => {
 
   const isLoading = isChallengesLoading || isDailyProgressLoading;
 
-  if (!isLoading && !challenge) {
-    removeQueryParam("challenge");
-    return null;
-  }
+  // Use useEffect to handle navigation when challenge is not found
+  useEffect(() => {
+    if (!isLoading && !challenge && challengeId) {
+      removeQueryParam("challenge");
+    }
+  }, [isLoading, challenge, challengeId, removeQueryParam]);
 
   if (isLoading || !challenge || !dailyProgress) {
     return <Loader2 className="h-12 w-12 animate-spin" />;
