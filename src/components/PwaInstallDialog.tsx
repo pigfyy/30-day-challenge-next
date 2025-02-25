@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Smartphone } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface PwaInstallDialogProps {
   open: boolean;
@@ -20,12 +21,24 @@ export function PwaInstallDialog({
   open,
   onOpenChange,
 }: PwaInstallDialogProps) {
-  // Detect browser to show appropriate instructions
-  const isIOS =
-    typeof navigator !== "undefined" &&
-    /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const isAndroid =
-    typeof navigator !== "undefined" && /Android/.test(navigator.userAgent);
+  const [deviceType, setDeviceType] = useState<"ios" | "android" | "other">(
+    "other",
+  );
+
+  useEffect(() => {
+    // Only run on client-side
+    if (typeof navigator !== "undefined") {
+      const userAgent = navigator.userAgent.toLowerCase();
+
+      if (/iphone|ipad|ipod/.test(userAgent)) {
+        setDeviceType("ios");
+      } else if (/android/.test(userAgent)) {
+        setDeviceType("android");
+      } else {
+        setDeviceType("other");
+      }
+    }
+  }, []);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -40,7 +53,7 @@ export function PwaInstallDialog({
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          {isIOS && (
+          {deviceType === "ios" && (
             <div className="space-y-2">
               <h3 className="font-medium">iOS Installation:</h3>
               <ol className="list-decimal space-y-2 pl-5">
@@ -60,7 +73,7 @@ export function PwaInstallDialog({
             </div>
           )}
 
-          {isAndroid && (
+          {deviceType === "android" && (
             <div className="space-y-2">
               <h3 className="font-medium">Android Installation:</h3>
               <ol className="list-decimal space-y-2 pl-5">
@@ -75,7 +88,7 @@ export function PwaInstallDialog({
             </div>
           )}
 
-          {!isIOS && !isAndroid && (
+          {deviceType === "other" && (
             <div className="space-y-2">
               <h3 className="font-medium">Installation:</h3>
               <ol className="list-decimal space-y-2 pl-5">

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 
 /**
- * Hook to detect if the app is running as a PWA and if the device is mobile
- * @returns Object containing isPwa and isMobile flags
+ * Hook to detect if the app is running as a PWA
+ * @returns Object containing isPwa flag and isClient flag
  */
 export function usePwa() {
   const [isPwa, setIsPwa] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -18,19 +17,7 @@ export function usePwa() {
       (window.navigator as any).standalone ||
       document.referrer.includes("android-app://");
 
-    // Check if the device is mobile
-    const checkMobile = () => {
-      const userAgent =
-        navigator.userAgent || navigator.vendor || (window as any).opera;
-      return (
-        /android|iPad|iPhone|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
-          userAgent,
-        ) || window.innerWidth <= 768
-      );
-    };
-
     setIsPwa(isStandalone);
-    setIsMobile(checkMobile());
 
     // Listen for changes in display mode
     const mediaQuery = window.matchMedia("(display-mode: standalone)");
@@ -40,18 +27,10 @@ export function usePwa() {
 
     mediaQuery.addEventListener("change", handleChange);
 
-    // Listen for resize events to update mobile status
-    const handleResize = () => {
-      setIsMobile(checkMobile());
-    };
-
-    window.addEventListener("resize", handleResize);
-
     return () => {
       mediaQuery.removeEventListener("change", handleChange);
-      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  return { isPwa, isMobile, isClient };
+  return { isPwa, isClient };
 }

@@ -18,6 +18,7 @@ import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDial
 import { Challenge } from "@prisma/client";
 import { usePwa } from "@/hooks/use-pwa";
 import { PwaInstallDialog } from "./PwaInstallDialog";
+import { isMobile } from "react-device-detect";
 
 export const ChallengeListGrid = () => {
   const { data: challenges } = trpc.challenge.getChallenges.useQuery();
@@ -37,7 +38,7 @@ export const ChallengeListGrid = () => {
     undefined,
   );
   const [isPwaDialogOpen, setIsPwaDialogOpen] = useState(false);
-  const { isPwa, isMobile, isClient } = usePwa();
+  const { isPwa, isClient } = usePwa();
 
   useEffect(() => {
     setIsMounted(true);
