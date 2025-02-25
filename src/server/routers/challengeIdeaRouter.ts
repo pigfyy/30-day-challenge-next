@@ -2,8 +2,7 @@ import {
   ChallengeIdeaResult,
   getChallengeIdeas,
 } from "@/lib/db/challengeIdeas";
-import { openai } from "@/lib/util";
-import { zodResponseFormat } from "openai/helpers/zod";
+import { geminiFlashModel } from "@/lib/util";
 import { z } from "zod";
 import { procedure, router } from "../init";
 
@@ -33,59 +32,85 @@ export const challengeIdeaRouter = router({
     let result: ChallengeIdeaResult[];
 
     try {
-      const completion = await openai.beta.chat.completions.parse({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: `
-              Your job is to provide the most relevant challenge ideas compared to the prompt provided by the user. 
-              If a challenge idea is not relevant, do not include it in the response. 
-              Otherwise, rank the challenge ideas in order of relevance, with the most relevant challenge idea being ranked first.
-              If fewer than 4 challenges are relevant, generate additional challenges to ensure there are at least 4 suggested challenges.
-              For any generated challenges, use a random source from the provided CHALLENGE LIST. Just pick one and use it as the source.
-            `,
-          },
-          {
-            role: "user",
-            content: `
-              USER INPUT STRING: ${input}\n\n\n
-              CHALLENGE LIST: ${JSON.stringify(challenges)}
-            `,
-          },
-        ],
-        response_format: zodResponseFormat(
-          ChallengeIdeaResultSchema,
-          "challenge_ideas",
-        ),
-      });
+      // Use Gemini Flash to rank and filter challenge ideas
+      const prompt = `
+        Your job is to provide the most relevant challenge ideas compared to the prompt provided by the user. 
+        If a challenge idea is not relevant, do not include it in the response. 
+        Otherwise, rank the challenge ideas in order of relevance, with the most relevant challenge idea being ranked first.
+        If fewer than 4 challenges are relevant, generate additional challenges to ensure there are at least 4 suggested challenges.
+        For any generated challenges, use a random source from the provided CHALLENGE LIST. Just pick one and use it as the source.
+        
+        USER INPUT STRING: ${input}
+        
+        CHALLENGE LIST: ${JSON.stringify(challenges)}
+        
+        Respond with a JSON object in this exact format:
+        {
+          "result": [
+            {
+              "id": number,
+              "index": number,
+              "title": string,
+              "wish": string,
+              "dailyAction": string,
+              "description": string,
+              "sourceName": string,
+              "sourceLink": string,
+              "score": number (optional)
+            }
+          ]
+        }
+      `;
 
-      result = completion.choices[0].message.parsed?.result || [];
+      const geminiResponse = await geminiFlashModel.generateContent(prompt);
+      const responseText = geminiResponse.response.text();
 
+      // Extract JSON from the response
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error("Failed to parse JSON from Gemini response");
+      }
+
+      const parsedResponse = JSON.parse(jsonMatch[0]);
+      result = parsedResponse.result || [];
+
+      // If we have fewer than 4 results, generate additional challenges
       if (result.length < 4) {
         const additionalCount = 4 - result.length;
-        const additionalCompletion = await openai.beta.chat.completions.parse({
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content: `
-                Generate ${additionalCount} additional challenge ideas that are relevant to the following user input:
-                USER INPUT STRING: ${input}
-                For the source, use a random source from the provided CHALLENGE LIST. Just pick one and use it as the source.
-              `,
-            },
-          ],
-          response_format: zodResponseFormat(
-            ChallengeIdeaResultSchema,
-            "additional_challenge_ideas",
-          ),
-        });
+        const additionalPrompt = `
+          Generate ${additionalCount} additional challenge ideas that are relevant to the following user input:
+          USER INPUT STRING: ${input}
+          
+          For the source, use a random source from the provided CHALLENGE LIST:
+          ${JSON.stringify(challenges.map((c) => ({ sourceName: c.sourceName, sourceLink: c.sourceLink })))}
+          
+          Respond with a JSON object in this exact format:
+          {
+            "result": [
+              {
+                "id": number,
+                "index": number,
+                "title": string,
+                "wish": string,
+                "dailyAction": string,
+                "description": string,
+                "sourceName": string,
+                "sourceLink": string
+              }
+            ]
+          }
+        `;
 
-        result = [
-          ...result,
-          ...(additionalCompletion.choices[0].message.parsed?.result || []),
-        ];
+        const additionalResponse =
+          await geminiFlashModel.generateContent(additionalPrompt);
+        const additionalText = additionalResponse.response.text();
+
+        // Extract JSON from the response
+        const additionalJsonMatch = additionalText.match(/\{[\s\S]*\}/);
+        if (additionalJsonMatch) {
+          const additionalParsed = JSON.parse(additionalJsonMatch[0]);
+          result = [...result, ...(additionalParsed.result || [])];
+        }
       }
     } catch (e: any) {
       console.error(e);

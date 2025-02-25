@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@30-day-challenge/prisma-zod": "^1.0.34",
+    "@ai-sdk/google": "^1.1.17",
     "@clerk/nextjs": "^6.10.3",
+    "@google/generative-ai": "^0.22.0",
     "@hookform/resolvers": "^3.10.0",
     "@pinecone-database/pinecone": "^4.1.0",
     "@prisma/client": "^5.14.0",
@@ -31,6 +33,7 @@
     "@trpc/server": "^11.0.0-rc.748",
     "@use-gesture/react": "^10.3.1",
     "@vercel/blob": "^0.23.3",
+    "ai": "^4.1.46",
     "class-variance-authority": "^0.7.1",
     "client-only": "^0.0.1",
     "clsx": "^2.1.1",
