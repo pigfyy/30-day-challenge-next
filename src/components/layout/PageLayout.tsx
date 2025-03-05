@@ -22,10 +22,14 @@ const Challenges = () => {
   const challengeId = getQueryParam("challenge");
 
   useEffect(() => {
-    if (!isChallengesLoading && (!challenges || !challenges.length)) {
+    if (
+      !isChallengesLoading &&
+      (!challenges || !challenges.length) &&
+      challengeId !== "new"
+    ) {
       updateQueryParam("challenge", "new");
     }
-  }, [isChallengesLoading, challenges, updateQueryParam]);
+  }, [isChallengesLoading, challenges, updateQueryParam, challengeId]);
 
   if (isChallengesLoading) {
     return <Loader2 className="h-12 w-12 animate-spin" />;

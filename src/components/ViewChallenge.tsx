@@ -29,7 +29,6 @@ export const ViewChallenge = () => {
 
   const isLoading = isChallengesLoading || isDailyProgressLoading;
 
-  // Use useEffect to handle navigation when challenge is not found
   useEffect(() => {
     if (!isLoading && !challenge && challengeId) {
       removeQueryParam("challenge");
