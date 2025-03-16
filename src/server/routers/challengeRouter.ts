@@ -9,14 +9,25 @@ import {
 import { ChallengeOptionalDefaultsSchema } from "@30-day-challenge/prisma-zod";
 
 export const challengeRouter = router({
-  getChallenges: procedure.query(async ({ ctx }) => {
-    if (!ctx.user) {
-      throw new Error("Not authenticated");
-    }
+  getChallenges: procedure
+    .input(
+      z
+        .object({
+          includeDailyProgressData: z.boolean().optional().default(false),
+        })
+        .optional(),
+    )
+    .query(async ({ ctx, input }) => {
+      if (!ctx.user) {
+        throw new Error("Not authenticated");
+      }
 
-    const challenges = await getChallenges(ctx.user.id);
-    return challenges;
-  }),
+      const challenges = await getChallenges(
+        ctx.user.id,
+        input?.includeDailyProgressData,
+      );
+      return challenges;
+    }),
   createChallenge: procedure
     .input(
       z.object({

@@ -1,4 +1,4 @@
-import { Challenge } from "@prisma/client";
+import { Challenge, Prisma } from "@prisma/client";
 import { prisma } from "./(root)/prisma";
 import { addDays } from "date-fns";
 import { cache } from "react";
@@ -64,10 +64,20 @@ export const deleteChallenge = async (challengeId: string) => {
   }
 };
 
-export const getChallenges = async (userId: string) => {
+export const getChallenges = async (
+  userId: string,
+  includeDailyProgressData = false,
+) => {
   const data = await prisma.challenge.findMany({
     where: { userId: userId },
     orderBy: { startDate: "desc" },
+    include: {
+      dailyProgress: includeDailyProgressData
+        ? {
+            orderBy: { date: "asc" },
+          }
+        : false,
+    },
   });
 
   return data;

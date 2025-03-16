@@ -1,14 +1,17 @@
 import {
   addDays,
+  differenceInDays,
   eachDayOfInterval,
   endOfDay,
   getDay,
+  isFuture,
   isSameDay,
   isWithinInterval,
   startOfDay,
   subDays,
 } from "date-fns";
 import {
+  Challenge,
   ChallengeSchema,
   DailyProgress,
   DailyProgressSchema,
@@ -104,4 +107,22 @@ export const isDateValid = (dateToCheck: Date, startDate: Date) => {
     start: startOfDay(startDate),
     end: endOfDay(new Date()),
   });
+};
+
+export const calculateCompletionRate = (
+  challenge: Challenge & { dailyProgress: DailyProgress[] },
+) => {
+  const currentDate = new Date();
+  const startDate = new Date(challenge.startDate);
+
+  if (isFuture(startDate)) {
+    return 0;
+  }
+
+  const daysElapsed = Math.max(1, differenceInDays(currentDate, startDate) + 1);
+  const completedDays = challenge.dailyProgress.filter(
+    (progress: DailyProgress) => progress.completed,
+  ).length;
+
+  return Math.min(1, completedDays / daysElapsed);
 };

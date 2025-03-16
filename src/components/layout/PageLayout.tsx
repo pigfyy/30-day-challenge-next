@@ -1,6 +1,6 @@
 "use client";
 
-import { ChallengeListGrid } from "@/components/ChallengeListGrid";
+import { ChallengeList } from "@/components/ChallengeListGrid";
 import { CreateChallenge } from "@/components/molecule/challenge-form/CreateChallenge";
 import { ViewChallenge } from "@/components/ViewChallenge";
 import { useUrlState } from "@/hooks/use-url-state";
@@ -9,17 +9,17 @@ import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 
 const Challenges = () => {
+  const { getQueryParam, updateQueryParam } = useUrlState();
+
+  const challengeId = getQueryParam("challenge");
+
   const {
     data: challenges,
     isLoading: isChallengesLoading,
     error,
-  } = trpc.challenge.getChallenges.useQuery(undefined, {
-    retry: false,
-  });
-
-  const { getQueryParam, updateQueryParam } = useUrlState();
-
-  const challengeId = getQueryParam("challenge");
+  } = trpc.challenge.getChallenges.useQuery(
+    !challengeId ? { includeDailyProgressData: true } : undefined,
+  );
 
   useEffect(() => {
     if (
@@ -44,7 +44,7 @@ const Challenges = () => {
   }
 
   if (!challengeId) {
-    return <ChallengeListGrid />;
+    return <ChallengeList />;
   }
 
   return <ViewChallenge />;

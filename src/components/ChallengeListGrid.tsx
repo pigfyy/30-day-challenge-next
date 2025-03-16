@@ -9,27 +9,94 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { usePwa } from "@/hooks/use-pwa";
 import { toast } from "@/hooks/use-toast";
 import { useUrlState } from "@/hooks/use-url-state";
+import { calculateCompletionRate } from "@/lib/util/dates";
 import { trpc } from "@/lib/util/trpc";
+import { Challenge, DailyProgress } from "@prisma/client";
 import { Pencil, PlusCircle, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
-import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
-import { Challenge } from "@prisma/client";
-import { usePwa } from "@/hooks/use-pwa";
-import { PwaInstallDialog } from "./PwaInstallDialog";
 import { isMobile } from "react-device-detect";
+import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
+import { PwaInstallDialog } from "./PwaInstallDialog";
 
-export const ChallengeListGrid = () => {
-  const { data: challenges } = trpc.challenge.getChallenges.useQuery();
-  const {
-    pathname,
-    searchParams,
-    setQueryParam,
-    removeQueryParam,
-    getQueryParam,
-    updateQueryParam,
-  } = useUrlState();
+const ChallengeCard = ({
+  challenge,
+  setEditChallenge,
+  setIsEditChallengeDialogOpen,
+}: {
+  challenge: Challenge & { dailyProgress: DailyProgress[] };
+  setEditChallenge: React.Dispatch<React.SetStateAction<Challenge | undefined>>;
+  setIsEditChallengeDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const { setQueryParam } = useUrlState();
+
+  // console.log(calculateCompletionRate(challenge));
+
+  const handleViewClick = (challengeId: string) => {
+    setQueryParam("challenge", challengeId);
+  };
+
+  const handleEditClick = (challenge: Challenge) => {
+    setEditChallenge(challenge);
+    setIsEditChallengeDialogOpen(true);
+  };
+
+  return (
+    <Card
+      key={challenge.id}
+      className="transition-shadow duration-200 hover:shadow-lg"
+    >
+      <CardHeader>
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl">
+          {challenge.icon}
+        </div>
+        <CardTitle className="text-lg font-semibold">
+          {challenge.title}
+        </CardTitle>
+        <CardDescription className="text-base text-foreground">
+          <span className="font-semibold">Wish:</span> {challenge.wish}
+        </CardDescription>
+        {/* Elegant Date Range Display */}
+        <div className="mt-2 text-sm text-muted-foreground">
+          {new Date(challenge.startDate).toLocaleDateString()} -{" "}
+          {new Date(challenge.endDate).toLocaleDateString()}
+        </div>
+      </CardHeader>
+      <CardContent className="mt-2">
+        <p className="text-base">
+          <span className="font-semibold">Daily Action:</span>{" "}
+          <span className="text-muted-foreground">{challenge.dailyAction}</span>
+        </p>
+      </CardContent>
+      <CardFooter className="mt-4 gap-2">
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => handleViewClick(challenge.id)}
+        >
+          View Challenge
+        </Button>
+        <Button
+          variant="outline"
+          size={"icon"}
+          className="aspect-square"
+          onClick={() => handleEditClick(challenge)}
+        >
+          <Pencil />
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+};
+
+export const ChallengeList = () => {
+  const { data: challenges } = trpc.challenge.getChallenges.useQuery({
+    includeDailyProgressData: true,
+  });
+  const { searchParams, removeQueryParam, getQueryParam, updateQueryParam } =
+    useUrlState();
 
   const [isMounted, setIsMounted] = useState(false);
   const [isEditChallengeDialogOpen, setIsEditChallengeDialogOpen] =
@@ -57,15 +124,6 @@ export const ChallengeListGrid = () => {
       });
     }
   }, [searchParams, removeQueryParam, getQueryParam, isMounted]);
-
-  const handleViewClick = (challengeId: string) => {
-    setQueryParam("challenge", challengeId);
-  };
-
-  const handleEditClick = (challenge: Challenge) => {
-    setEditChallenge(challenge);
-    setIsEditChallengeDialogOpen(true);
-  };
 
   const handleCreateChallengeClick = () => {
     updateQueryParam("challenge", "new");
@@ -128,49 +186,12 @@ export const ChallengeListGrid = () => {
           </Card>
 
           {challenges?.map((challenge) => (
-            <Card
+            <ChallengeCard
               key={challenge.id}
-              className="transition-shadow duration-200 hover:shadow-lg"
-            >
-              <CardHeader>
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl">
-                  {challenge.icon}
-                </div>
-                <CardTitle className="text-lg font-semibold">
-                  {challenge.title}
-                </CardTitle>
-                <CardDescription className="text-base text-foreground">
-                  {challenge.wish}
-                </CardDescription>
-                {/* Elegant Date Range Display */}
-                <div className="mt-2 text-sm text-muted-foreground">
-                  {new Date(challenge.startDate).toLocaleDateString()} -{" "}
-                  {new Date(challenge.endDate).toLocaleDateString()}
-                </div>
-              </CardHeader>
-              <CardContent className="mt-2">
-                <p className="text-base text-muted-foreground">
-                  {challenge.dailyAction}
-                </p>
-              </CardContent>
-              <CardFooter className="mt-4 gap-2">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => handleViewClick(challenge.id)}
-                >
-                  View Challenge
-                </Button>
-                <Button
-                  variant="outline"
-                  size={"icon"}
-                  className="aspect-square"
-                  onClick={() => handleEditClick(challenge)}
-                >
-                  <Pencil />
-                </Button>
-              </CardFooter>
-            </Card>
+              challenge={challenge}
+              setEditChallenge={setEditChallenge}
+              setIsEditChallengeDialogOpen={setIsEditChallengeDialogOpen}
+            />
           ))}
         </div>
       </section>

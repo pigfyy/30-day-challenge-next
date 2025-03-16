@@ -70,8 +70,13 @@ export const ViewChallengeHeader = () => {
             {new Date(challenge.startDate).toLocaleDateString()} -{" "}
             {new Date(challenge.endDate).toLocaleDateString()}
           </p>
-          <h2 className="mb-1 text-xl text-gray-600">{challenge.wish}</h2>
-          <h2 className="text-xl text-gray-600">{challenge.dailyAction}</h2>
+          <h2 className="mb-1 text-xl text-gray-600">
+            <span className="font-semibold">Wish:</span> {challenge.wish}
+          </h2>
+          <h2 className="text-xl text-gray-600">
+            <span className="font-semibold">Daily Action:</span>{" "}
+            {challenge.dailyAction}
+          </h2>
         </div>
         <div className="flex flex-col items-end gap-2 sm:items-stretch">
           <Button
