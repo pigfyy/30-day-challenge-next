@@ -52,23 +52,16 @@ const Content: React.FC<{
       const currentMinutes = now.getMinutes();
       const currentSeconds = now.getSeconds();
 
-      // Convert startDate and endDate strings into Date objects
-      const startDateObj = new Date(startDate);
-      const endDateObj = new Date(endDate);
+      const startDateObj = new Date(`${startDate}T00:00:00`);
+      const endDateObj = new Date(`${endDate}T00:00:00`);
 
-      // Set the time of startDateObj and endDateObj to the current time
       startDateObj.setHours(currentHours, currentMinutes, currentSeconds);
       endDateObj.setHours(currentHours, currentMinutes, currentSeconds);
 
-      console.log("Start Date with Current Time:", startDateObj);
-      console.log("End Date with Current Time:", endDateObj);
-
       await changeDates(challenge, startDateObj, endDateObj);
-
       await utils.challenge.getChallenges.invalidate();
       await utils.dailyProgress.getDailyProgress.invalidate();
-
-      setIsModalOpen(false); // Close the modal after successful submission
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to update dates:", error);
     } finally {

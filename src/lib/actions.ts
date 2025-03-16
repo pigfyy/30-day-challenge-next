@@ -98,11 +98,10 @@ export async function changeDates(
       endDate: endDateObj,
     },
   });
-
   await prisma.dailyProgress.deleteMany({
     where: {
       challengeId: challenge.id,
-      date: { lt: startDateObj, gt: endDateObj },
+      OR: [{ date: { lt: startDateObj } }, { date: { gt: endDateObj } }],
     },
   });
 }
