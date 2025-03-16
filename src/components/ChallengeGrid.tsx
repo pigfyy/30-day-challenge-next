@@ -120,7 +120,8 @@ const ChallengeCard = ({
   return (
     <Card
       key={challenge.id}
-      className={`transition-shadow duration-200 hover:shadow-lg ${shadowColor}`}
+      className={`cursor-pointer transition-shadow duration-200 hover:shadow-lg ${shadowColor}`}
+      onClick={() => handleViewClick(challenge.id)}
     >
       <CardHeader>
         <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl">
@@ -152,18 +153,17 @@ const ChallengeCard = ({
         </div>
       </CardContent>
       <CardFooter className="mt-4 gap-2">
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => handleViewClick(challenge.id)}
-        >
+        <Button variant="outline" className="w-full">
           View Challenge
         </Button>
         <Button
           variant="outline"
           size={"icon"}
           className="aspect-square"
-          onClick={() => handleEditClick(challenge)}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleEditClick(challenge);
+          }}
         >
           <Pencil />
         </Button>
