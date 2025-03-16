@@ -32,7 +32,13 @@ const ChallengeCard = ({
 }) => {
   const { setQueryParam } = useUrlState();
 
-  // console.log(calculateCompletionRate(challenge));
+  const completionRate = calculateCompletionRate(challenge);
+  const shadowColor =
+    completionRate >= 0.8
+      ? "hover:shadow-green-500/20"
+      : completionRate >= 0.6
+        ? "hover:shadow-orange-500/20"
+        : "hover:shadow-red-500/20";
 
   const handleViewClick = (challengeId: string) => {
     setQueryParam("challenge", challengeId);
@@ -46,7 +52,7 @@ const ChallengeCard = ({
   return (
     <Card
       key={challenge.id}
-      className="transition-shadow duration-200 hover:shadow-lg"
+      className={`transition-shadow duration-200 hover:shadow-lg ${shadowColor}`}
     >
       <CardHeader>
         <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl">
