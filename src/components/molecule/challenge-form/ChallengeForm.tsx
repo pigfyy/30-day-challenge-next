@@ -26,26 +26,38 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export const challengeFormSchema = z.object({
-  title: z.string().nonempty({
-    message: "Title is required.",
-  }),
-  wish: z.string().nonempty({
-    message: "Wish is required.",
-  }),
-  dailyAction: z.string().nonempty({
-    message: "Daily action is required.",
-  }),
+  title: z
+    .string()
+    .nonempty({
+      message: "Title is required.",
+    })
+    .max(75, {
+      message: "Title must be at most 75 characters long.",
+    }),
+  wish: z
+    .string()
+    .nonempty({
+      message: "Wish is required.",
+    })
+    .max(250, {
+      message: "Wish must be at most 250 characters long.",
+    }),
+  dailyAction: z
+    .string()
+    .nonempty({
+      message: "Daily action is required.",
+    })
+    .max(250, {
+      message: "Daily action must be at most 250 characters long.",
+    }),
   icon: z
     .string()
-    .nonempty({ message: "Icon is required." })
-    .refine(
-      (value) => {
-        const singleEmojiRegex =
-          /^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})?)$/u;
-        return singleEmojiRegex.test(value);
-      },
-      { message: "Icon must be a single emoji." },
-    ),
+    .emoji({
+      message: "Icon must be an emoji.",
+    })
+    .max(2, {
+      message: "Icon cannot be longer then 2 emojis",
+    }),
 });
 
 export const ChallengeForm = ({
@@ -192,6 +204,9 @@ export const CustomFormField = ({
   placeholder,
   tooltipContent,
 }: CustomFormFieldProps) => {
+  const additionalPlaceholderClasses =
+    name === "icon" ? "placeholder:opacity-25" : "";
+
   return (
     <FormField
       control={control}
@@ -215,7 +230,7 @@ export const CustomFormField = ({
             <AutosizeTextarea
               placeholder={placeholder}
               {...field}
-              className="resize-none"
+              className={`resize-none ${additionalPlaceholderClasses}`}
               maxHeight={56}
             />
           </FormControl>
