@@ -1,6 +1,6 @@
 "use client";
 
-import { ChallengeList } from "@/components/ChallengeListGrid";
+import { ChallengeList } from "@/components/ChallengeGrid";
 import { CreateChallenge } from "@/components/molecule/challenge-form/CreateChallenge";
 import { ViewChallenge } from "@/components/ViewChallenge";
 import { useUrlState } from "@/hooks/use-url-state";
