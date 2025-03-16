@@ -35,20 +35,27 @@ const ProgressBar = ({
   elapsedTime: number;
   completionRate: number;
 }) => {
+  const backgroundColor =
+    completionRate >= EXCELLENT_PROGRESS_THRESHOLD
+      ? "bg-green-500"
+      : completionRate >= GOOD_PROGRESS_THRESHOLD
+        ? "bg-orange-300"
+        : "bg-red-300";
+
   return (
     <div className="relative w-full space-y-3">
       <div className="mb-1 flex justify-between text-xs font-semibold">
         <span className="text-gray-600">
           🕒 Time Elapsed:{" "}
           {(elapsedTime * 100).toLocaleString(undefined, {
-            maximumFractionDigits: 2,
+            maximumFractionDigits: 1,
           })}
           %
         </span>
         <span className="text-green-600">
           ✅ Completion:{" "}
           {(completionRate * 100).toLocaleString(undefined, {
-            maximumFractionDigits: 2,
+            maximumFractionDigits: 1,
           })}
           %
         </span>
@@ -61,8 +68,8 @@ const ProgressBar = ({
           style={{ width: `${elapsedTime * 100}%` }}
         ></div>
         <div
-          className="absolute left-0 top-1/2 h-4 -translate-y-1/2 rounded-full bg-green-500"
-          style={{ width: `${completionRate * 100}%` }}
+          className={`absolute left-0 top-1/2 h-4 -translate-y-1/2 rounded-full bg-green-500 ${backgroundColor}`}
+          style={{ width: `${completionRate * elapsedTime * 100}%` }}
         ></div>
       </div>
     </div>
