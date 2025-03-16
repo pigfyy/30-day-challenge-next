@@ -1,3 +1,4 @@
+import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -7,23 +8,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Info, Trash } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Info, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 export const challengeFormSchema = z.object({
   title: z.string().nonempty({
@@ -212,10 +212,11 @@ export const CustomFormField = ({
             </TooltipProvider>
           </div>
           <FormControl>
-            <Input
+            <AutosizeTextarea
               placeholder={placeholder}
               {...field}
-              className={label === "Icon" ? "placeholder:opacity-15" : ""}
+              className="resize-none"
+              maxHeight={56}
             />
           </FormControl>
           <FormMessage />
