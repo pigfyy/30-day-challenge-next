@@ -41,6 +41,18 @@ const ProgressBar = ({
       : completionRate >= GOOD_PROGRESS_THRESHOLD
         ? "bg-orange-300"
         : "bg-red-300";
+  const textColor =
+    completionRate >= EXCELLENT_PROGRESS_THRESHOLD
+      ? "text-green-600"
+      : completionRate >= GOOD_PROGRESS_THRESHOLD
+        ? "text-orange-600"
+        : "text-red-600";
+  const emoji =
+    completionRate >= EXCELLENT_PROGRESS_THRESHOLD
+      ? "✅"
+      : completionRate >= GOOD_PROGRESS_THRESHOLD
+        ? "🟠"
+        : "🔴";
 
   return (
     <div className="relative w-full space-y-3">
@@ -52,8 +64,8 @@ const ProgressBar = ({
           })}
           %
         </span>
-        <span className="text-green-600">
-          ✅ Completion:{" "}
+        <span className={textColor}>
+          {emoji} Completion:{" "}
           {(completionRate * 100).toLocaleString(undefined, {
             maximumFractionDigits: 1,
           })}
