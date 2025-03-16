@@ -25,16 +25,15 @@ import {
   Pencil,
 } from "lucide-react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { EditChallenge } from "@/components/molecule/challenge-form/EditChallenge";
+import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { ScrollArea } from "./ui/scroll-area";
-import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
-import { useSearchParams } from "next/navigation";
 
 export const ViewChallengeHeader = () => {
   const searchParams = useSearchParams();
