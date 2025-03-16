@@ -1,5 +1,6 @@
 import {
   addDays,
+  differenceInCalendarDays,
   differenceInDays,
   eachDayOfInterval,
   endOfDay,
@@ -125,4 +126,20 @@ export const calculateCompletionRate = (
   ).length;
 
   return Math.min(1, completedDays / daysElapsed);
+};
+
+export const calculateElapsedTime = (
+  challenge: Challenge & { dailyProgress: DailyProgress[] },
+): number => {
+  const now = new Date();
+
+  const totalDays =
+    differenceInCalendarDays(challenge.endDate, challenge.startDate) + 1;
+
+  const daysElapsed = differenceInCalendarDays(now, challenge.startDate) + 1;
+
+  let fraction = daysElapsed / totalDays;
+  fraction = Math.max(0, Math.min(1, fraction));
+
+  return fraction;
 };

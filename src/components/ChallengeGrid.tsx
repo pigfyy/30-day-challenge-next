@@ -12,7 +12,10 @@ import {
 import { usePwa } from "@/hooks/use-pwa";
 import { toast } from "@/hooks/use-toast";
 import { useUrlState } from "@/hooks/use-url-state";
-import { calculateCompletionRate } from "@/lib/util/dates";
+import {
+  calculateCompletionRate,
+  calculateElapsedTime,
+} from "@/lib/util/dates";
 import { trpc } from "@/lib/util/trpc";
 import { Challenge, DailyProgress } from "@prisma/client";
 import { Pencil, PlusCircle, Smartphone } from "lucide-react";
@@ -20,6 +23,51 @@ import { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
 import { PwaInstallDialog } from "./PwaInstallDialog";
+import {
+  GOOD_PROGRESS_THRESHOLD,
+  EXCELLENT_PROGRESS_THRESHOLD,
+} from "@/lib/constants";
+
+const ProgressBar = ({
+  elapsedTime,
+  completionRate,
+}: {
+  elapsedTime: number;
+  completionRate: number;
+}) => {
+  return (
+    <div className="relative w-full space-y-3">
+      <div className="mb-1 flex justify-between text-xs font-semibold">
+        <span className="text-gray-600">
+          🕒 Time Elapsed:{" "}
+          {(elapsedTime * 100).toLocaleString(undefined, {
+            maximumFractionDigits: 2,
+          })}
+          %
+        </span>
+        <span className="text-green-600">
+          ✅ Completion:{" "}
+          {(completionRate * 100).toLocaleString(undefined, {
+            maximumFractionDigits: 2,
+          })}
+          %
+        </span>
+      </div>
+      <div className="relative h-3 w-full rounded-md bg-gray-300">
+        <div
+          className={`absolute left-0 top-0 h-3 bg-gray-500 ${
+            elapsedTime === 1 ? "rounded-full" : "rounded-l-full"
+          }`}
+          style={{ width: `${elapsedTime * 100}%` }}
+        ></div>
+        <div
+          className="absolute left-0 top-1/2 h-4 -translate-y-1/2 rounded-full bg-green-500"
+          style={{ width: `${completionRate * 100}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+};
 
 const ChallengeCard = ({
   challenge,
@@ -32,11 +80,12 @@ const ChallengeCard = ({
 }) => {
   const { setQueryParam } = useUrlState();
 
+  const elapsedTime = calculateElapsedTime(challenge);
   const completionRate = calculateCompletionRate(challenge);
   const shadowColor =
-    completionRate >= 0.8
+    completionRate >= EXCELLENT_PROGRESS_THRESHOLD
       ? "hover:shadow-green-500/20"
-      : completionRate >= 0.6
+      : completionRate >= GOOD_PROGRESS_THRESHOLD
         ? "hover:shadow-orange-500/20"
         : "hover:shadow-red-500/20";
 
@@ -61,20 +110,27 @@ const ChallengeCard = ({
         <CardTitle className="text-lg font-semibold">
           {challenge.title}
         </CardTitle>
-        <CardDescription className="text-base text-foreground">
-          <span className="font-semibold">Wish:</span> {challenge.wish}
-        </CardDescription>
-        {/* Elegant Date Range Display */}
-        <div className="mt-2 text-sm text-muted-foreground">
-          {new Date(challenge.startDate).toLocaleDateString()} -{" "}
-          {new Date(challenge.endDate).toLocaleDateString()}
-        </div>
       </CardHeader>
-      <CardContent className="mt-2">
-        <p className="text-base">
-          <span className="font-semibold">Daily Action:</span>{" "}
-          <span className="text-muted-foreground">{challenge.dailyAction}</span>
-        </p>
+      <CardContent>
+        <div className="mb-7 space-y-2">
+          <p className="text-base text-foreground">
+            <span className="font-semibold">Wish:</span> {challenge.wish}
+          </p>
+          <p className="text-base">
+            <span className="font-semibold text-black">Daily Action:</span>{" "}
+            {challenge.dailyAction}
+          </p>
+        </div>
+        <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+          <div className="flex justify-between">
+            <span>{new Date(challenge.startDate).toLocaleDateString()}</span>
+            <span>{new Date(challenge.endDate).toLocaleDateString()}</span>
+          </div>
+          <ProgressBar
+            elapsedTime={elapsedTime}
+            completionRate={completionRate}
+          />
+        </div>
       </CardContent>
       <CardFooter className="mt-4 gap-2">
         <Button
