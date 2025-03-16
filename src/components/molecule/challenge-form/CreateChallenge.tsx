@@ -44,7 +44,8 @@ export function CreateChallenge() {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.target === el) {
-          setLeftCardHeight(entry.contentRect.height);
+          const rect = el.getBoundingClientRect();
+          setLeftCardHeight(rect.height);
         }
       }
     });
@@ -61,8 +62,8 @@ export function CreateChallenge() {
 
   return (
     <div className="flex w-full flex-col-reverse gap-6 md:flex-row md:flex-wrap md:justify-center">
-      <div ref={leftCardRef} className="w-full md:w-1/3">
-        <Card className="w-full">
+      <div className="w-full md:w-1/3">
+        <Card className="w-full" ref={leftCardRef}>
           <CardHeader>
             {challenges?.length ? (
               <div className="mb-6">
