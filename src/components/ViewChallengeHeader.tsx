@@ -50,7 +50,7 @@ export const ViewChallengeHeader = () => {
     });
 
   const [isImagesSheetOpen, setIsImagesSheetOpen] = useState(false);
-  const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
+  const [isReflectDialogOpen, setIsReflectDialogOpen] = useState(false);
   const [isEditChallengeDialogOpen, setIsEditChallengeDialogOpen] =
     useState(false);
 
@@ -95,7 +95,7 @@ export const ViewChallengeHeader = () => {
           <Button
             className="h-9 w-9 sm:h-auto sm:w-auto"
             variant="outline"
-            onClick={() => setIsNoteDialogOpen(true)}
+            onClick={() => setIsReflectDialogOpen(true)}
           >
             <Notebook /> <span className="hidden sm:block">Reflect</span>
           </Button>
@@ -109,14 +109,14 @@ export const ViewChallengeHeader = () => {
           <ProgressImageDisplay dailyProgress={dailyProgress} />
         </SheetComponent>
         <DialogComponent
-          isDialogOpen={isNoteDialogOpen}
-          setIsDialogOpen={setIsNoteDialogOpen}
+          isDialogOpen={isReflectDialogOpen}
+          setIsDialogOpen={setIsReflectDialogOpen}
           title="Add a reflection"
           description="Write a reflection for this challenge. Click save when you're done."
         >
           <EditNoteForm
             challenge={challenge}
-            setIsDialogOpen={setIsNoteDialogOpen}
+            setIsDialogOpen={setIsReflectDialogOpen}
           />
         </DialogComponent>
         <EditChallengeDialog
