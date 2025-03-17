@@ -113,14 +113,16 @@ export const isDateValid = (dateToCheck: Date, startDate: Date) => {
 export const calculateCompletionRate = (
   challenge: Challenge & { dailyProgress: DailyProgress[] },
 ) => {
-  const currentDate = new Date();
+  const today = new Date();
+
+  const endDate = today < challenge.endDate ? today : challenge.endDate;
   const startDate = new Date(challenge.startDate);
 
   if (isFuture(startDate)) {
     return 0;
   }
 
-  const daysElapsed = Math.max(1, differenceInDays(currentDate, startDate) + 1);
+  const daysElapsed = Math.max(1, differenceInDays(endDate, startDate) + 1);
   const completedDays = challenge.dailyProgress.filter(
     (progress: DailyProgress) => progress.completed,
   ).length;
