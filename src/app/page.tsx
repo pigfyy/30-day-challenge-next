@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SignInButton } from "@clerk/nextjs";
+import LearnMoreButton from "@/components/LearnMoreButton";
 
 export default function LandingPage() {
   return (
@@ -28,8 +29,8 @@ export default function LandingPage() {
             </h1>
             <div className="my-6 h-1 w-20 rounded-full bg-gradient-to-r from-blue-600 to-purple-600"></div>
             <p className="mt-4 max-w-2xl text-xl leading-relaxed text-gray-600">
-              Track your habits, build your discipline, and transform your life
-              one day at a time.
+              Track your habits, build your discipline, and build a new you
+              month by month.
             </p>
             <div className="mt-12 flex flex-col gap-4 sm:flex-row">
               <SignInButton forceRedirectUrl={"/app"}>
@@ -40,20 +41,14 @@ export default function LandingPage() {
                   Get Started
                 </Button>
               </SignInButton>
-              <Button
-                size="lg"
-                variant="outline"
-                className="transform border-2 text-lg font-semibold shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
-              >
-                Learn More
-              </Button>
+              <LearnMoreButton />
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="relative w-full overflow-hidden py-24">
+      <section id="features" className="relative w-full overflow-hidden py-24">
         <div className="absolute right-0 top-0 -mr-10 -mt-10 h-40 w-40 rounded-full bg-yellow-300 opacity-10"></div>
         <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-60 w-60 rounded-full bg-blue-300 opacity-10"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
