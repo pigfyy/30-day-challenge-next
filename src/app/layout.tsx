@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <ClerkProvider>
+        <ClerkProvider afterSignOutUrl="/">
           <html lang="en">
             <head>
               <meta
@@ -35,16 +35,7 @@ export default function RootLayout({
                   <main className="flex flex-1">{children}</main>
                 </SignedIn>
                 <SignedOut>
-                  <main className="flex flex-1 items-center justify-center">
-                    <div className="text-center">
-                      <h1 className="text-3xl font-bold">
-                        Welcome to 30 Day Me
-                      </h1>
-                      <p className="text-gray-700">
-                        Sign in to start your journey towards a healthier life.
-                      </p>
-                    </div>
-                  </main>
+                  <main className="flex flex-1">{children}</main>
                 </SignedOut>
                 <Toaster />
                 {/* DEVELOPER TOOLS */}

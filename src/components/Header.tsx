@@ -31,7 +31,7 @@ export const Header = () => {
         </div>
         <div className="flex items-center space-x-4">
           <SignedOut>
-            <SignInButton>
+            <SignInButton forceRedirectUrl={"/app"}>
               <Button variant="outline" className="text-gray-700">
                 Sign In
               </Button>

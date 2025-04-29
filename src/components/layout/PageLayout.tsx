@@ -53,6 +53,8 @@ const Challenges = () => {
 export function PageLayout() {
   const { data: user, isLoading } = trpc.user.getUser.useQuery();
 
+  console.log(user);
+
   if (!isLoading && !user) {
     throw new Error("User not found");
   }
