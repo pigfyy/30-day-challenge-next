@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { SignInButton } from "@clerk/nextjs";
 import LearnMoreButton from "@/components/LearnMoreButton";
 
+export async function generateMetadata() {
+  return "30 Day Me";
+}
+
 export default function LandingPage() {
   return (
     <div className="flex w-full flex-col items-center overflow-x-hidden">
