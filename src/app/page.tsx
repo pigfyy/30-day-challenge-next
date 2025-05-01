@@ -6,7 +6,9 @@ import LearnMoreButton from "@/components/LearnMoreButton";
 import PwaRedirectHandler from "@/components/PwaRedirectHandler";
 
 export async function generateMetadata() {
-  return "30 Day Me";
+  return {
+    title: "30 Day Me",
+  };
 }
 
 export default function LandingPage() {
