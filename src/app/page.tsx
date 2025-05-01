@@ -377,7 +377,11 @@ export default function LandingPage() {
             <div className="flex items-center justify-center">
               <div
                 className="relative overflow-hidden rounded-xl shadow-2xl"
-                style={{ maxWidth: "100%", width: "600px", height: "550px" }}
+                style={{
+                  maxWidth: "600px",
+                  width: "100%",
+                  aspectRatio: "600 / 550",
+                }}
               >
                 <div
                   className="absolute inset-0"
@@ -394,8 +398,9 @@ export default function LandingPage() {
                     src="/dashboard-demo.webp"
                     alt="30 Day Me Dashboard Demo"
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     priority
+                    unoptimized
                   />
                 </div>
               </div>
@@ -508,7 +513,11 @@ export default function LandingPage() {
             <div className="flex items-center justify-center">
               <div
                 className="relative overflow-hidden rounded-xl shadow-2xl"
-                style={{ maxWidth: "100%", width: "600px", height: "550px" }}
+                style={{
+                  maxWidth: "600px",
+                  width: "100%",
+                  aspectRatio: "600 / 550",
+                }}
               >
                 <div
                   className="absolute inset-0"
@@ -525,8 +534,9 @@ export default function LandingPage() {
                     src="/trackdemo.webp"
                     alt="30 Day Me Challenge Page Demo"
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     priority
+                    unoptimized
                   />
                 </div>
               </div>
@@ -622,7 +632,11 @@ export default function LandingPage() {
             <div className="flex items-center justify-center">
               <div
                 className="relative overflow-hidden rounded-xl shadow-2xl"
-                style={{ maxWidth: "100%", width: "600px", height: "550px" }}
+                style={{
+                  maxWidth: "600px",
+                  width: "100%",
+                  aspectRatio: "600 / 550",
+                }}
               >
                 <div
                   className="absolute inset-0"
@@ -639,8 +653,9 @@ export default function LandingPage() {
                     src="/createdemo.webp"
                     alt="30 Day Me Challenge Creation Demo"
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     priority
+                    unoptimized
                   />
                 </div>
               </div>
