@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SignInButton } from "@clerk/nextjs";
 import LearnMoreButton from "@/components/LearnMoreButton";
+import PwaRedirectHandler from "@/components/PwaRedirectHandler";
 
 export async function generateMetadata() {
   return "30 Day Me";
@@ -11,6 +12,7 @@ export async function generateMetadata() {
 export default function LandingPage() {
   return (
     <div className="flex w-full flex-col items-center overflow-x-hidden">
+      <PwaRedirectHandler />
       {/* Hero Section */}
       <section className="w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 py-24">
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
