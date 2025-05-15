@@ -1,7 +1,7 @@
 "use client";
 
 import { trpc } from "@/lib/util/trpc";
-import { Challenge } from "@prisma/client";
+import { Challenge } from "@/lib/db/prisma-zod-types";
 import { useUrlState } from "@/hooks/use-url-state";
 import { z } from "zod";
 import {

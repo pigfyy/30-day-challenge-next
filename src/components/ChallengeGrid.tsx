@@ -17,7 +17,7 @@ import {
   calculateElapsedTime,
 } from "@/lib/util/dates";
 import { trpc } from "@/lib/util/trpc";
-import { Challenge, DailyProgress } from "@prisma/client";
+import { Challenge, DailyProgress } from "@/lib/db/prisma-zod-types";
 import { Pencil, PlusCircle, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";

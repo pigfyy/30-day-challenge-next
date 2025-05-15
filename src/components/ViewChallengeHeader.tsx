@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/util/trpc";
-import { Challenge, DailyProgress } from "@prisma/client";
+import { Challenge, DailyProgress } from "@/lib/db/prisma-zod-types";
 import {
   ChevronDown,
   ChevronUp,

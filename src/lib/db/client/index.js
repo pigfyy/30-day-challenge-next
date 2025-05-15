@@ -195,11 +195,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "POSTGRES_PRISMA_URL",
-        "value": "postgres://default:yKQgaloH18xs@ep-steep-hat-a6cc05w2-pooler.us-west-2.aws.neon.tech:5432/verceldb?sslmode=require&pgbouncer=true&connect_timeout=15"
+        "value": null
       }
     }
   },

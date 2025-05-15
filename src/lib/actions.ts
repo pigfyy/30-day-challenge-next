@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "./db/(root)/prisma";
 import { uploadImage } from "./db/dailyProgress";
-import { Challenge } from "@prisma/client";
+import { Challenge } from "@/lib/db/prisma-zod-types";
 import webpush from "web-push";
 
 webpush.setVapidDetails(

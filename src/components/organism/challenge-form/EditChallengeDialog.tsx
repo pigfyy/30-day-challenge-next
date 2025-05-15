@@ -1,6 +1,6 @@
 import { EditChallenge } from "@/components/molecule/challenge-form/EditChallenge";
 import { DialogComponent } from "@/components/molecule/DialogComponent";
-import { Challenge } from "@prisma/client";
+import { Challenge } from "@/lib/db/prisma-zod-types";
 
 export const EditChallengeDialog = ({
   challenge,

@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/collapsible";
 import { handleDailyProgressImageUpload } from "@/lib/actions";
 import { trpc } from "@/lib/util/trpc";
-import { Challenge, DailyProgress } from "@prisma/client";
+import { Challenge, DailyProgress } from "@/lib/db/prisma-zod-types";
 import { isSameDay } from "date-fns";
 import { ChevronDown, X } from "lucide-react";
 import Image from "next/image";
