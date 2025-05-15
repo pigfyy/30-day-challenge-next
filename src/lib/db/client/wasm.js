@@ -149,6 +149,7 @@ exports.Prisma.DailyProgressScalarFieldEnum = {
   date: 'date',
   completed: 'completed',
   imageUrl: 'imageUrl',
+  note: 'note',
   challengeId: 'challengeId',
   userId: 'userId',
   createdAt: 'createdAt',

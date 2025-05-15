@@ -45,6 +45,7 @@ export const DailyProgressScalarFieldEnumSchema = z.enum([
   "date",
   "completed",
   "imageUrl",
+  "note",
   "challengeId",
   "userId",
   "createdAt",
@@ -144,6 +145,7 @@ export const DailyProgressSchema = z.object({
   date: z.coerce.date(),
   completed: z.boolean(),
   imageUrl: z.string(),
+  note: z.string(),
   challengeId: z.string(),
   userId: z.string(),
   createdAt: z.coerce.date(),
@@ -159,6 +161,7 @@ export const DailyProgressOptionalDefaultsSchema = DailyProgressSchema.merge(
   z.object({
     id: z.string().optional(),
     imageUrl: z.string().optional(),
+    note: z.string().optional(),
     createdAt: z.coerce.date().optional(),
     updatedAt: z.coerce.date().optional(),
   }),

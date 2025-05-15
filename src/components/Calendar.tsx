@@ -141,6 +141,7 @@ function Day({
         userId: newDailyProgress.userId || "current-user-id",
         createdAt: newDailyProgress.createdAt || new Date(),
         updatedAt: newDailyProgress.updatedAt || new Date(),
+        note: newDailyProgress.note || "",
       };
 
       utils.dailyProgress.getDailyProgress.setData(
