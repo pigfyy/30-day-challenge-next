@@ -1,7 +1,6 @@
 import { viewDailyProgressCompletion } from "@/lib/db/dailyProgress";
 import { findUserByClerkId } from "@/lib/db/user";
 import { handleError, validateRequest } from "@/lib/util/routeUtils";
-import { DailyProgressSchema } from "@30-day-challenge/prisma-zod";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 

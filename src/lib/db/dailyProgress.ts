@@ -1,4 +1,4 @@
-import { DailyProgressOptionalDefaults } from "@30-day-challenge/prisma-zod";
+import { DailyProgressOptionalDefaults } from "./prisma-zod-types";
 import { prisma } from "./(root)/prisma";
 import { base64ToBlob } from "../util";
 import { put, del } from "@vercel/blob";

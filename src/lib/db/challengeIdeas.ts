@@ -1,6 +1,6 @@
 import { pc } from "@/lib/db/(root)/pinecone";
 import { openai } from "@/lib/util";
-import { ChallengeIdeaOptionalDefaults } from "@30-day-challenge/prisma-zod";
+import { ChallengeIdeaOptionalDefaults } from "./prisma-zod-types";
 import { prisma } from "./(root)/prisma";
 import { ChallengeIdea } from "@prisma/client";
 

@@ -3,10 +3,7 @@ import { findUserByClerkId } from "@/lib/db/user";
 import { handleError, validateRequest } from "@/lib/util/routeUtils";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import {
-  ChallengeSchema,
-  DailyProgressOptionalDefaultsSchema,
-} from "@30-day-challenge/prisma-zod";
+import { DailyProgressOptionalDefaultsSchema } from "@/lib/db/prisma-zod-types";
 import { editDailyProgressCompletion } from "@/lib/db/dailyProgress";
 
 const schema = DailyProgressOptionalDefaultsSchema.omit({

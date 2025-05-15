@@ -6,7 +6,7 @@ import {
   deleteChallenge,
   getChallenges,
 } from "@/lib/db/challenge";
-import { ChallengeOptionalDefaultsSchema } from "@30-day-challenge/prisma-zod";
+import { ChallengeOptionalDefaultsSchema } from "@/lib/db/prisma-zod-types";
 
 export const challengeRouter = router({
   getChallenges: procedure
