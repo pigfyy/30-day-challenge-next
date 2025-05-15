@@ -2511,7 +2511,7 @@ export namespace Prisma {
     wish: string
     dailyAction: string
     icon: string
-    note: string | null
+    note: string
     startDate: Date
     endDate: Date
     createdAt: Date
@@ -2622,7 +2622,7 @@ export namespace Prisma {
       wish: string
       dailyAction: string
       icon: string
-      note: string | null
+      note: string
       startDate: Date
       endDate: Date
       createdAt: Date
@@ -5767,14 +5767,6 @@ export namespace Prisma {
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-  export const NullsOrder: {
-    first: 'first',
-    last: 'last'
-  };
-
-  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
   /**
    * Field references
    */
@@ -5923,7 +5915,7 @@ export namespace Prisma {
     wish?: StringFilter<"Challenge"> | string
     dailyAction?: StringFilter<"Challenge"> | string
     icon?: StringFilter<"Challenge"> | string
-    note?: StringNullableFilter<"Challenge"> | string | null
+    note?: StringFilter<"Challenge"> | string
     startDate?: DateTimeFilter<"Challenge"> | Date | string
     endDate?: DateTimeFilter<"Challenge"> | Date | string
     createdAt?: DateTimeFilter<"Challenge"> | Date | string
@@ -5939,7 +5931,7 @@ export namespace Prisma {
     wish?: SortOrder
     dailyAction?: SortOrder
     icon?: SortOrder
-    note?: SortOrderInput | SortOrder
+    note?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     createdAt?: SortOrder
@@ -5958,7 +5950,7 @@ export namespace Prisma {
     wish?: StringFilter<"Challenge"> | string
     dailyAction?: StringFilter<"Challenge"> | string
     icon?: StringFilter<"Challenge"> | string
-    note?: StringNullableFilter<"Challenge"> | string | null
+    note?: StringFilter<"Challenge"> | string
     startDate?: DateTimeFilter<"Challenge"> | Date | string
     endDate?: DateTimeFilter<"Challenge"> | Date | string
     createdAt?: DateTimeFilter<"Challenge"> | Date | string
@@ -5974,7 +5966,7 @@ export namespace Prisma {
     wish?: SortOrder
     dailyAction?: SortOrder
     icon?: SortOrder
-    note?: SortOrderInput | SortOrder
+    note?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     createdAt?: SortOrder
@@ -5994,7 +5986,7 @@ export namespace Prisma {
     wish?: StringWithAggregatesFilter<"Challenge"> | string
     dailyAction?: StringWithAggregatesFilter<"Challenge"> | string
     icon?: StringWithAggregatesFilter<"Challenge"> | string
-    note?: StringNullableWithAggregatesFilter<"Challenge"> | string | null
+    note?: StringWithAggregatesFilter<"Challenge"> | string
     startDate?: DateTimeWithAggregatesFilter<"Challenge"> | Date | string
     endDate?: DateTimeWithAggregatesFilter<"Challenge"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"Challenge"> | Date | string
@@ -6228,7 +6220,7 @@ export namespace Prisma {
     wish: string
     dailyAction: string
     icon?: string
-    note?: string | null
+    note?: string
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
@@ -6243,7 +6235,7 @@ export namespace Prisma {
     wish: string
     dailyAction: string
     icon?: string
-    note?: string | null
+    note?: string
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
@@ -6258,7 +6250,7 @@ export namespace Prisma {
     wish?: StringFieldUpdateOperationsInput | string
     dailyAction?: StringFieldUpdateOperationsInput | string
     icon?: StringFieldUpdateOperationsInput | string
-    note?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6273,7 +6265,7 @@ export namespace Prisma {
     wish?: StringFieldUpdateOperationsInput | string
     dailyAction?: StringFieldUpdateOperationsInput | string
     icon?: StringFieldUpdateOperationsInput | string
-    note?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6288,7 +6280,7 @@ export namespace Prisma {
     wish: string
     dailyAction: string
     icon?: string
-    note?: string | null
+    note?: string
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
@@ -6302,7 +6294,7 @@ export namespace Prisma {
     wish?: StringFieldUpdateOperationsInput | string
     dailyAction?: StringFieldUpdateOperationsInput | string
     icon?: StringFieldUpdateOperationsInput | string
-    note?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6315,7 +6307,7 @@ export namespace Prisma {
     wish?: StringFieldUpdateOperationsInput | string
     dailyAction?: StringFieldUpdateOperationsInput | string
     icon?: StringFieldUpdateOperationsInput | string
-    note?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6580,29 +6572,9 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
   }
 
   export type ChallengeCountOrderByAggregateInput = {
@@ -6645,24 +6617,6 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -6898,10 +6852,6 @@ export namespace Prisma {
     connect?: DailyProgressWhereUniqueInput | DailyProgressWhereUniqueInput[]
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type UserUpdateOneRequiredWithoutChallengesNestedInput = {
     create?: XOR<UserCreateWithoutChallengesInput, UserUncheckedCreateWithoutChallengesInput>
     connectOrCreate?: UserCreateOrConnectWithoutChallengesInput
@@ -7045,48 +6995,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -7133,7 +7041,7 @@ export namespace Prisma {
     wish: string
     dailyAction: string
     icon?: string
-    note?: string | null
+    note?: string
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
@@ -7147,7 +7055,7 @@ export namespace Prisma {
     wish: string
     dailyAction: string
     icon?: string
-    note?: string | null
+    note?: string
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
@@ -7220,7 +7128,7 @@ export namespace Prisma {
     wish?: StringFilter<"Challenge"> | string
     dailyAction?: StringFilter<"Challenge"> | string
     icon?: StringFilter<"Challenge"> | string
-    note?: StringNullableFilter<"Challenge"> | string | null
+    note?: StringFilter<"Challenge"> | string
     startDate?: DateTimeFilter<"Challenge"> | Date | string
     endDate?: DateTimeFilter<"Challenge"> | Date | string
     createdAt?: DateTimeFilter<"Challenge"> | Date | string
@@ -7370,7 +7278,7 @@ export namespace Prisma {
     wish: string
     dailyAction: string
     icon?: string
-    note?: string | null
+    note?: string
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
@@ -7384,7 +7292,7 @@ export namespace Prisma {
     wish: string
     dailyAction: string
     icon?: string
-    note?: string | null
+    note?: string
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
@@ -7441,7 +7349,7 @@ export namespace Prisma {
     wish?: StringFieldUpdateOperationsInput | string
     dailyAction?: StringFieldUpdateOperationsInput | string
     icon?: StringFieldUpdateOperationsInput | string
-    note?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7455,7 +7363,7 @@ export namespace Prisma {
     wish?: StringFieldUpdateOperationsInput | string
     dailyAction?: StringFieldUpdateOperationsInput | string
     icon?: StringFieldUpdateOperationsInput | string
-    note?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7502,7 +7410,7 @@ export namespace Prisma {
     wish: string
     dailyAction: string
     icon?: string
-    note?: string | null
+    note?: string
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
@@ -7525,7 +7433,7 @@ export namespace Prisma {
     wish?: StringFieldUpdateOperationsInput | string
     dailyAction?: StringFieldUpdateOperationsInput | string
     icon?: StringFieldUpdateOperationsInput | string
-    note?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7539,7 +7447,7 @@ export namespace Prisma {
     wish?: StringFieldUpdateOperationsInput | string
     dailyAction?: StringFieldUpdateOperationsInput | string
     icon?: StringFieldUpdateOperationsInput | string
-    note?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7553,7 +7461,7 @@ export namespace Prisma {
     wish?: StringFieldUpdateOperationsInput | string
     dailyAction?: StringFieldUpdateOperationsInput | string
     icon?: StringFieldUpdateOperationsInput | string
-    note?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

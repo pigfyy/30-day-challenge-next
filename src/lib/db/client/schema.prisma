@@ -45,7 +45,7 @@ model Challenge {
   wish          String
   dailyAction   String
   icon          String          @default("✅")
-  note          String?         @default("")
+  note          String          @default("")
   startDate     DateTime
   endDate       DateTime
   createdAt     DateTime        @default(now())
