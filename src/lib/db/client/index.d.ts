@@ -3517,7 +3517,6 @@ export namespace Prisma {
     date: Date | null
     completed: boolean | null
     imageUrl: string | null
-    note: string | null
     challengeId: string | null
     userId: string | null
     createdAt: Date | null
@@ -3529,7 +3528,6 @@ export namespace Prisma {
     date: Date | null
     completed: boolean | null
     imageUrl: string | null
-    note: string | null
     challengeId: string | null
     userId: string | null
     createdAt: Date | null
@@ -3541,7 +3539,6 @@ export namespace Prisma {
     date: number
     completed: number
     imageUrl: number
-    note: number
     challengeId: number
     userId: number
     createdAt: number
@@ -3555,7 +3552,6 @@ export namespace Prisma {
     date?: true
     completed?: true
     imageUrl?: true
-    note?: true
     challengeId?: true
     userId?: true
     createdAt?: true
@@ -3567,7 +3563,6 @@ export namespace Prisma {
     date?: true
     completed?: true
     imageUrl?: true
-    note?: true
     challengeId?: true
     userId?: true
     createdAt?: true
@@ -3579,7 +3574,6 @@ export namespace Prisma {
     date?: true
     completed?: true
     imageUrl?: true
-    note?: true
     challengeId?: true
     userId?: true
     createdAt?: true
@@ -3664,7 +3658,6 @@ export namespace Prisma {
     date: Date
     completed: boolean
     imageUrl: string
-    note: string
     challengeId: string
     userId: string
     createdAt: Date
@@ -3693,7 +3686,6 @@ export namespace Prisma {
     date?: boolean
     completed?: boolean
     imageUrl?: boolean
-    note?: boolean
     challengeId?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -3707,7 +3699,6 @@ export namespace Prisma {
     date?: boolean
     completed?: boolean
     imageUrl?: boolean
-    note?: boolean
     challengeId?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -3721,7 +3712,6 @@ export namespace Prisma {
     date?: boolean
     completed?: boolean
     imageUrl?: boolean
-    note?: boolean
     challengeId?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -3735,14 +3725,13 @@ export namespace Prisma {
     date?: boolean
     completed?: boolean
     imageUrl?: boolean
-    note?: boolean
     challengeId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DailyProgressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "completed" | "imageUrl" | "note" | "challengeId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["dailyProgress"]>
+  export type DailyProgressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "completed" | "imageUrl" | "challengeId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["dailyProgress"]>
   export type DailyProgressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     challenge?: boolean | ChallengeDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3767,7 +3756,6 @@ export namespace Prisma {
       date: Date
       completed: boolean
       imageUrl: string
-      note: string
       challengeId: string
       userId: string
       createdAt: Date
@@ -4201,7 +4189,6 @@ export namespace Prisma {
     readonly date: FieldRef<"DailyProgress", 'DateTime'>
     readonly completed: FieldRef<"DailyProgress", 'Boolean'>
     readonly imageUrl: FieldRef<"DailyProgress", 'String'>
-    readonly note: FieldRef<"DailyProgress", 'String'>
     readonly challengeId: FieldRef<"DailyProgress", 'String'>
     readonly userId: FieldRef<"DailyProgress", 'String'>
     readonly createdAt: FieldRef<"DailyProgress", 'DateTime'>
@@ -5741,7 +5728,6 @@ export namespace Prisma {
     date: 'date',
     completed: 'completed',
     imageUrl: 'imageUrl',
-    note: 'note',
     challengeId: 'challengeId',
     userId: 'userId',
     createdAt: 'createdAt',
@@ -6024,7 +6010,6 @@ export namespace Prisma {
     date?: DateTimeFilter<"DailyProgress"> | Date | string
     completed?: BoolFilter<"DailyProgress"> | boolean
     imageUrl?: StringFilter<"DailyProgress"> | string
-    note?: StringFilter<"DailyProgress"> | string
     challengeId?: StringFilter<"DailyProgress"> | string
     userId?: StringFilter<"DailyProgress"> | string
     createdAt?: DateTimeFilter<"DailyProgress"> | Date | string
@@ -6038,7 +6023,6 @@ export namespace Prisma {
     date?: SortOrder
     completed?: SortOrder
     imageUrl?: SortOrder
-    note?: SortOrder
     challengeId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -6055,7 +6039,6 @@ export namespace Prisma {
     date?: DateTimeFilter<"DailyProgress"> | Date | string
     completed?: BoolFilter<"DailyProgress"> | boolean
     imageUrl?: StringFilter<"DailyProgress"> | string
-    note?: StringFilter<"DailyProgress"> | string
     challengeId?: StringFilter<"DailyProgress"> | string
     userId?: StringFilter<"DailyProgress"> | string
     createdAt?: DateTimeFilter<"DailyProgress"> | Date | string
@@ -6069,7 +6052,6 @@ export namespace Prisma {
     date?: SortOrder
     completed?: SortOrder
     imageUrl?: SortOrder
-    note?: SortOrder
     challengeId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -6087,7 +6069,6 @@ export namespace Prisma {
     date?: DateTimeWithAggregatesFilter<"DailyProgress"> | Date | string
     completed?: BoolWithAggregatesFilter<"DailyProgress"> | boolean
     imageUrl?: StringWithAggregatesFilter<"DailyProgress"> | string
-    note?: StringWithAggregatesFilter<"DailyProgress"> | string
     challengeId?: StringWithAggregatesFilter<"DailyProgress"> | string
     userId?: StringWithAggregatesFilter<"DailyProgress"> | string
     createdAt?: DateTimeWithAggregatesFilter<"DailyProgress"> | Date | string
@@ -6347,7 +6328,6 @@ export namespace Prisma {
     date: Date | string
     completed: boolean
     imageUrl?: string
-    note?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     challenge: ChallengeCreateNestedOneWithoutDailyProgressInput
@@ -6359,7 +6339,6 @@ export namespace Prisma {
     date: Date | string
     completed: boolean
     imageUrl?: string
-    note?: string
     challengeId: string
     userId: string
     createdAt?: Date | string
@@ -6371,7 +6350,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     challenge?: ChallengeUpdateOneRequiredWithoutDailyProgressNestedInput
@@ -6383,7 +6361,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     challengeId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6395,7 +6372,6 @@ export namespace Prisma {
     date: Date | string
     completed: boolean
     imageUrl?: string
-    note?: string
     challengeId: string
     userId: string
     createdAt?: Date | string
@@ -6407,7 +6383,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6417,7 +6392,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     challengeId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6706,7 +6680,6 @@ export namespace Prisma {
     date?: SortOrder
     completed?: SortOrder
     imageUrl?: SortOrder
-    note?: SortOrder
     challengeId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -6718,7 +6691,6 @@ export namespace Prisma {
     date?: SortOrder
     completed?: SortOrder
     imageUrl?: SortOrder
-    note?: SortOrder
     challengeId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -6730,7 +6702,6 @@ export namespace Prisma {
     date?: SortOrder
     completed?: SortOrder
     imageUrl?: SortOrder
-    note?: SortOrder
     challengeId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -7199,7 +7170,6 @@ export namespace Prisma {
     date: Date | string
     completed: boolean
     imageUrl?: string
-    note?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     challenge: ChallengeCreateNestedOneWithoutDailyProgressInput
@@ -7210,7 +7180,6 @@ export namespace Prisma {
     date: Date | string
     completed: boolean
     imageUrl?: string
-    note?: string
     challengeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7283,7 +7252,6 @@ export namespace Prisma {
     date?: DateTimeFilter<"DailyProgress"> | Date | string
     completed?: BoolFilter<"DailyProgress"> | boolean
     imageUrl?: StringFilter<"DailyProgress"> | string
-    note?: StringFilter<"DailyProgress"> | string
     challengeId?: StringFilter<"DailyProgress"> | string
     userId?: StringFilter<"DailyProgress"> | string
     createdAt?: DateTimeFilter<"DailyProgress"> | Date | string
@@ -7322,7 +7290,6 @@ export namespace Prisma {
     date: Date | string
     completed: boolean
     imageUrl?: string
-    note?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutDailyProgressInput
@@ -7333,7 +7300,6 @@ export namespace Prisma {
     date: Date | string
     completed: boolean
     imageUrl?: string
-    note?: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7548,7 +7514,6 @@ export namespace Prisma {
     date: Date | string
     completed: boolean
     imageUrl?: string
-    note?: string
     challengeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7600,7 +7565,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     challenge?: ChallengeUpdateOneRequiredWithoutDailyProgressNestedInput
@@ -7611,7 +7575,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     challengeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7622,7 +7585,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     challengeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7633,7 +7595,6 @@ export namespace Prisma {
     date: Date | string
     completed: boolean
     imageUrl?: string
-    note?: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7644,7 +7605,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutDailyProgressNestedInput
@@ -7655,7 +7615,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7666,7 +7625,6 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: StringFieldUpdateOperationsInput | string
-    note?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

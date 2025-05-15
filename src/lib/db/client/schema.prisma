@@ -60,7 +60,6 @@ model DailyProgress {
   date        DateTime
   completed   Boolean
   imageUrl    String    @default("")
-  note        String    @default("")
   challengeId String
   challenge   Challenge @relation(fields: [challengeId], references: [id])
   userId      String
