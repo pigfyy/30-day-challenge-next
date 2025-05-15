@@ -7,7 +7,7 @@ import { handleDailyProgressImageUpload } from "@/lib/actions";
 import { trpc } from "@/lib/util/trpc";
 import { Challenge, DailyProgress } from "@prisma/client";
 import { isSameDay } from "date-fns";
-import { ChevronsUpDown, X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
@@ -117,6 +117,7 @@ export const ViewDayDialog = ({
 }) => {
   const utils = trpc.useUtils();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(true);
 
   const { selectedFile, setSelectedFile, previewUrl, dimensions } =
     useImagePreview();
@@ -243,12 +244,18 @@ export const ViewDayDialog = ({
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-7">
-          <Collapsible defaultOpen={true}>
+          <Collapsible
+            defaultOpen={true}
+            open={isCollapsibleOpen}
+            onOpenChange={setIsCollapsibleOpen}
+          >
             <div className="flex items-center gap-8">
               <span className="text-md font-bold">Upload an image</span>
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm">
-                  <ChevronsUpDown className="h-4 w-4" />
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${isCollapsibleOpen ? "rotate-180" : ""}`}
+                  />
                   <span className="sr-only">Toggle</span>
                 </Button>
               </CollapsibleTrigger>
