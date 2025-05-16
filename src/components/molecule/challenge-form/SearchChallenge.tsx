@@ -20,6 +20,7 @@ import { Loader2, Pencil } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 import { useState } from "react";
 import { useUrlState } from "@/hooks/use-url-state";
+import { addDays } from "date-fns";
 
 const ChallengeIdea = ({
   challengeIdea,
@@ -136,6 +137,8 @@ export const ChallengeSearchCard = ({
       wish: challengeIdea.wish,
       dailyAction: challengeIdea.dailyAction,
       icon: "✅",
+      startDate: new Date(),
+      endDate: addDays(new Date(), 30),
     });
   };
 
