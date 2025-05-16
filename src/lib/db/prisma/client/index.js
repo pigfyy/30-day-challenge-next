@@ -179,6 +179,10 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -186,7 +190,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../../../.env"
   },
   "relativePath": "../../../../../prisma",
@@ -205,8 +209,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/lib/db/prisma/client\"\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"POSTGRES_PRISMA_URL\")\n  directUrl = env(\"POSTGRES_URL_NON_POOLING\")\n}\n\ngenerator zod {\n  provider                         = \"zod-prisma-types\"\n  output                           = \"../src/lib/db/prisma/zod-types\"\n  useMultipleFiles                 = false // default is false\n  createInputTypes                 = false // default is true\n  createModelTypes                 = true // default is true\n  addInputTypeValidation           = false // default is true\n  addIncludeType                   = false // default is true\n  addSelectType                    = false // default is true\n  validateWhereUniqueInput         = false // default is true\n  createOptionalDefaultValuesTypes = true // default is false\n  createRelationValuesTypes        = false // default is false\n  createPartialTypes               = false // default is false\n  useDefaultValidators             = false // default is true\n  coerceDate                       = true // default is true\n  writeNullishInModelTypes         = false // default is false\n}\n\nmodel User {\n  id            String          @id @default(cuid())\n  email         String          @unique\n  username      String          @unique\n  imageUrl      String\n  clerkId       String          @unique\n  createdAt     DateTime        @default(now())\n  updatedAt     DateTime        @updatedAt\n  challenges    Challenge[]\n  DailyProgress DailyProgress[]\n}\n\nmodel Challenge {\n  id            String          @id @default(cuid())\n  title         String\n  wish          String\n  dailyAction   String\n  icon          String          @default(\"✅\")\n  note          String          @default(\"\")\n  startDate     DateTime\n  endDate       DateTime\n  createdAt     DateTime        @default(now())\n  updatedAt     DateTime        @updatedAt\n  userId        String\n  user          User            @relation(fields: [userId], references: [id])\n  dailyProgress DailyProgress[]\n}\n\nmodel DailyProgress {\n  id          String    @id @default(cuid())\n  date        DateTime\n  completed   Boolean\n  imageUrl    String    @default(\"\")\n  note        String    @default(\"\")\n  challengeId String\n  challenge   Challenge @relation(fields: [challengeId], references: [id])\n  userId      String\n  user        User      @relation(fields: [userId], references: [id])\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n}\n\nmodel ChallengeIdea {\n  id          Int    @id @default(autoincrement())\n  index       Int\n  title       String\n  wish        String\n  dailyAction String\n  description String\n  sourceName  String @map(\"source_name\")\n  sourceLink  String @map(\"source_link\")\n}\n",
-  "inlineSchemaHash": "ca6eace5c0f8a05ea59cc11cffb7f4868ac45b18448c7191d69c63637424160b",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../src/lib/db/prisma/client\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"POSTGRES_PRISMA_URL\")\n  directUrl = env(\"POSTGRES_URL_NON_POOLING\")\n}\n\ngenerator zod {\n  provider                         = \"zod-prisma-types\"\n  output                           = \"../src/lib/db/prisma/zod-types\"\n  useMultipleFiles                 = false // default is false\n  createInputTypes                 = false // default is true\n  createModelTypes                 = true // default is true\n  addInputTypeValidation           = false // default is true\n  addIncludeType                   = false // default is true\n  addSelectType                    = false // default is true\n  validateWhereUniqueInput         = false // default is true\n  createOptionalDefaultValuesTypes = true // default is false\n  createRelationValuesTypes        = false // default is false\n  createPartialTypes               = false // default is false\n  useDefaultValidators             = false // default is true\n  coerceDate                       = true // default is true\n  writeNullishInModelTypes         = false // default is false\n}\n\nmodel User {\n  id            String          @id @default(cuid())\n  email         String          @unique\n  username      String          @unique\n  imageUrl      String\n  clerkId       String          @unique\n  createdAt     DateTime        @default(now())\n  updatedAt     DateTime        @updatedAt\n  challenges    Challenge[]\n  DailyProgress DailyProgress[]\n}\n\nmodel Challenge {\n  id            String          @id @default(cuid())\n  title         String\n  wish          String\n  dailyAction   String\n  icon          String          @default(\"✅\")\n  note          String          @default(\"\")\n  startDate     DateTime\n  endDate       DateTime\n  createdAt     DateTime        @default(now())\n  updatedAt     DateTime        @updatedAt\n  userId        String\n  user          User            @relation(fields: [userId], references: [id])\n  dailyProgress DailyProgress[]\n}\n\nmodel DailyProgress {\n  id          String    @id @default(cuid())\n  date        DateTime\n  completed   Boolean\n  imageUrl    String    @default(\"\")\n  note        String    @default(\"\")\n  challengeId String\n  challenge   Challenge @relation(fields: [challengeId], references: [id])\n  userId      String\n  user        User      @relation(fields: [userId], references: [id])\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n}\n\nmodel ChallengeIdea {\n  id          Int    @id @default(autoincrement())\n  index       Int\n  title       String\n  wish        String\n  dailyAction String\n  description String\n  sourceName  String @map(\"source_name\")\n  sourceLink  String @map(\"source_link\")\n}\n",
+  "inlineSchemaHash": "b2c5429e98792713316ccf8f0b6eb2a0a5118f66a78381a8b93371901a7d3cf0",
   "copyEngine": true
 }
 
@@ -247,6 +251,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node");
 path.join(process.cwd(), "src/lib/db/prisma/client/query_engine-windows.dll.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-rhel-openssl-3.0.x.so.node");
+path.join(process.cwd(), "src/lib/db/prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/lib/db/prisma/client/schema.prisma")
