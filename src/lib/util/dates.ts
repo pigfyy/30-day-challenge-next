@@ -45,6 +45,7 @@ export const createCalendarDates = (
 
   const gridData: gridData = [];
 
+  // Padding days before
   for (let i = 0; i < paddingBefore; i++) {
     const date = subDays(challenge.startDate, paddingBefore - i);
     gridData.push({
@@ -53,9 +54,12 @@ export const createCalendarDates = (
       dailyProgress: undefined,
       challengeId: challenge.id,
       dailyProgressId: cuid(),
+      leftCompleted: false,
+      rightCompleted: false,
     });
   }
 
+  // Challenge days
   dates.forEach((date) => {
     let dailyProgress: DailyProgress | undefined = undefined;
 
@@ -75,9 +79,12 @@ export const createCalendarDates = (
       dailyProgress,
       challengeId: challenge.id,
       dailyProgressId: dailyProgress ? dailyProgress.id : cuid(),
+      leftCompleted: false, // Will be updated in the next pass
+      rightCompleted: false,
     });
   });
 
+  // Padding days after
   for (let i = 0; i < paddingAfter; i++) {
     const date = addDays(challenge.endDate, i + 1);
     gridData.push({
@@ -86,28 +93,38 @@ export const createCalendarDates = (
       dailyProgress: undefined,
       challengeId: challenge.id,
       dailyProgressId: cuid(),
+      leftCompleted: false,
+      rightCompleted: false,
     });
   }
 
+  // Update completion connections only for non-padding days
   for (let i = 0; i < gridData.length; i++) {
     const current = gridData[i];
-    const previous = gridData[i - 1];
-    const next = gridData[i + 1];
 
-    current.leftCompleted = previous
-      ? !!previous.dailyProgress?.completed
-      : false;
-    current.rightCompleted = next ? !!next.dailyProgress?.completed : false;
+    if (!current.isPadding) {
+      // Only update for non-padding days
+      const previous = gridData[i - 1];
+      const next = gridData[i + 1];
+
+      current.leftCompleted =
+        previous && !previous.isPadding && !!previous.dailyProgress?.completed;
+      current.rightCompleted =
+        next && !next.isPadding && !!next.dailyProgress?.completed;
+    }
   }
 
   return gridData;
 };
 
 export const isDateValid = (dateToCheck: Date, startDate: Date) => {
-  return isWithinInterval(dateToCheck, {
-    start: startOfDay(startDate),
-    end: endOfDay(new Date()),
-  });
+  const today = new Date();
+  return (
+    isWithinInterval(dateToCheck, {
+      start: startOfDay(startDate),
+      end: endOfDay(today),
+    }) && !isFuture(startOfDay(dateToCheck))
+  );
 };
 
 export const calculateCompletionRate = (

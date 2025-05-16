@@ -183,10 +183,12 @@ function Day({
   const isRightEdge = index % 7 === 6;
 
   const localItem = dailyProgress.find(
-    (dp) => dp.date.toDateString() === item.dateValue.toDateString(),
+    (dp) =>
+      dp.date.toDateString() === item.dateValue.toDateString() &&
+      !item.isPadding, // Only find progress for non-padding days
   );
 
-  const isCompleted = !!localItem?.completed;
+  const isCompleted = !!localItem?.completed && !item.isPadding;
 
   let completedClasses = "";
   if (isCompleted) {
@@ -218,6 +220,9 @@ function Day({
     e?: React.MouseEvent<HTMLOrSVGElement, MouseEvent>,
   ) {
     e?.stopPropagation();
+    if (!isDateValid(item.dateValue, challenge.startDate) || item.isPadding) {
+      return;
+    }
     setIsViewDayDialogOpen(true);
     setViewDayDialogDate(item.dateValue);
   }
@@ -236,7 +241,9 @@ function Day({
         <div
           className={`group relative mx-[3px] flex flex-1 flex-col items-center justify-center ${completedClasses}`}
         >
-          {isDateValid(item.dateValue, challenge.startDate) && !isMobile ? (
+          {isDateValid(item.dateValue, challenge.startDate) &&
+          !item.isPadding &&
+          !isMobile ? (
             <Maximize2
               className="absolute right-2 top-2 h-6 w-6 rounded-md p-1 text-neutral-400 opacity-0 transition-opacity duration-75 hover:bg-white group-hover:opacity-100"
               onClick={handleMaximizeDay}

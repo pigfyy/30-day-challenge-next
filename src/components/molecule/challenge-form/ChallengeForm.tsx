@@ -108,20 +108,19 @@ export const ChallengeForm = ({
       wish: "",
       dailyAction: "",
       icon: "✅",
-      startDate: new Date("2025-01-01"),
-      endDate: new Date("2025-01-01"),
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 29 * 24 * 60 * 60 * 1000),
     },
   });
 
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   useEffect(() => {
     if (defaultValues) {
       form.reset(defaultValues);
     }
   }, [defaultValues, form]);
-
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   return (
     <Form {...form}>
@@ -366,6 +365,14 @@ const DatePickerFormField = ({
                 selected={field.value}
                 defaultMonth={field.value}
                 onSelect={(date) => {
+                  if (date) {
+                    // Preserve the current time from the existing date or use current time
+                    const currentTime = field.value || new Date();
+                    date.setHours(currentTime.getHours());
+                    date.setMinutes(currentTime.getMinutes());
+                    date.setSeconds(currentTime.getSeconds());
+                    date.setMilliseconds(currentTime.getMilliseconds());
+                  }
                   field.onChange(date);
                   setIsOpen(false);
                 }}
