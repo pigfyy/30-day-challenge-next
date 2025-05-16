@@ -1,4 +1,4 @@
-import { DailyProgressOptionalDefaults } from "./prisma-zod-types";
+import { DailyProgressOptionalDefaults } from "@/lib/db/types";
 import { prisma } from "./(root)/prisma";
 import { base64ToBlob } from "../util";
 import { put, del } from "@vercel/blob";

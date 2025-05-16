@@ -3,7 +3,7 @@
 import { toast } from "@/hooks/use-toast";
 import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
 import { trpc } from "@/lib/util/trpc";
-import { Challenge, DailyProgress } from "@/lib/db/prisma-zod-types";
+import { Challenge, DailyProgress } from "@/lib/db/types";
 import { getDate } from "date-fns";
 import { Maximize2 } from "lucide-react";
 import { useRef, useState } from "react";

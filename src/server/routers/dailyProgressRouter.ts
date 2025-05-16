@@ -5,7 +5,7 @@ import {
   deleteImage,
   editDailyProgressCompletion,
 } from "@/lib/db/dailyProgress";
-import { DailyProgressOptionalDefaultsSchema } from "@/lib/db/prisma-zod-types";
+import { DailyProgressOptionalDefaultsSchema } from "@/lib/db/types";
 
 export const dailyProgressRouter = router({
   getDailyProgress: procedure

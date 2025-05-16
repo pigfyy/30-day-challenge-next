@@ -16,7 +16,7 @@ import {
   ChallengeSchema,
   DailyProgress,
   DailyProgressSchema,
-} from "@/lib/db/prisma-zod-types";
+} from "@/lib/db/types";
 import { z } from "zod";
 import cuid from "cuid";
 

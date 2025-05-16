@@ -1,4 +1,4 @@
-import { Challenge } from "@/lib/db/prisma-zod-types";
+import { Challenge } from "@/lib/db/types";
 import { prisma } from "./(root)/prisma";
 import { addDays } from "date-fns";
 import { cache } from "react";

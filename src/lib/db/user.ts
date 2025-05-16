@@ -1,4 +1,4 @@
-import { User } from "@/lib/db/prisma-zod-types";
+import { User } from "@/lib/db/types";
 import { prisma } from "./(root)/prisma";
 import { cache } from "react";
 

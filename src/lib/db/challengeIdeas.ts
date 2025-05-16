@@ -1,8 +1,7 @@
 import { pc } from "@/lib/db/(root)/pinecone";
 import { openai } from "@/lib/util";
-import { ChallengeIdeaOptionalDefaults } from "./prisma-zod-types";
 import { prisma } from "./(root)/prisma";
-import { ChallengeIdea } from "@/lib/db/prisma-zod-types";
+import { ChallengeIdeaOptionalDefaults, ChallengeIdea } from "@/lib/db/types";
 
 export async function generateChallengeIdeas(
   challenges: ChallengeIdeaOptionalDefaults[],
