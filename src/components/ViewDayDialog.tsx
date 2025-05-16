@@ -223,8 +223,6 @@ export const ViewDayDialog = ({
         note: note,
       };
 
-      console.log("updateData", updateData);
-
       await upsertDailyProgress(updateData);
 
       if (oldImageUrlToDelete) {

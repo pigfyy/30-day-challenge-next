@@ -1,6 +1,11 @@
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { Button } from "@/components/ui/button";
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
   Form,
   FormControl,
   FormField,
@@ -20,7 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Info, Trash } from "lucide-react";
+import { ChevronDown, Info, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -88,6 +93,8 @@ export const ChallengeForm = ({
     },
   });
 
+  const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
+
   useEffect(() => {
     if (defaultValues) {
       form.reset(defaultValues);
@@ -130,6 +137,48 @@ export const ChallengeForm = ({
           placeholder="✅"
           tooltipContent="Find an icon that best respresents your challenge"
         />
+
+        <Collapsible
+          open={isCollapsibleOpen}
+          onOpenChange={setIsCollapsibleOpen}
+        >
+          <div className="flex items-center justify-between gap-8">
+            <span className="text-sm font-semibold text-red-800">
+              Advanced Settings
+            </span>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform duration-200 ${isCollapsibleOpen ? "rotate-180" : ""}`}
+                />
+                <span className="sr-only">Toggle</span>
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent>
+            <div className="flex items-center gap-1">
+              <span className="text-sm font-medium leading-4">
+                Change challenge start and end dates
+              </span>
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger type="button" tabIndex={-1}>
+                    <Info className="mt-0.5 h-3 w-3" color="red" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[200px] whitespace-normal">
+                    <p className="text-red-400">
+                      WARNING: Changing the start and end dates may delete
+                      completion and progress data from days outside of newly
+                      defined range.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Delete and Submit Buttons */}
         <div className="mt-4 flex justify-between">
           {onDelete && (
             <Popover
