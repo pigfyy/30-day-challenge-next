@@ -1,5 +1,5 @@
 import { createTRPCReact } from "@trpc/react-query";
-import { httpBatchLink } from "@trpc/client";
+import { httpBatchLink, loggerLink } from "@trpc/client";
 import superjson from "superjson";
 import type { AppRouter } from "@/server/trpc";
 
@@ -10,6 +10,12 @@ export const trpcClient = trpc.createClient({
     httpBatchLink({
       url: process.env.NEXT_PUBLIC_TRPC_URL || "http://localhost:3000/api/trpc",
       transformer: superjson,
+    }),
+    loggerLink({
+      enabled: (opts) =>
+        (process.env.NODE_ENV === "development" &&
+          typeof window !== "undefined") ||
+        (opts.direction === "down" && opts.result instanceof Error),
     }),
   ],
 });

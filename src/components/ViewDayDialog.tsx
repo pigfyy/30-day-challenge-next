@@ -13,6 +13,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Separator } from "./ui/separator";
+import { Textarea } from "./ui/textarea";
 
 export const UploadButton = ({
   setSelectedFile,
@@ -117,7 +118,9 @@ export const ViewDayDialog = ({
 }) => {
   const utils = trpc.useUtils();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(true);
+  const [isImageCollapsibleOpen, setIsImageCollapsibleOpen] = useState(true);
+  const [isNotesCollapsibleOpen, setIsNotesCollapsibleOpen] = useState(true);
+  const [note, setNote] = useState("");
 
   const { selectedFile, setSelectedFile, previewUrl, dimensions } =
     useImagePreview();
@@ -141,6 +144,7 @@ export const ViewDayDialog = ({
   useEffect(() => {
     if (isOpen) {
       setSelectedFile(day?.imageUrl || null);
+      setNote(day?.note || "");
     }
   }, [isOpen, day, setSelectedFile]);
 
@@ -180,11 +184,13 @@ export const ViewDayDialog = ({
   }
 
   async function submitDailyProgressUpdate() {
-    if (
-      typeof selectedFile === "string" ||
-      (selectedFile === null && (!day || !day.imageUrl)) ||
-      !date
-    ) {
+    const hasImageChanges =
+      !(typeof selectedFile === "string") &&
+      (selectedFile !== null || (day && day.imageUrl));
+
+    const hasNoteChanges = note !== (day?.note || "");
+
+    if ((!hasImageChanges && !hasNoteChanges) || !date) {
       return setIsOpen(false);
     }
 
@@ -194,7 +200,7 @@ export const ViewDayDialog = ({
       let imageUrl = day?.imageUrl || "";
       let oldImageUrlToDelete: string | null = null;
 
-      if (selectedFile) {
+      if (selectedFile && typeof selectedFile !== "string") {
         const newImageUrl = await handleDailyProgressImageUpload(selectedFile);
 
         if (day?.imageUrl) {
@@ -214,7 +220,10 @@ export const ViewDayDialog = ({
         completed: false,
         ...(day || {}),
         imageUrl: imageUrl,
+        note: note,
       };
+
+      console.log("updateData", updateData);
 
       await upsertDailyProgress(updateData);
 
@@ -246,15 +255,42 @@ export const ViewDayDialog = ({
         <div className="flex flex-col gap-7">
           <Collapsible
             defaultOpen={true}
-            open={isCollapsibleOpen}
-            onOpenChange={setIsCollapsibleOpen}
+            open={isNotesCollapsibleOpen}
+            onOpenChange={setIsNotesCollapsibleOpen}
+          >
+            <div className="flex items-center gap-8">
+              <span className="text-md font-bold">Notes</span>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${isNotesCollapsibleOpen ? "rotate-180" : ""}`}
+                  />
+                  <span className="sr-only">Toggle</span>
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+            <Separator className="mb-5 mt-1" />
+            <CollapsibleContent>
+              <Textarea
+                placeholder="Add your notes for this day..."
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="min-h-[100px]"
+              />
+            </CollapsibleContent>
+          </Collapsible>
+
+          <Collapsible
+            defaultOpen={true}
+            open={isImageCollapsibleOpen}
+            onOpenChange={setIsImageCollapsibleOpen}
           >
             <div className="flex items-center gap-8">
               <span className="text-md font-bold">Upload an image</span>
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm">
                   <ChevronDown
-                    className={`h-4 w-4 transition-transform duration-200 ${isCollapsibleOpen ? "rotate-180" : ""}`}
+                    className={`h-4 w-4 transition-transform duration-200 ${isImageCollapsibleOpen ? "rotate-180" : ""}`}
                   />
                   <span className="sr-only">Toggle</span>
                 </Button>
@@ -294,6 +330,7 @@ export const ViewDayDialog = ({
               </div>
             </CollapsibleContent>
           </Collapsible>
+
           <Button
             onClick={submitDailyProgressUpdate}
             className="mr-auto"

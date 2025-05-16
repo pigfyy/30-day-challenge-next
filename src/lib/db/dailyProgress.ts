@@ -13,6 +13,7 @@ export const editDailyProgressCompletion = async (
     update: {
       completed: progressInformation.completed,
       imageUrl: progressInformation.imageUrl,
+      note: progressInformation.note,
     },
     create: {
       ...progressInformation,
