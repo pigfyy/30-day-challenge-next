@@ -1,5 +1,6 @@
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Collapsible,
   CollapsibleContent,
@@ -8,6 +9,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,8 +26,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, Info, Trash } from "lucide-react";
+import { format } from "date-fns";
+import {
+  ArrowRight,
+  CalendarIcon,
+  ChevronDown,
+  Info,
+  Trash,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -63,6 +73,12 @@ export const challengeFormSchema = z.object({
     .max(2, {
       message: "Icon cannot be longer then 2 emojis",
     }),
+  startDate: z.date({
+    required_error: "Start date is required.",
+  }),
+  endDate: z.date({
+    required_error: "End date is required.",
+  }),
 });
 
 export const ChallengeForm = ({
@@ -77,6 +93,8 @@ export const ChallengeForm = ({
     wish: string;
     dailyAction: string;
     icon: string;
+    startDate: Date;
+    endDate: Date;
   };
   onSubmit: (values: any) => void;
   onDelete?: () => void;
@@ -90,6 +108,8 @@ export const ChallengeForm = ({
       wish: "",
       dailyAction: "",
       icon: "✅",
+      startDate: new Date("2025-01-01"),
+      endDate: new Date("2025-01-01"),
     },
   });
 
@@ -155,10 +175,10 @@ export const ChallengeForm = ({
               </Button>
             </CollapsibleTrigger>
           </div>
-          <CollapsibleContent>
+          <CollapsibleContent className="flex flex-col gap-2">
             <div className="flex items-center gap-1">
               <span className="text-sm font-medium leading-4">
-                Change challenge start and end dates
+                Change challenge dates
               </span>
               <TooltipProvider delayDuration={100}>
                 <Tooltip>
@@ -167,13 +187,25 @@ export const ChallengeForm = ({
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[200px] whitespace-normal">
                     <p className="text-red-400">
-                      WARNING: Changing the start and end dates may delete
-                      completion and progress data from days outside of newly
-                      defined range.
+                      WARNING: Changing the dates may delete completion and
+                      progress data from days outside of newly defined range.
                     </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+            </div>
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+              <DatePickerFormField
+                control={form.control}
+                name="startDate"
+                label=""
+              />
+              <ArrowRight className="text-muted-foreground" size={24} />
+              <DatePickerFormField
+                control={form.control}
+                name="endDate"
+                label=""
+              />
             </div>
           </CollapsibleContent>
         </Collapsible>
@@ -283,6 +315,65 @@ export const CustomFormField = ({
               maxHeight={56}
             />
           </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+interface DatePickerFormFieldProps {
+  control: any;
+  name: string;
+  label: string;
+}
+const DatePickerFormField = ({
+  control,
+  name,
+  label,
+}: DatePickerFormFieldProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex flex-col justify-center space-y-0">
+          {label && <FormLabel>{label}</FormLabel>}
+          <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
+            <PopoverTrigger asChild>
+              <FormControl>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "pl-3 text-left font-normal",
+                    !field.value && "text-muted-foreground",
+                  )}
+                >
+                  {field.value ? (
+                    format(field.value, "PPP")
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={field.value}
+                defaultMonth={field.value}
+                onSelect={(date) => {
+                  field.onChange(date);
+                  setIsOpen(false);
+                }}
+                disabled={(date) => date < new Date("1900-01-01")}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
           <FormMessage />
         </FormItem>
       )}

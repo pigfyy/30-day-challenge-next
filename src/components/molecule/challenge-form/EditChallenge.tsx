@@ -53,6 +53,8 @@ export const EditChallenge = ({
       wish: challenge.wish,
       dailyAction: challenge.dailyAction,
       icon: challenge.icon,
+      startDate: challenge.startDate,
+      endDate: challenge.endDate,
     };
   }, [challenge]);
 
