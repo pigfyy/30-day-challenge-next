@@ -106,7 +106,11 @@ export const ViewChallengeHeader = () => {
           isOpen={isImagesSheetOpen}
           setIsOpen={setIsImagesSheetOpen}
         >
-          <ProgressImageDisplay dailyProgress={dailyProgress} />
+          <ProgressImageDisplay
+            dailyProgress={dailyProgress}
+            startDate={new Date(challenge.startDate)}
+            endDate={new Date(challenge.endDate)}
+          />
         </SheetComponent>
         <DialogComponent
           isDialogOpen={isReflectDialogOpen}
@@ -131,8 +135,12 @@ export const ViewChallengeHeader = () => {
 
 const ProgressImageDisplay = ({
   dailyProgress,
+  startDate,
+  endDate,
 }: {
   dailyProgress: DailyProgress[];
+  startDate: Date;
+  endDate: Date;
 }) => {
   const [aspectRatios, setAspectRatios] = useState<Record<string, number>>({});
 
@@ -155,9 +163,23 @@ const ProgressImageDisplay = ({
     }));
   };
 
+  // Filter progress entries to only show those within challenge duration
+  const filteredProgress = dailyProgress.filter((dp) => {
+    const progressDate = new Date(dp.date);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Reset all times to midnight to compare dates only
+    progressDate.setHours(0, 0, 0, 0);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    return progressDate >= start && progressDate <= end;
+  });
+
   return (
     <div className="flex flex-col gap-3">
-      {dailyProgress.map((dp) => {
+      {filteredProgress.map((dp) => {
         if (!dp.imageUrl) return null;
 
         return (

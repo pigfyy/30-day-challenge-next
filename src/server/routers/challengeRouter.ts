@@ -35,6 +35,8 @@ export const challengeRouter = router({
         wish: z.string(),
         dailyAction: z.string(),
         icon: z.string(),
+        startDate: z.date(),
+        endDate: z.date(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

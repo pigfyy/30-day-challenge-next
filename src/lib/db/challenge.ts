@@ -6,17 +6,13 @@ import { deleteImage } from "./dailyProgress";
 
 export type CreateChallengeInput = Omit<
   Challenge,
-  "id" | "createdAt" | "updatedAt" | "startDate" | "endDate" | "note"
+  "id" | "createdAt" | "updatedAt" | "note"
 >;
 export const createChallenge = async (
   challengeInformation: CreateChallengeInput,
 ) => {
   const data = await prisma.challenge.create({
-    data: {
-      ...challengeInformation,
-      startDate: new Date(),
-      endDate: addDays(new Date(), 30),
-    },
+    data: challengeInformation,
   });
 
   return data;
