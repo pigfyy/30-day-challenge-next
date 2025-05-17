@@ -1,6 +1,6 @@
 import { EditChallenge } from "@/components/molecule/challenge-form/EditChallenge";
 import { DialogComponent } from "@/components/molecule/DialogComponent";
-import { Challenge } from "@/lib/db/types";
+import { Challenge } from "@/lib/db/drizzle/zod";
 
 export const EditChallengeDialog = ({
   challenge,

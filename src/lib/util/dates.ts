@@ -11,13 +11,7 @@ import {
   startOfDay,
   subDays,
 } from "date-fns";
-import {
-  Challenge,
-  ChallengeSchema,
-  DailyProgress,
-  DailyProgressSchema,
-} from "@/lib/db/types";
-import { z } from "zod";
+import { Challenge, DailyProgress } from "@/lib/db/drizzle/zod";
 import cuid from "cuid";
 
 export type gridData = {
@@ -31,8 +25,8 @@ export type gridData = {
 }[];
 
 export const createCalendarDates = (
-  challenge: z.infer<typeof ChallengeSchema>,
-  dailyProgressData: z.infer<typeof DailyProgressSchema>[],
+  challenge: Challenge,
+  dailyProgressData: DailyProgress[],
 ): gridData => {
   const dates = eachDayOfInterval({
     start: challenge.startDate,

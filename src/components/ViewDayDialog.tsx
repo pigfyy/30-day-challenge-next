@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/collapsible";
 import { handleDailyProgressImageUpload } from "@/lib/actions";
 import { trpc } from "@/lib/util/trpc";
-import { Challenge, DailyProgress } from "@/lib/db/types";
+import { Challenge, DailyProgress } from "@/lib/db/drizzle/zod";
 import { isSameDay } from "date-fns";
 import { ChevronDown, X } from "lucide-react";
 import Image from "next/image";
