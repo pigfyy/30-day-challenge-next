@@ -1,38 +1,55 @@
-import { DailyProgressOptionalDefaults } from "@/lib/db/types";
-import { prisma } from "./(root)/prisma";
+import { db, dailyProgress } from "@/lib/db/drizzle";
+import { NewDailyProgress } from "@/lib/db/drizzle/zod";
 import { base64ToBlob } from "../util";
 import { put, del } from "@vercel/blob";
+import { eq, and } from "drizzle-orm";
 
 export const editDailyProgressCompletion = async (
-  progressInformation: DailyProgressOptionalDefaults,
+  progressInformation: NewDailyProgress,
 ) => {
-  const data = await prisma.dailyProgress.upsert({
-    where: {
-      id: progressInformation.id ?? "",
-    },
-    update: {
-      completed: progressInformation.completed,
-      imageUrl: progressInformation.imageUrl,
-      note: progressInformation.note,
-    },
-    create: {
-      ...progressInformation,
-      completed: progressInformation.completed ?? true,
-    },
-  });
-
-  return data;
+  if (!progressInformation.id) {
+    // Create new record
+    const { id, ...insertData } = progressInformation;
+    const data = await db
+      .insert(dailyProgress)
+      .values({
+        ...insertData,
+        id: crypto.randomUUID(),
+        completed: progressInformation.completed ?? true,
+      })
+      .returning();
+    return data[0];
+  } else {
+    // Update existing record
+    const data = await db
+      .update(dailyProgress)
+      .set({
+        completed: progressInformation.completed,
+        imageUrl: progressInformation.imageUrl,
+        note: progressInformation.note,
+      })
+      .where(eq(dailyProgress.id, progressInformation.id))
+      .returning();
+    return data[0];
+  }
 };
 
 export const viewDailyProgressCompletion = async (
   userId: string,
   challengeId: string | undefined,
 ) => {
-  const whereClause = challengeId ? { userId, challengeId } : { userId };
-  return await prisma.dailyProgress.findMany({
-    where: whereClause,
-    orderBy: { date: "asc" },
-  });
+  const query = challengeId
+    ? and(
+        eq(dailyProgress.userId, userId),
+        eq(dailyProgress.challengeId, challengeId),
+      )
+    : eq(dailyProgress.userId, userId);
+
+  return await db
+    .select()
+    .from(dailyProgress)
+    .where(query)
+    .orderBy(dailyProgress.date);
 };
 
 export async function uploadImage(

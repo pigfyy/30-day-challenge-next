@@ -1,5 +1,6 @@
 import { getAuth } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/db/(root)/prisma";
+import { db, user } from "@/lib/db/drizzle";
+import { eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -8,18 +9,20 @@ export async function createContext({ req }: { req: Request }) {
   const nextReq = req as NextRequest;
   const { userId } = getAuth(nextReq);
 
-  let user = null;
+  let foundUser = null;
   const maxRetries = 15;
   const retryDelay = 1000;
 
   if (userId) {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        user = await prisma.user.findUnique({
-          where: { clerkId: userId },
-        });
+        const users = await db
+          .select()
+          .from(user)
+          .where(eq(user.clerkId, userId));
 
-        if (user) {
+        if (users && users.length > 0) {
+          foundUser = users[0];
           break;
         }
       } catch (error) {
@@ -31,14 +34,14 @@ export async function createContext({ req }: { req: Request }) {
       }
     }
 
-    if (!user) {
+    if (!foundUser) {
       throw new Error(
         `User with clerkId ${userId} not found after ${maxRetries} attempts`,
       );
     }
   }
 
-  return { clerkUserId: userId, user };
+  return { clerkUserId: userId, user: foundUser };
 }
 
 export type Context = Awaited<ReturnType<typeof createContext>>;

@@ -1,12 +1,13 @@
 import { router, procedure } from "@/server/init";
 import { z } from "zod";
-import { prisma } from "@/lib/db/(root)/prisma";
+import { db, challenge } from "@/lib/db/drizzle";
+import { eq } from "drizzle-orm";
 import {
   createChallenge,
   deleteChallenge,
   getChallenges,
 } from "@/lib/db/challenge";
-import { ChallengeOptionalDefaultsSchema } from "@/lib/db/types";
+import { updateChallengeSchema } from "@/lib/db/drizzle/zod";
 
 export const challengeRouter = router({
   getChallenges: procedure
@@ -35,8 +36,8 @@ export const challengeRouter = router({
         wish: z.string(),
         dailyAction: z.string(),
         icon: z.string(),
-        startDate: z.date(),
-        endDate: z.date(),
+        startDate: z.date().transform((date) => date.toISOString()),
+        endDate: z.date().transform((date) => date.toISOString()),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -51,13 +52,14 @@ export const challengeRouter = router({
       return challenge;
     }),
   updateChallenge: procedure
-    .input(ChallengeOptionalDefaultsSchema)
+    .input(updateChallengeSchema)
     .mutation(async ({ input }) => {
-      const challenge = await prisma.challenge.update({
-        where: { id: input.id },
-        data: input,
-      });
-      return challenge;
+      const [updatedChallenge] = await db
+        .update(challenge)
+        .set(input)
+        .where(eq(challenge.id, input.id as string))
+        .returning();
+      return updatedChallenge;
     }),
   deleteChallenge: procedure.input(z.string()).mutation(async ({ input }) => {
     const challenge = await deleteChallenge(input);

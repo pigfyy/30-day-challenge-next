@@ -1,21 +1,19 @@
+import { db, challengeIdea } from "@/lib/db/drizzle";
+import { NewChallengeIdea } from "@/lib/db/drizzle/zod";
 import { pc } from "@/lib/db/(root)/pinecone";
 import { openai } from "@/lib/util";
-import { prisma } from "./(root)/prisma";
-import { ChallengeIdeaOptionalDefaults, ChallengeIdea } from "@/lib/db/types";
+import { eq, inArray } from "drizzle-orm";
 
-export async function generateChallengeIdeas(
-  challenges: ChallengeIdeaOptionalDefaults[],
-) {
-  const data = prisma.challengeIdea.createMany({
-    data: challenges,
-  });
+export async function generateChallengeIdeas(challenges: NewChallengeIdea[]) {
+  const data = await db.insert(challengeIdea).values(challenges).returning();
 
   return data;
 }
 
-export type ChallengeIdeaResult = ChallengeIdea & {
+export type ChallengeIdeaResult = typeof challengeIdea.$inferSelect & {
   score?: number;
 };
+
 export async function getChallengeIdeas(
   inputString: string,
 ): Promise<ChallengeIdeaResult[]> {
@@ -37,16 +35,12 @@ export async function getChallengeIdeas(
     return match.metadata?.index as number;
   });
 
-  const data = await prisma.challengeIdea.findMany({
-    where: {
-      index: {
-        in: indexes,
-      },
-    },
-    orderBy: {
-      index: "asc",
-    },
-  });
+  const data = await db
+    .select()
+    .from(challengeIdea)
+    .where(inArray(challengeIdea.index, indexes))
+    .orderBy(challengeIdea.index)
+    .execute();
 
   return data.map((challengeIdea, i) => {
     return {

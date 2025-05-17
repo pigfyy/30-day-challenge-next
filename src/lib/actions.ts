@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "./db/(root)/prisma";
+import { db, challenge, dailyProgress } from "@/lib/db/drizzle";
 import { uploadImage } from "./db/dailyProgress";
-import { Challenge } from "@/lib/db/types";
+import { Challenge } from "@/lib/db/drizzle/zod";
+import { eq, or, lt, gt, and } from "drizzle-orm";
 import webpush from "web-push";
 
 webpush.setVapidDetails(
@@ -79,29 +80,35 @@ export async function handleDailyProgressImageUpload(file: File) {
 
 // FOR DEV DIALOG
 export async function deleteDailyProgressAction(challengeId: string) {
-  await prisma.dailyProgress.deleteMany({
-    where: { challengeId },
-  });
+  await db
+    .delete(dailyProgress)
+    .where(eq(dailyProgress.challengeId, challengeId));
 
   revalidatePath("/");
 }
 
 export async function changeDates(
-  challenge: Challenge,
+  challengeData: Challenge,
   startDateObj: Date,
   endDateObj: Date,
 ) {
-  await prisma.challenge.update({
-    where: { id: challenge.id },
-    data: {
-      startDate: startDateObj,
-      endDate: endDateObj,
-    },
-  });
-  await prisma.dailyProgress.deleteMany({
-    where: {
-      challengeId: challenge.id,
-      OR: [{ date: { lt: startDateObj } }, { date: { gt: endDateObj } }],
-    },
-  });
+  await db
+    .update(challenge)
+    .set({
+      startDate: startDateObj.toISOString(),
+      endDate: endDateObj.toISOString(),
+    })
+    .where(eq(challenge.id, challengeData.id));
+
+  await db
+    .delete(dailyProgress)
+    .where(
+      and(
+        eq(dailyProgress.challengeId, challengeData.id),
+        or(
+          lt(dailyProgress.date, startDateObj.toISOString()),
+          gt(dailyProgress.date, endDateObj.toISOString()),
+        ),
+      ),
+    );
 }

@@ -1,11 +1,12 @@
 import { router, procedure } from "@/server/init";
 import { z } from "zod";
-import { prisma } from "@/lib/db/(root)/prisma";
+import { db, dailyProgress } from "@/lib/db/drizzle";
+import { eq, and, asc } from "drizzle-orm";
 import {
   deleteImage,
   editDailyProgressCompletion,
 } from "@/lib/db/dailyProgress";
-import { DailyProgressOptionalDefaultsSchema } from "@/lib/db/types";
+import { insertDailyProgressSchema } from "@/lib/db/drizzle/zod";
 
 export const dailyProgressRouter = router({
   getDailyProgress: procedure
@@ -21,20 +22,21 @@ export const dailyProgressRouter = router({
 
       if (!input.challengeId) return undefined;
 
-      const dailyProgress = await prisma.dailyProgress.findMany({
-        where: {
-          userId: ctx.user.id,
-          challengeId: input.challengeId,
-        },
-        orderBy: {
-          date: "asc",
-        },
-      });
-      return dailyProgress;
+      const progress = await db
+        .select()
+        .from(dailyProgress)
+        .where(
+          and(
+            eq(dailyProgress.userId, ctx.user.id),
+            eq(dailyProgress.challengeId, input.challengeId),
+          ),
+        )
+        .orderBy(asc(dailyProgress.date));
+      return progress;
     }),
   upsertDailyProgress: procedure
     .input(
-      DailyProgressOptionalDefaultsSchema.extend({
+      insertDailyProgressSchema.extend({
         userId: z.string().optional(),
       }),
     )

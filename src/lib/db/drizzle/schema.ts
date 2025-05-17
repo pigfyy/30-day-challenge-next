@@ -10,18 +10,35 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import cuid from "cuid";
+
+// Helper function to create updatedAt trigger
+const createUpdatedAtTrigger = (tableName: string) => sql`
+  CREATE OR REPLACE FUNCTION update_updated_at_column()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+  END;
+  $$ language 'plpgsql';
+
+  CREATE OR REPLACE TRIGGER update_${sql.raw(tableName)}_updated_at
+    BEFORE UPDATE ON ${sql.raw(tableName)}
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+`;
 
 export const prismaMigrations = pgTable("_prisma_migrations", {
   id: varchar({ length: 36 }).primaryKey().notNull(),
   checksum: varchar({ length: 64 }).notNull(),
-  finishedAt: timestamp("finished_at", { withTimezone: true, mode: "string" }),
+  finishedAt: timestamp("finished_at", { withTimezone: true, mode: "date" }),
   migrationName: varchar("migration_name", { length: 255 }).notNull(),
   logs: text(),
   rolledBackAt: timestamp("rolled_back_at", {
     withTimezone: true,
-    mode: "string",
+    mode: "date",
   }),
-  startedAt: timestamp("started_at", { withTimezone: true, mode: "string" })
+  startedAt: timestamp("started_at", { withTimezone: true, mode: "date" })
     .defaultNow()
     .notNull(),
   appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
@@ -41,15 +58,20 @@ export const challengeIdea = pgTable("ChallengeIdea", {
 export const user = pgTable(
   "User",
   {
-    id: text().primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .$defaultFn(() => cuid()),
     email: text().notNull(),
     username: text().notNull(),
     imageUrl: text().notNull(),
     clerkId: text().notNull(),
-    createdAt: timestamp({ precision: 3, mode: "string" })
+    createdAt: timestamp({ precision: 3, mode: "date" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+    updatedAt: timestamp({ precision: 3, mode: "date" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   },
   (table) => [
     uniqueIndex("User_clerkId_key").using(
@@ -67,21 +89,29 @@ export const user = pgTable(
   ],
 );
 
+// Create updatedAt trigger for User table
+export const userUpdatedAtTrigger = createUpdatedAtTrigger("User");
+
 export const challenge = pgTable(
   "Challenge",
   {
-    id: text().primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .$defaultFn(() => cuid()),
     title: text().notNull(),
     wish: text().notNull(),
     dailyAction: text().notNull(),
     icon: text().default("✅").notNull(),
     note: text().default("").notNull(),
-    startDate: timestamp({ precision: 3, mode: "string" }).notNull(),
-    endDate: timestamp({ precision: 3, mode: "string" }).notNull(),
-    createdAt: timestamp({ precision: 3, mode: "string" })
+    startDate: timestamp({ precision: 3, mode: "date" }).notNull(),
+    endDate: timestamp({ precision: 3, mode: "date" }).notNull(),
+    createdAt: timestamp({ precision: 3, mode: "date" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+    updatedAt: timestamp({ precision: 3, mode: "date" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
     userId: text().notNull(),
   },
   (table) => [
@@ -95,19 +125,27 @@ export const challenge = pgTable(
   ],
 );
 
+// Create updatedAt trigger for Challenge table
+export const challengeUpdatedAtTrigger = createUpdatedAtTrigger("Challenge");
+
 export const dailyProgress = pgTable(
   "DailyProgress",
   {
-    id: text().primaryKey().notNull(),
-    date: timestamp({ precision: 3, mode: "string" }).notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .$defaultFn(() => cuid()),
+    date: timestamp({ precision: 3, mode: "date" }).notNull(),
     completed: boolean().notNull(),
     imageUrl: text().default("").notNull(),
     challengeId: text().notNull(),
     userId: text().notNull(),
-    createdAt: timestamp({ precision: 3, mode: "string" })
+    createdAt: timestamp({ precision: 3, mode: "date" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+    updatedAt: timestamp({ precision: 3, mode: "date" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
     note: text().default("").notNull(),
   },
   (table) => [
@@ -127,3 +165,7 @@ export const dailyProgress = pgTable(
       .onDelete("restrict"),
   ],
 );
+
+// Create updatedAt trigger for DailyProgress table
+export const dailyProgressUpdatedAtTrigger =
+  createUpdatedAtTrigger("DailyProgress");

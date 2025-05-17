@@ -5,5 +5,6 @@ import * as schema from "./schema";
 const sql = neon(process.env.POSTGRES_URL!);
 export const db = drizzle(sql, { schema });
 
-// Export the schema for use in other files
+// Export the schema and Zod types
 export * from "./schema";
+export * from "./zod";
