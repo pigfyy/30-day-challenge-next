@@ -1,7 +1,8 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/db/(root)/prisma";
+import { db, user } from "@/lib/db/drizzle";
+import { eq } from "drizzle-orm";
 import { deleteUser } from "@/lib/db/user";
 
 export async function POST(req: Request) {
@@ -79,15 +80,13 @@ export async function POST(req: Request) {
         updated_at &&
         image_url
       ) {
-        await prisma.user.create({
-          data: {
-            email: email_addresses[0].email_address,
-            username: username!,
-            imageUrl: image_url,
-            clerkId: id,
-            createdAt: new Date(created_at),
-            updatedAt: new Date(updated_at),
-          },
+        await db.insert(user).values({
+          email: email_addresses[0].email_address,
+          username: username!,
+          imageUrl: image_url,
+          clerkId: id,
+          createdAt: new Date(created_at),
+          updatedAt: new Date(updated_at),
         });
       }
 
@@ -115,17 +114,15 @@ export async function POST(req: Request) {
     const { id, email_addresses, username, updated_at, image_url } = evt.data;
 
     try {
-      await prisma.user.update({
-        where: {
-          clerkId: id,
-        },
-        data: {
+      await db
+        .update(user)
+        .set({
           email: email_addresses[0].email_address,
           username: username!,
           imageUrl: image_url,
           updatedAt: new Date(updated_at),
-        },
-      });
+        })
+        .where(eq(user.clerkId, id));
       return new Response("User updated!", { status: 200 });
     } catch (e: unknown) {
       console.error(e);
