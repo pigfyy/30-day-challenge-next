@@ -12,25 +12,6 @@ import {
 import { sql } from "drizzle-orm";
 import cuid from "cuid";
 
-// Helper function to create updatedAt trigger
-const createUpdatedAtTrigger = (tableName: string) => sql`
-  CREATE TRIGGER update_${sql.raw(tableName)}_updated_at 
-  BEFORE UPDATE ON "${sql.raw(tableName)}"
-  FOR EACH ROW 
-  EXECUTE FUNCTION update_timestamp();
-`;
-
-// Create the timestamp update function
-export const createTimestampUpdateFunction = sql`
-  CREATE OR REPLACE FUNCTION update_timestamp()
-  RETURNS TRIGGER AS $$
-  BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-  END;
-  $$ LANGUAGE plpgsql;
-`;
-
 export const prismaMigrations = pgTable("_prisma_migrations", {
   id: varchar({ length: 36 }).primaryKey().notNull(),
   checksum: varchar({ length: 64 }).notNull(),
@@ -70,10 +51,6 @@ export const user = pgTable(
     imageUrl: text().notNull(),
     clerkId: text().notNull(),
     createdAt: timestamp({ precision: 3, mode: "date" }).defaultNow().notNull(),
-    updatedAt: timestamp({ precision: 3, mode: "date" })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`)
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
     uniqueIndex("User_clerkId_key").using(
@@ -91,9 +68,6 @@ export const user = pgTable(
   ],
 );
 
-// Create updatedAt trigger for User table
-export const userUpdatedAtTrigger = sql`${createTimestampUpdateFunction} ${createUpdatedAtTrigger("User")}`;
-
 export const challenge = pgTable(
   "Challenge",
   {
@@ -109,10 +83,6 @@ export const challenge = pgTable(
     startDate: timestamp({ precision: 3, mode: "date" }).notNull(),
     endDate: timestamp({ precision: 3, mode: "date" }).notNull(),
     createdAt: timestamp({ precision: 3, mode: "date" }).defaultNow().notNull(),
-    updatedAt: timestamp({ precision: 3, mode: "date" })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`)
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
     userId: text().notNull(),
   },
   (table) => [
@@ -125,9 +95,6 @@ export const challenge = pgTable(
       .onDelete("restrict"),
   ],
 );
-
-// Create updatedAt trigger for Challenge table
-export const challengeUpdatedAtTrigger = sql`${createUpdatedAtTrigger("Challenge")}`;
 
 export const dailyProgress = pgTable(
   "DailyProgress",
@@ -142,10 +109,6 @@ export const dailyProgress = pgTable(
     challengeId: text().notNull(),
     userId: text().notNull(),
     createdAt: timestamp({ precision: 3, mode: "date" }).defaultNow().notNull(),
-    updatedAt: timestamp({ precision: 3, mode: "date" })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`)
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
     note: text().default("").notNull(),
   },
   (table) => [
@@ -165,6 +128,3 @@ export const dailyProgress = pgTable(
       .onDelete("restrict"),
   ],
 );
-
-// Create updatedAt trigger for DailyProgress table
-export const dailyProgressUpdatedAtTrigger = sql`${createUpdatedAtTrigger("DailyProgress")}`;
