@@ -52,7 +52,7 @@ export const useAutosizeTextArea = ({
       const newHeight = hasScrollbar ? maxHeight : naturalScrollHeight;
       textAreaElement.style.height = `${newHeight}px`;
     }
-  }, [textAreaRef.current, triggerAutoSize]);
+  }, [triggerAutoSize, maxHeight, minHeight, init]);
 };
 
 export type AutosizeTextAreaRef = {
