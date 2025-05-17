@@ -86,7 +86,6 @@ export async function POST(req: Request) {
           imageUrl: image_url,
           clerkId: id,
           createdAt: new Date(created_at),
-          updatedAt: new Date(updated_at),
         });
       }
 
@@ -120,7 +119,6 @@ export async function POST(req: Request) {
           email: email_addresses[0].email_address,
           username: username!,
           imageUrl: image_url,
-          updatedAt: new Date(updated_at),
         })
         .where(eq(user.clerkId, id));
       return new Response("User updated!", { status: 200 });

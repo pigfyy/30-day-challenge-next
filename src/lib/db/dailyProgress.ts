@@ -7,20 +7,15 @@ import { eq, and } from "drizzle-orm";
 export const editDailyProgressCompletion = async (
   progressInformation: NewDailyProgress,
 ) => {
-  if (!progressInformation.id) {
-    // Create new record
-    const { id, ...insertData } = progressInformation;
-    const data = await db
-      .insert(dailyProgress)
-      .values({
-        ...insertData,
-        id: crypto.randomUUID(),
-        completed: progressInformation.completed ?? true,
-      })
-      .returning();
-    return data[0];
-  } else {
-    // Update existing record
+  const recordId = progressInformation.id!;
+
+  const existingRecord = await db
+    .select({ id: dailyProgress.id })
+    .from(dailyProgress)
+    .where(eq(dailyProgress.id, recordId))
+    .limit(1);
+
+  if (existingRecord.length > 0) {
     const data = await db
       .update(dailyProgress)
       .set({
@@ -28,7 +23,17 @@ export const editDailyProgressCompletion = async (
         imageUrl: progressInformation.imageUrl,
         note: progressInformation.note,
       })
-      .where(eq(dailyProgress.id, progressInformation.id))
+      .where(eq(dailyProgress.id, recordId))
+      .returning();
+    return data[0];
+  } else {
+    const data = await db
+      .insert(dailyProgress)
+      .values({
+        ...progressInformation,
+        id: recordId,
+        completed: progressInformation.completed ?? true,
+      })
       .returning();
     return data[0];
   }

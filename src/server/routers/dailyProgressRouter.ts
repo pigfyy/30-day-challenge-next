@@ -45,6 +45,8 @@ export const dailyProgressRouter = router({
         throw new Error("Not authenticated");
       }
 
+      console.log(input);
+
       const dailyProgress = await editDailyProgressCompletion({
         ...input,
         userId: ctx.user.id,

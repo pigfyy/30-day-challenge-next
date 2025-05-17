@@ -116,6 +116,9 @@ export const ChallengeForm = ({
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
+  console.log(disabled);
+  console.log(isPopoverOpen);
+
   useEffect(() => {
     if (defaultValues) {
       form.reset(defaultValues);
@@ -216,13 +219,13 @@ export const ChallengeForm = ({
         <div className="mt-4 flex justify-between">
           {onDelete && (
             <Popover
-              modal={true}
               open={isPopoverOpen}
-              onOpenChange={(open) => {
-                if (!isDeleting && open !== isPopoverOpen) {
-                  setIsPopoverOpen(open);
+              onOpenChange={(openValueFromPopover) => {
+                if (!isDeleting) {
+                  setIsPopoverOpen(openValueFromPopover);
                 }
               }}
+              modal={true}
             >
               <PopoverTrigger asChild>
                 <Button
@@ -382,7 +385,7 @@ const DatePickerFormField = ({
                   setIsOpen(false);
                 }}
                 disabled={(date) => date < new Date("1900-01-01")}
-                initialFocus
+                autoFocus={true}
               />
             </PopoverContent>
           </Popover>

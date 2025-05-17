@@ -140,9 +140,10 @@ function Day({
         imageUrl: newDailyProgress.imageUrl || "",
         userId: newDailyProgress.userId || "current-user-id",
         createdAt: newDailyProgress.createdAt || new Date(),
-        updatedAt: newDailyProgress.updatedAt || new Date(),
         note: newDailyProgress.note || "",
       };
+
+      console.log(newRecord);
 
       utils.dailyProgress.getDailyProgress.setData(
         { challengeId: challenge.id },
