@@ -4,18 +4,24 @@ import { addDays } from "date-fns";
 import { cache } from "react";
 import { deleteImage } from "./dailyProgress";
 import { eq, desc } from "drizzle-orm";
+import cuid from "cuid";
 
 export type CreateChallengeInput = NewChallenge;
 
 export const createChallenge = async (
   challengeInformation: CreateChallengeInput,
 ) => {
-  const [data] = await db
-    .insert(challenge)
-    .values(challengeInformation)
-    .returning();
+  try {
+    const [data] = await db
+      .insert(challenge)
+      .values({ ...challengeInformation })
+      .returning();
 
-  return data;
+    return data;
+  } catch (error) {
+    console.error("Error creating challenge:", error);
+    throw new Error("Error creating challenge");
+  }
 };
 
 export type UpdateChallengeInput = Partial<typeof challenge.$inferSelect> & {

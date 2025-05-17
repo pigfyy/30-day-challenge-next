@@ -1,0 +1,1 @@
+ALTER TABLE "Challenge" ALTER COLUMN "startDate" SET DATA TYPE timestamp (4);
