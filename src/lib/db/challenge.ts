@@ -3,7 +3,7 @@ import { NewChallenge } from "@/lib/db/drizzle/zod";
 import { addDays } from "date-fns";
 import { cache } from "react";
 import { deleteImage } from "./dailyProgress";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 export type CreateChallengeInput = NewChallenge;
 
@@ -72,7 +72,7 @@ export const getChallenges = async (
       .from(challenge)
       .leftJoin(dailyProgress, eq(challenge.id, dailyProgress.challengeId))
       .where(eq(challenge.userId, userId))
-      .orderBy(challenge.startDate);
+      .orderBy(desc(challenge.startDate));
 
     // Group the results by challenge and nest the daily progress
     const challengeMap = new Map();
@@ -99,7 +99,7 @@ export const getChallenges = async (
     .select()
     .from(challenge)
     .where(eq(challenge.userId, userId))
-    .orderBy(challenge.startDate);
+    .orderBy(desc(challenge.startDate));
 };
 
 export const getChallenge = async (challengeId: string) => {
