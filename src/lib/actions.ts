@@ -95,8 +95,8 @@ export async function changeDates(
   await db
     .update(challenge)
     .set({
-      startDate: startDateObj.toISOString(),
-      endDate: endDateObj.toISOString(),
+      startDate: startDateObj,
+      endDate: endDateObj,
     })
     .where(eq(challenge.id, challengeData.id));
 
@@ -106,8 +106,8 @@ export async function changeDates(
       and(
         eq(dailyProgress.challengeId, challengeData.id),
         or(
-          lt(dailyProgress.date, startDateObj.toISOString()),
-          gt(dailyProgress.date, endDateObj.toISOString()),
+          lt(dailyProgress.date, startDateObj),
+          gt(dailyProgress.date, endDateObj),
         ),
       ),
     );
