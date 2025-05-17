@@ -125,7 +125,10 @@ export const ChallengeForm = ({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit(onSubmit)(e);
+        }}
         className="flex w-full flex-col gap-2"
       >
         <CustomFormField
@@ -213,15 +216,17 @@ export const ChallengeForm = ({
         <div className="mt-4 flex justify-between">
           {onDelete && (
             <Popover
+              modal={true}
               open={isPopoverOpen}
               onOpenChange={(open) => {
-                if (!isDeleting) {
+                if (!isDeleting && open !== isPopoverOpen) {
                   setIsPopoverOpen(open);
                 }
               }}
             >
               <PopoverTrigger asChild>
                 <Button
+                  type="button"
                   variant="outline"
                   className="text-red-600 hover:text-red-500"
                   disabled={disabled}
@@ -239,8 +244,8 @@ export const ChallengeForm = ({
                       size="sm"
                       className="flex-1"
                       onClick={() => {
-                        onDelete();
                         setIsPopoverOpen(false);
+                        onDelete();
                       }}
                       disabled={isDeleting}
                     >
