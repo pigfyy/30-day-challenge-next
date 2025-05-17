@@ -76,7 +76,7 @@
     "@types/react-dom": "19.0.3",
     "@types/web-push": "^3.6.4",
     "concurrently": "^7.0.0",
-    "drizzle-kit": "^0.18.1",
+    "drizzle-kit": "^0.31.1",
     "eslint": "^8",
     "eslint-config-next": "15.1.6",
     "postcss": "^8",
