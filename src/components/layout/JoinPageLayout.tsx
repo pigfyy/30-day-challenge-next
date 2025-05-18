@@ -70,6 +70,7 @@ export default function JoinPageLayout({
       dailyAction: challengeIdea.dailyAction,
       startDate: new Date(),
       endDate: addDays(new Date(), 29),
+      challengeIdeaId: challengeId,
     });
   };
 
