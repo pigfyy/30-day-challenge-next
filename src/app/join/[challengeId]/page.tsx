@@ -1,6 +1,8 @@
 import { use } from "react";
 import { Button } from "@/components/ui/button";
 import { SignInButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export async function generateMetadata({
   params,
@@ -11,12 +13,18 @@ export async function generateMetadata({
   return { title: `Join Challenge - 30 Day Me` };
 }
 
-export default function JoinChallengePage({
+export default async function JoinChallengePage({
   params,
 }: {
   params: Promise<{ challengeId: string }>;
 }) {
-  const { challengeId } = use(params);
+  // check auth
+  const { userId } = await auth();
+  const { challengeId } = await params;
+
+  if (userId) {
+    redirect(`/app/join/${challengeId}`);
+  }
 
   return (
     <div className="flex w-full flex-col items-center justify-center">
