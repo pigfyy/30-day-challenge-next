@@ -49,8 +49,8 @@ export default function JoinPageLayout({
           <CardHeader>
             <CardTitle>Challenge Not Found</CardTitle>
             <CardDescription>
-              The challenge you're looking for doesn't exist or has been
-              removed.
+              The challenge you&apos;re looking for doesn&apos;t exist or has
+              been removed.
             </CardDescription>
           </CardHeader>
           <CardFooter>
@@ -78,7 +78,7 @@ export default function JoinPageLayout({
       <Card className="w-full max-w-2xl">
         <CardHeader className="px-4 sm:px-6">
           <h1 className="text-center text-2xl font-bold text-gray-800">
-            Welcome! Here's the challenge you've requested to join!
+            Welcome! Here&apos;s the challenge you&apos;ve requested to join!
           </h1>
         </CardHeader>
         <CardContent className="space-y-6 px-3 sm:px-6">
