@@ -8,9 +8,9 @@ import { getChallengeIdea } from "@/lib/db/challengeIdeas";
 export async function generateMetadata({
   params,
 }: {
-  params: { challengeId: string };
+  params: Promise<{ challengeId: string }>;
 }) {
-  const { challengeId } = params;
+  const { challengeId } = await params;
   return { title: `Join Challenge - 30 Day Me` };
 }
 
@@ -18,12 +18,12 @@ export default async function JoinChallengePage({
   params,
   searchParams,
 }: {
-  params: { challengeId: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ challengeId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { userId } = await auth();
-  const { challengeId } = params;
-  const type = searchParams?.type;
+  const { challengeId } = await params;
+  const type = (await searchParams)?.type;
 
   const challenge = await getChallengeIdea(challengeId);
   const organizationName = challenge?.organization;
