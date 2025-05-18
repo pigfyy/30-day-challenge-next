@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { SignInButton, SignUp, SignIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { getChallengeIdea } from "@/lib/db/challengeIdeas";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ challengeId: string }>;
+  params: { challengeId: string };
 }) {
-  const { challengeId } = await params;
+  const { challengeId } = params;
   return { title: `Join Challenge - 30 Day Me` };
 }
 
@@ -24,16 +25,25 @@ export default async function JoinChallengePage({
   const { challengeId } = params;
   const type = searchParams?.type;
 
+  const challenge = await getChallengeIdea(challengeId);
+  const organizationName = challenge?.organization;
+
   if (userId) {
     redirect(`/app/join/${challengeId}`);
   }
 
+  const welcomeMessage = organizationName ? (
+    <>
+      <strong>{organizationName}</strong> has invited you to join a challenge.
+    </>
+  ) : (
+    "You've been invited to join a challenge."
+  );
+
   return (
     <div className="flex w-full flex-col items-center justify-center">
       <h1 className="text-3xl font-bold">Welcome!</h1>
-      <p className="text-md mb-5 text-gray-500">
-        You&apos;ve been invited to join a challenge.
-      </p>
+      <p className="text-md mb-5 text-gray-500">{welcomeMessage}</p>
       {type === "sign-in" ? (
         <SignIn
           forceRedirectUrl={`/app/join/${challengeId}`}
