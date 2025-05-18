@@ -35,7 +35,7 @@ export const challengeRouter = router({
         title: z.string(),
         wish: z.string(),
         dailyAction: z.string(),
-        icon: z.string(),
+        icon: z.string().optional(),
         startDate: z.date(),
         endDate: z.date(),
       }),

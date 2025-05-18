@@ -1,26 +1,11 @@
 import {
   ChallengeIdeaResult,
+  getChallengeIdea,
   getChallengeIdeas,
 } from "@/lib/db/challengeIdeas";
 import { geminiFlashModel } from "@/lib/util";
 import { z } from "zod";
 import { procedure, router } from "../init";
-
-const ChallengeIdeaResultSchema = z.object({
-  result: z.array(
-    z.object({
-      id: z.number(),
-      index: z.number(),
-      title: z.string(),
-      wish: z.string(),
-      dailyAction: z.string(),
-      description: z.string(),
-      sourceName: z.string(),
-      sourceLink: z.string(),
-      score: z.number().optional(),
-    }),
-  ),
-});
 
 export const challengeIdeaRouter = router({
   search: procedure.input(z.string()).mutation(async ({ input, ctx }) => {
@@ -119,4 +104,13 @@ export const challengeIdeaRouter = router({
 
     return result.slice(0, 10);
   }),
+  getChallengeIdea: procedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new Error("Not authenticated");
+      }
+      const challengeIdea = await getChallengeIdea(input);
+      return challengeIdea;
+    }),
 });

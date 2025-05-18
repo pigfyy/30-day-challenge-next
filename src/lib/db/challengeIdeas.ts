@@ -49,3 +49,12 @@ export async function getChallengeIdeas(
     };
   });
 }
+
+export async function getChallengeIdea(challengeId: string) {
+  const result = await db
+    .select()
+    .from(challengeIdea)
+    .where(eq(challengeIdea.id, parseInt(challengeId)));
+
+  return result.length > 0 ? result[0] : null;
+}
