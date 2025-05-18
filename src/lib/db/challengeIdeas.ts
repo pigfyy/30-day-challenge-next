@@ -83,6 +83,7 @@ export async function getChallengeIdeas(
         description: String(match.metadata?.description || ""),
         sourceName,
         sourceLink: url,
+        organization: String(match.metadata?.organization || ""),
         score: match.score,
       };
     });

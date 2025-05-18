@@ -57,6 +57,13 @@
       "when": 1747448442027,
       "tag": "0007_loose_the_renegades",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1747601425131,
+      "tag": "0008_workable_impossible_man",
+      "breakpoints": true
     }
   ]
 }

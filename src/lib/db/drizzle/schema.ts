@@ -37,6 +37,7 @@ export const challengeIdea = pgTable("ChallengeIdea", {
   description: text().notNull(),
   sourceName: text("source_name").notNull(),
   sourceLink: text("source_link").notNull(),
+  organization: text("organization").default("").notNull(),
 });
 
 export const user = pgTable(
@@ -84,6 +85,7 @@ export const challenge = pgTable(
     endDate: timestamp({ precision: 3, mode: "date" }).notNull(),
     createdAt: timestamp({ precision: 3, mode: "date" }).defaultNow().notNull(),
     userId: text().notNull(),
+    challengeIdeaId: integer("challenge_idea_id"),
   },
   (table) => [
     foreignKey({
@@ -93,6 +95,13 @@ export const challenge = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("restrict"),
+    foreignKey({
+      columns: [table.challengeIdeaId],
+      foreignColumns: [challengeIdea.id],
+      name: "Challenge_challengeIdeaId_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("set null"),
   ],
 );
 
