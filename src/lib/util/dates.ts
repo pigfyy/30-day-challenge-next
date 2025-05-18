@@ -1,3 +1,5 @@
+import { Challenge, DailyProgress } from "@/lib/db/drizzle/zod";
+import cuid from "cuid";
 import {
   addDays,
   differenceInCalendarDays,
@@ -11,8 +13,6 @@ import {
   startOfDay,
   subDays,
 } from "date-fns";
-import { Challenge, DailyProgress } from "@/lib/db/drizzle/zod";
-import cuid from "cuid";
 
 export type gridData = {
   dateValue: Date;

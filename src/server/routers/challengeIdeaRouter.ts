@@ -1,9 +1,4 @@
-import {
-  ChallengeIdeaResult,
-  getChallengeIdea,
-  getChallengeIdeas,
-} from "@/lib/db/challengeIdeas";
-import { geminiFlashModel } from "@/lib/util";
+import { getChallengeIdea, getChallengeIdeas } from "@/lib/db/challengeIdeas";
 import { z } from "zod";
 import { procedure, router } from "../init";
 

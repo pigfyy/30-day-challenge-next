@@ -13,20 +13,20 @@ import { usePwa } from "@/hooks/use-pwa";
 import { toast } from "@/hooks/use-toast";
 import { useUrlState } from "@/hooks/use-url-state";
 import {
+  EXCELLENT_PROGRESS_THRESHOLD,
+  GOOD_PROGRESS_THRESHOLD,
+} from "@/lib/constants";
+import { Challenge, DailyProgress } from "@/lib/db/drizzle/zod";
+import {
   calculateCompletionRate,
   calculateElapsedTime,
 } from "@/lib/util/dates";
 import { trpc } from "@/lib/util/trpc";
-import { Challenge, DailyProgress } from "@/lib/db/drizzle/zod";
 import { Pencil, PlusCircle, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
 import { PwaInstallDialog } from "./PwaInstallDialog";
-import {
-  GOOD_PROGRESS_THRESHOLD,
-  EXCELLENT_PROGRESS_THRESHOLD,
-} from "@/lib/constants";
 
 const ProgressBar = ({
   elapsedTime,

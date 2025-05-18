@@ -1,5 +1,5 @@
-import { z, ZodSchema } from "zod";
 import { NextResponse } from "next/server";
+import { z, ZodSchema } from "zod";
 
 export class ValidationError extends Error {
   constructor(

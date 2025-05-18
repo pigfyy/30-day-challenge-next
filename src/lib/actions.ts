@@ -1,11 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { db, challenge, dailyProgress } from "@/lib/db/drizzle";
-import { uploadImage } from "./db/dailyProgress";
+import { challenge, dailyProgress, db } from "@/lib/db/drizzle";
 import { Challenge } from "@/lib/db/drizzle/zod";
-import { eq, or, lt, gt, and } from "drizzle-orm";
+import { and, eq, gt, lt, or } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import webpush from "web-push";
+import { uploadImage } from "./db/dailyProgress";
 
 webpush.setVapidDetails(
   "mailto:franklinzhang06@gmail.com",
