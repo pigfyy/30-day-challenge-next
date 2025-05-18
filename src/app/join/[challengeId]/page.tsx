@@ -17,11 +17,11 @@ export default async function JoinChallengePage({
   params,
   searchParams,
 }: {
-  params: Promise<{ challengeId: string }>;
+  params: { challengeId: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { userId } = await auth();
-  const { challengeId } = await params;
+  const { challengeId } = params;
   const type = searchParams?.type;
 
   if (userId) {
