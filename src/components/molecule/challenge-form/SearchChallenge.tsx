@@ -29,7 +29,7 @@ const ChallengeIdea = ({
   onApplyChallenge,
 }: {
   challengeIdea: ChallengeIdeaResult;
-  activeChallengeId: number | null;
+  activeChallengeId: string | null;
   onJoinChallenge: (challengeIdea: ChallengeIdeaResult) => void;
   onApplyChallenge: (challengeIdea: ChallengeIdeaResult) => void;
 }) => {
@@ -105,7 +105,7 @@ export const ChallengeSearchCard = ({
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ChallengeIdeaResult[]>([]);
-  const [activeChallengeId, setActiveChallengeId] = useState<number | null>(
+  const [activeChallengeId, setActiveChallengeId] = useState<string | null>(
     null,
   );
 

@@ -64,7 +64,7 @@ export async function getChallengeIdeas(
 
   return results.matches
     .filter((match) => !object.results.includes(match.id))
-    .map((match) => {
+    .map((match, idx) => {
       const url = String(match.metadata?.url || "");
       let sourceName = "";
       try {
@@ -75,8 +75,8 @@ export async function getChallengeIdeas(
       }
 
       return {
-        id: parseInt(match.id),
-        index: parseInt(match.id),
+        id: match.id,
+        index: idx,
         title: String(match.metadata?.title || ""),
         wish: String(match.metadata?.wish || ""),
         dailyAction: String(match.metadata?.dailyAction || ""),
@@ -93,7 +93,7 @@ export async function getChallengeIdea(challengeId: string) {
   const result = await db
     .select()
     .from(challengeIdea)
-    .where(eq(challengeIdea.id, parseInt(challengeId)));
+    .where(eq(challengeIdea.id, challengeId));
 
   return result.length > 0 ? result[0] : null;
 }

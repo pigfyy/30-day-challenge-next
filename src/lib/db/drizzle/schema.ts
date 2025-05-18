@@ -29,7 +29,10 @@ export const prismaMigrations = pgTable("_prisma_migrations", {
 });
 
 export const challengeIdea = pgTable("ChallengeIdea", {
-  id: serial().primaryKey().notNull(),
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => cuid()),
   index: integer().notNull(),
   title: text().notNull(),
   wish: text().notNull(),
@@ -85,7 +88,7 @@ export const challenge = pgTable(
     endDate: timestamp({ precision: 3, mode: "date" }).notNull(),
     createdAt: timestamp({ precision: 3, mode: "date" }).defaultNow().notNull(),
     userId: text().notNull(),
-    challengeIdeaId: integer("challenge_idea_id"),
+    challengeIdeaId: text("challenge_idea_id"),
   },
   (table) => [
     foreignKey({
