@@ -1,6 +1,6 @@
 import { use } from "react";
 import { Button } from "@/components/ui/button";
-import { SignInButton } from "@clerk/nextjs";
+import { SignInButton, SignUp } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -32,11 +32,7 @@ export default async function JoinChallengePage({
       <p className="text-md text-gray-500">
         You&apos;ve been invited to join a challenge.
       </p>
-      <SignInButton forceRedirectUrl={`/app/join/${challengeId}`}>
-        <Button size="lg" className="mt-4">
-          Join Challenge
-        </Button>
-      </SignInButton>
+      <SignUp forceRedirectUrl={`/app/join/${challengeId}`} />
     </div>
   );
 }

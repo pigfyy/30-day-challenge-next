@@ -41,14 +41,16 @@ export default function LandingPage() {
               month by month.
             </p>
             <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-              <SignInButton forceRedirectUrl={"/app"}>
+              <Link
+                href={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "/sign-up"}
+              >
                 <Button
                   size="lg"
                   className="transform bg-blue-600 text-lg font-semibold shadow-md transition-all duration-200 hover:-translate-y-1 hover:bg-blue-700 hover:shadow-lg"
                 >
                   Get Started
                 </Button>
-              </SignInButton>
+              </Link>
               <LearnMoreButton />
             </div>
           </div>

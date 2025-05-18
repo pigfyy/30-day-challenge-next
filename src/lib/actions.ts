@@ -6,6 +6,8 @@ import { and, eq, gt, lt, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import webpush from "web-push";
 import { uploadImage } from "./db/dailyProgress";
+import { auth } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 
 webpush.setVapidDetails(
   "mailto:franklinzhang06@gmail.com",
@@ -111,4 +113,20 @@ export async function changeDates(
         ),
       ),
     );
+}
+
+export async function deleteCurrentUserAction() {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+    const client = await clerkClient();
+    await client.users.deleteUser(userId);
+    revalidatePath("/"); // Revalidate relevant paths if necessary
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return { success: false, error: "Failed to delete user" };
+  }
 }

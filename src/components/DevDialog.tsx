@@ -7,7 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { changeDates, deleteDailyProgressAction } from "@/lib/actions";
+import {
+  changeDates,
+  deleteDailyProgressAction,
+  deleteCurrentUserAction,
+} from "@/lib/actions";
 import { trpc } from "@/lib/util/trpc";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -15,6 +19,7 @@ import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import React from "react";
+import { useClerk } from "@clerk/nextjs";
 
 const Content: React.FC<{
   setIsModalOpen: (isOpen: boolean) => void;
@@ -22,6 +27,7 @@ const Content: React.FC<{
   const utils = trpc.useUtils();
   const searchParams = useSearchParams();
   const challengeId = searchParams.get("challenge");
+  const { signOut } = useClerk();
 
   const { data: challenges } = trpc.challenge.getChallenges.useQuery();
 
@@ -29,8 +35,25 @@ const Content: React.FC<{
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isDeletingUser, setIsDeletingUser] = useState<boolean>(false);
 
   const challenge = challenges?.find((c) => c.id === challengeId);
+
+  const handleDeleteUserAndSignOut = async () => {
+    setIsDeletingUser(true);
+    try {
+      const result = await deleteCurrentUserAction();
+      if (result.success) {
+        await signOut({ redirectUrl: "/" });
+      } else {
+        console.error("Failed to delete user:", result.error);
+      }
+    } catch (error) {
+      console.error("Error in delete user and sign out process:", error);
+    } finally {
+      setIsDeletingUser(false);
+    }
+  };
 
   // Set initial values for the date inputs when the challenge is loaded
   React.useEffect(() => {
@@ -40,11 +63,8 @@ const Content: React.FC<{
     }
   }, [challenge]);
 
-  if (!challenge) {
-    return null;
-  }
-
   const handleSubmit = async () => {
+    if (!challenge) return; // Should not happen if button is only visible with challenge
     setIsSubmitting(true);
     try {
       const now = new Date();
@@ -69,43 +89,58 @@ const Content: React.FC<{
     }
   };
 
-  // Disable the submit button if the dates are invalid or the form is submitting
-  const isSubmitDisabled = !startDate || !endDate || isSubmitting;
+  const isAnyActionInProgress = isSubmitting || isDeletingUser;
+  const isSubmitDatesDisabled =
+    !startDate || !endDate || isAnyActionInProgress || !challenge;
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label>Start Date</Label>
-          <Input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            disabled={isSubmitting}
-          />
-        </div>
-        <div>
-          <Label>End Date</Label>
-          <Input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            disabled={isSubmitting}
-          />
-        </div>
-      </div>
-      <div className="flex justify-between">
+      {challenge && (
+        <>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Start Date</Label>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                disabled={isAnyActionInProgress}
+              />
+            </div>
+            <div>
+              <Label>End Date</Label>
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                disabled={isAnyActionInProgress}
+              />
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <Button
+              onClick={handleSubmit}
+              disabled={isSubmitDatesDisabled}
+              className="w-full"
+            >
+              {isSubmitting ? "Submitting..." : "Submit Dates"}
+            </Button>
+          </div>
+        </>
+      )}
+      <div className="flex flex-col space-y-2">
         <Button
-          onClick={handleSubmit}
-          disabled={isSubmitDisabled}
-          className="w-1/2"
+          onClick={handleDeleteUserAndSignOut}
+          disabled={isAnyActionInProgress}
+          variant="destructive"
+          className="w-full"
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isDeletingUser ? "Deleting User..." : "Delete User and Sign Out"}
         </Button>
         <Button
           onClick={() => setIsModalOpen(false)}
-          disabled={isSubmitting}
-          className="w-1/2"
+          disabled={isAnyActionInProgress}
+          className="w-full"
           variant="outline"
         >
           Close

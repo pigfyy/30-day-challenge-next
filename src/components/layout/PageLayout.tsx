@@ -51,10 +51,30 @@ const Challenges = () => {
 };
 
 export function PageLayout() {
-  const { data: user, isLoading } = trpc.user.getUser.useQuery();
+  const { data: user, isLoading } = trpc.user.getUser.useQuery(undefined, {
+    retry: 3,
+    retryDelay: 1000,
+  });
 
-  if (!isLoading && !user) {
-    throw new Error("User not found");
+  if (isLoading) {
+    return (
+      <div className="my-6 flex flex-1 items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="my-6 flex flex-1 items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="mx-auto h-12 w-12 animate-spin" />
+          <p className="mt-4 text-gray-600">
+            Setting up your account. This might take a moment...
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
