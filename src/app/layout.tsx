@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { trpc, trpcClient } from "@/lib/util/trpc";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
@@ -47,6 +48,7 @@ export default function RootLayout({
                 <Toaster />
                 {/* DEVELOPER TOOLS */}
                 <DevDialog />
+                <Analytics />
               </Suspense>
             </body>
           </html>
