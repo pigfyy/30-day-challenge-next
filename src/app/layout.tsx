@@ -14,11 +14,6 @@ import { Metadata } from "next";
 
 export const queryClient = new QueryClient();
 
-export const metadata: Metadata = {
-  title: "30 Day Me",
-  description: "30 Day Me",
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -36,6 +31,11 @@ export default function RootLayout({
               />
               <meta name="overscroll-behavior" content="none" />
               <link rel="icon" href="/favicon.ico" />
+              <title>30 Day Me</title>
+              <meta
+                name="description"
+                content="30 Day Me is a platform for creating and tracking 30-day challenges."
+              />
             </head>
             <body className="flex min-h-screen flex-col bg-gray-50">
               <Suspense

@@ -6,7 +6,7 @@ import { ViewChallenge } from "@/components/ViewChallenge";
 import { useUrlState } from "@/hooks/use-url-state";
 import { trpc } from "@/lib/util/trpc";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 const Challenges = () => {
   const { getQueryParam, updateQueryParam } = useUrlState();
@@ -80,7 +80,15 @@ export function PageLayout() {
   return (
     <>
       <div className="my-6 flex flex-1 items-center justify-center">
-        <Challenges />
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center">
+              <Loader2 className="h-12 w-12 animate-spin" />
+            </div>
+          }
+        >
+          <Challenges />
+        </Suspense>
       </div>
     </>
   );
