@@ -169,9 +169,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
-      style={{
-        width: 248.8 * (columnsDisplayed ?? 1) + "px",
-      }}
+      style={{ width: 248.8 * (columnsDisplayed ?? 1) + "px" }}
       classNames={{
         months: _monthsClassName,
         month_caption: _monthCaptionClassName,
@@ -321,7 +319,14 @@ function Nav({
     }
     goToMonth(previousMonth);
     onPrevClick?.(previousMonth);
-  }, [previousMonth, goToMonth]);
+  }, [
+    previousMonth,
+    goToMonth,
+    navView,
+    displayYears,
+    onPrevClick,
+    setDisplayYears,
+  ]);
 
   const handleNextClick = React.useCallback(() => {
     if (!nextMonth) return;
@@ -341,7 +346,14 @@ function Nav({
     }
     goToMonth(nextMonth);
     onNextClick?.(nextMonth);
-  }, [goToMonth, nextMonth]);
+  }, [
+    goToMonth,
+    nextMonth,
+    navView,
+    displayYears,
+    onNextClick,
+    setDisplayYears,
+  ]);
   return (
     <nav className={cn("flex items-center", className)}>
       <Button
