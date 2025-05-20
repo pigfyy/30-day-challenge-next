@@ -1,6 +1,7 @@
 import Calendar from "@/components/Calendar";
 import { ViewChallengeHeader } from "@/components/ViewChallengeHeader";
 import { useUrlState } from "@/hooks/use-url-state";
+import { useEdgeSwipe, SwipeDirection } from "@/hooks/use-edge-swipe";
 import { trpc } from "@/lib/util/trpc";
 import { Loader2 } from "lucide-react";
 import { BackButton } from "./BackButton";
@@ -8,6 +9,18 @@ import { useEffect } from "react";
 
 export const ViewChallenge = () => {
   const { searchParams, getQueryParam, removeQueryParam } = useUrlState();
+  const { containerRef, bind } = useEdgeSwipe({
+    onSwipe: (direction) => {
+      switch (direction) {
+        case SwipeDirection.LEFT:
+          console.log("User swiped left");
+          break;
+        case SwipeDirection.RIGHT:
+          console.log("User swiped right");
+          break;
+      }
+    },
+  });
 
   const challengeId = getQueryParam("challenge");
 
@@ -17,9 +30,7 @@ export const ViewChallenge = () => {
 
   const { data: dailyProgress, isLoading: isDailyProgressLoading } =
     trpc.dailyProgress.getDailyProgress.useQuery(
-      {
-        challengeId: challengeId,
-      },
+      { challengeId: challengeId },
       {
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
@@ -40,7 +51,12 @@ export const ViewChallenge = () => {
   }
 
   return (
-    <div className="m-2 w-full rounded-lg bg-white p-2 shadow-lg sm:p-4 md:mx-auto md:w-5/6 md:p-5 lg:w-2/3 lg:p-6 xl:w-1/2 2xl:w-[45%]">
+    <div
+      ref={containerRef}
+      {...bind()}
+      style={{ touchAction: "none" }}
+      className="m-2 w-full rounded-lg bg-white p-2 shadow-lg sm:p-4 md:mx-auto md:w-5/6 md:p-5 lg:w-2/3 lg:p-6 xl:w-1/2 2xl:w-[45%]"
+    >
       <div className="mb-6 flex items-start justify-between">
         <BackButton />
       </div>
