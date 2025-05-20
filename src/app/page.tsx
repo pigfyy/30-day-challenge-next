@@ -1,14 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SignInButton } from "@clerk/nextjs";
+import { SignedOut, SignedIn, SignInButton } from "@clerk/nextjs";
 import LearnMoreButton from "@/components/LearnMoreButton";
 import PwaRedirectHandler from "@/components/PwaRedirectHandler";
 
 export async function generateMetadata() {
-  return {
-    title: "30 Day Me",
-  };
+  return { title: "30 Day Me" };
 }
 
 export default function LandingPage() {
@@ -41,17 +39,30 @@ export default function LandingPage() {
               month by month.
             </p>
             <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "/sign-up"}
-              >
-                <Button
-                  size="lg"
-                  className="transform bg-blue-600 text-lg font-semibold shadow-md transition-all duration-200 hover:-translate-y-1 hover:bg-blue-700 hover:shadow-lg"
+              <SignedIn>
+                <Link href={"/app"}>
+                  <Button
+                    size="lg"
+                    className="transform bg-blue-600 text-lg font-semibold shadow-md transition-all duration-200 hover:-translate-y-1 hover:bg-blue-700 hover:shadow-lg"
+                  >
+                    Get Started
+                  </Button>
+                </Link>
+                <LearnMoreButton />
+              </SignedIn>
+              <SignedOut>
+                <Link
+                  href={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "/sign-up"}
                 >
-                  Get Started
-                </Button>
-              </Link>
-              <LearnMoreButton />
+                  <Button
+                    size="lg"
+                    className="transform bg-blue-600 text-lg font-semibold shadow-md transition-all duration-200 hover:-translate-y-1 hover:bg-blue-700 hover:shadow-lg"
+                  >
+                    Get Started
+                  </Button>
+                </Link>
+                <LearnMoreButton />
+              </SignedOut>
             </div>
           </div>
         </div>
