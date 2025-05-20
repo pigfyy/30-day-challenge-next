@@ -10,8 +10,14 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
+import { Metadata } from "next";
 
 export const queryClient = new QueryClient();
+
+export const metadata: Metadata = {
+  title: "30 Day Me",
+  description: "30 Day Me",
+};
 
 export default function RootLayout({
   children,
