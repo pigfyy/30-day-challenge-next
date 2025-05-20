@@ -5,13 +5,14 @@ import { useEdgeSwipe, SwipeDirection } from "@/hooks/use-edge-swipe";
 import { trpc } from "@/lib/util/trpc";
 import { Loader2 } from "lucide-react";
 import { BackButton } from "./BackButton";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const handleSwipe = (
   direction: SwipeDirection,
   challenges: any[] | undefined,
   currentChallengeId: string | null,
   updateQueryParam: (key: string, value: string) => void,
+  utils: ReturnType<typeof trpc.useUtils>,
 ) => {
   if (!challenges || !currentChallengeId) return;
 
@@ -28,23 +29,37 @@ const handleSwipe = (
   }
 
   const nextChallenge = challenges[nextIndex];
+
+  // Prefetch the next challenge's data
+  utils.dailyProgress.getDailyProgress.prefetch({
+    challengeId: nextChallenge.id,
+  });
+
   updateQueryParam("challenge", nextChallenge.id);
 };
 
 export const ViewChallenge = () => {
   const { searchParams, getQueryParam, removeQueryParam, updateQueryParam } =
     useUrlState();
+  const utils = trpc.useUtils();
+  const [isNavigating, setIsNavigating] = useState(false);
+
   const { data: challenges, isLoading: isChallengesLoading } =
     trpc.challenge.getChallenges.useQuery();
 
   const { containerRef, bind } = useEdgeSwipe({
-    onSwipe: (direction) =>
+    onSwipe: (direction) => {
+      setIsNavigating(true);
       handleSwipe(
         direction,
         challenges,
         getQueryParam("challenge"),
         updateQueryParam,
-      ),
+        utils,
+      );
+      // Reset navigation state after a short delay
+      setTimeout(() => setIsNavigating(false), 300);
+    },
   });
 
   const challengeId = getQueryParam("challenge");
@@ -78,7 +93,9 @@ export const ViewChallenge = () => {
       ref={containerRef}
       {...bind()}
       style={{ touchAction: "none" }}
-      className="m-2 w-full rounded-lg bg-white p-2 shadow-lg sm:p-4 md:mx-auto md:w-5/6 md:p-5 lg:w-2/3 lg:p-6 xl:w-1/2 2xl:w-[45%]"
+      className={`m-2 w-full rounded-lg bg-white p-2 shadow-lg transition-opacity duration-300 sm:p-4 md:mx-auto md:w-5/6 md:p-5 lg:w-2/3 lg:p-6 xl:w-1/2 2xl:w-[45%] ${
+        isNavigating ? "opacity-50" : "opacity-100"
+      }`}
     >
       <div className="mb-6 flex items-start justify-between">
         <BackButton />

@@ -31,8 +31,8 @@ export const useEdgeSwipe = ({ onSwipe }: EdgeSwipeCallbacks) => {
             if (startX === null) return;
 
             const windowWidth = window.innerWidth;
-            const isFromLeftEdge = startX <= 20;
-            const isFromRightEdge = startX >= windowWidth - 20;
+            const isFromLeftEdge = startX <= 40;
+            const isFromRightEdge = startX >= windowWidth - 40;
 
             if (isFromLeftEdge && dx === 1 && Math.abs(x) > 50) {
               onSwipe?.(SwipeDirection.RIGHT);
