@@ -12,32 +12,26 @@ type EdgeSwipeCallbacks = { onSwipe: (direction: SwipeDirection) => void };
 export const useEdgeSwipe = ({ onSwipe }: EdgeSwipeCallbacks) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [startX, setStartX] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Disable browser's default back/forward gestures
   useEffect(() => {
     if (!isMobile) return;
 
     const preventDefault = (e: TouchEvent) => {
-      // Only prevent if the touch starts within our edge detection area
-      const touch = e.touches[0];
-      const windowWidth = window.innerWidth;
-      const isFromLeftEdge = touch.clientX <= 60;
-      const isFromRightEdge = touch.clientX >= windowWidth - 60;
-
-      if (isFromLeftEdge || isFromRightEdge) {
+      // Only prevent if we're actually dragging
+      if (isDragging) {
         e.preventDefault();
       }
     };
 
     // Add passive: false to allow preventDefault
-    document.addEventListener("touchstart", preventDefault, { passive: false });
     document.addEventListener("touchmove", preventDefault, { passive: false });
 
     return () => {
-      document.removeEventListener("touchstart", preventDefault);
       document.removeEventListener("touchmove", preventDefault);
     };
-  }, []);
+  }, [isDragging]);
 
   const bind = useGesture(
     isMobile
@@ -51,14 +45,15 @@ export const useEdgeSwipe = ({ onSwipe }: EdgeSwipeCallbacks) => {
 
             if (clientX !== undefined) {
               setStartX(clientX);
+              setIsDragging(true);
             }
           },
           onDragEnd: ({ movement: [x], direction: [dx] }) => {
             if (startX === null) return;
 
             const windowWidth = window.innerWidth;
-            const isFromLeftEdge = startX <= 60;
-            const isFromRightEdge = startX >= windowWidth - 60;
+            const isFromLeftEdge = startX <= 80;
+            const isFromRightEdge = startX >= windowWidth - 80;
 
             if (isFromLeftEdge && dx === 1 && Math.abs(x) > 50) {
               onSwipe?.(SwipeDirection.RIGHT);
@@ -67,6 +62,7 @@ export const useEdgeSwipe = ({ onSwipe }: EdgeSwipeCallbacks) => {
             }
 
             setStartX(null);
+            setIsDragging(false);
           },
         }
       : {},
