@@ -28,6 +28,7 @@ export default function RootLayout({
                 name="viewport"
                 content="width=device-width, initial-scale=1.0"
               />
+              <meta name="overscroll-behavior" content="none" />
               <link rel="icon" href="/favicon.ico" />
             </head>
             <body className="flex min-h-screen flex-col bg-gray-50">
