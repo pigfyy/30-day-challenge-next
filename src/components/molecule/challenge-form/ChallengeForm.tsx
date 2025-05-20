@@ -43,42 +43,22 @@ import { z } from "zod";
 export const challengeFormSchema = z.object({
   title: z
     .string()
-    .nonempty({
-      message: "Title is required.",
-    })
-    .max(75, {
-      message: "Title must be at most 75 characters long.",
-    }),
+    .nonempty({ message: "Title is required." })
+    .max(75, { message: "Title must be at most 75 characters long." }),
   wish: z
     .string()
-    .nonempty({
-      message: "Wish is required.",
-    })
-    .max(250, {
-      message: "Wish must be at most 250 characters long.",
-    }),
+    .nonempty({ message: "Wish is required." })
+    .max(250, { message: "Wish must be at most 250 characters long." }),
   dailyAction: z
     .string()
-    .nonempty({
-      message: "Daily action is required.",
-    })
-    .max(250, {
-      message: "Daily action must be at most 250 characters long.",
-    }),
+    .nonempty({ message: "Daily action is required." })
+    .max(250, { message: "Daily action must be at most 250 characters long." }),
   icon: z
     .string()
-    .emoji({
-      message: "Icon must be an emoji.",
-    })
-    .max(2, {
-      message: "Icon cannot be longer then 2 emojis",
-    }),
-  startDate: z.date({
-    required_error: "Start date is required.",
-  }),
-  endDate: z.date({
-    required_error: "End date is required.",
-  }),
+    .emoji({ message: "Icon must be an emoji." })
+    .max(2, { message: "Icon cannot be longer then 2 emojis" }),
+  startDate: z.date({ required_error: "Start date is required." }),
+  endDate: z.date({ required_error: "End date is required." }),
 });
 
 export const ChallengeForm = ({
@@ -115,9 +95,6 @@ export const ChallengeForm = ({
 
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
-  console.log(disabled);
-  console.log(isPopoverOpen);
 
   useEffect(() => {
     if (defaultValues) {

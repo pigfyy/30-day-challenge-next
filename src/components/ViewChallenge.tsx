@@ -47,7 +47,7 @@ export const ViewChallenge = () => {
   const { data: challenges, isLoading: isChallengesLoading } =
     trpc.challenge.getChallenges.useQuery();
 
-  const { containerRef, bind } = useEdgeSwipe({
+  const { containerRef, bind, style } = useEdgeSwipe({
     onSwipe: (direction) => {
       setIsNavigating(true);
       handleSwipe(
@@ -92,7 +92,7 @@ export const ViewChallenge = () => {
     <div
       ref={containerRef}
       {...bind()}
-      style={{ touchAction: "none" }}
+      style={style}
       className={`m-2 w-full rounded-lg bg-white p-2 shadow-lg transition-opacity duration-300 sm:p-4 md:mx-auto md:w-5/6 md:p-5 lg:w-2/3 lg:p-6 xl:w-1/2 2xl:w-[45%] ${
         isNavigating ? "opacity-50" : "opacity-100"
       }`}

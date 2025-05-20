@@ -10,11 +10,7 @@ import { insertDailyProgressSchema } from "@/lib/db/drizzle/zod";
 
 export const dailyProgressRouter = router({
   getDailyProgress: procedure
-    .input(
-      z.object({
-        challengeId: z.string().nullable(),
-      }),
-    )
+    .input(z.object({ challengeId: z.string().nullable() }))
     .query(async ({ ctx, input }) => {
       if (!ctx.user) {
         throw new Error("Not authenticated");
@@ -35,17 +31,11 @@ export const dailyProgressRouter = router({
       return progress;
     }),
   upsertDailyProgress: procedure
-    .input(
-      insertDailyProgressSchema.extend({
-        userId: z.string().optional(),
-      }),
-    )
+    .input(insertDailyProgressSchema.extend({ userId: z.string().optional() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user) {
         throw new Error("Not authenticated");
       }
-
-      console.log(input);
 
       const dailyProgress = await editDailyProgressCompletion({
         ...input,

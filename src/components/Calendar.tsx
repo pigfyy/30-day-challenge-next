@@ -12,10 +12,7 @@ import { ViewDayDialog } from "./ViewDayDialog";
 import { useGesture } from "@use-gesture/react";
 import cuid from "cuid";
 
-type CalendarProps = {
-  challenge: Challenge;
-  dailyProgress: DailyProgress[];
-};
+type CalendarProps = { challenge: Challenge; dailyProgress: DailyProgress[] };
 
 export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
   const [isViewDayDialogOpen, setIsViewDayDialogOpen] = useState(false);
@@ -119,8 +116,13 @@ function Day({
     isMobile
       ? {
           onDragEnd: ({ movement: [, y], direction: [, dy], event }) => {
-            if (dy === -1 && Math.abs(y) > 50) {
-              handleMaximizeDay();
+            if (dy === -1) {
+              if (
+                isDateValid(item.dateValue, challenge.startDate) &&
+                !item.isPadding
+              ) {
+                handleMaximizeDay();
+              }
             }
           },
         }
@@ -142,8 +144,6 @@ function Day({
         createdAt: newDailyProgress.createdAt || new Date(),
         note: newDailyProgress.note || "",
       };
-
-      console.log(newRecord);
 
       utils.dailyProgress.getDailyProgress.setData(
         { challengeId: challenge.id },
@@ -186,10 +186,12 @@ function Day({
   const localItem = dailyProgress.find(
     (dp) =>
       dp.date.toDateString() === item.dateValue.toDateString() &&
-      !item.isPadding, // Only find progress for non-padding days
+      !item.isPadding,
   );
 
   const isCompleted = !!localItem?.completed && !item.isPadding;
+  const isValidDay =
+    isDateValid(item.dateValue, challenge.startDate) && !item.isPadding;
 
   let completedClasses = "";
   if (isCompleted) {
@@ -205,7 +207,7 @@ function Day({
   }
 
   async function handleClick() {
-    if (!isDateValid(item.dateValue, challenge.startDate)) {
+    if (!isValidDay) {
       return;
     }
 
@@ -221,7 +223,7 @@ function Day({
     e?: React.MouseEvent<HTMLOrSVGElement, MouseEvent>,
   ) {
     e?.stopPropagation();
-    if (!isDateValid(item.dateValue, challenge.startDate) || item.isPadding) {
+    if (!isValidDay) {
       return;
     }
     setIsViewDayDialogOpen(true);
@@ -231,9 +233,11 @@ function Day({
   return (
     <button
       key={index}
-      className="flex aspect-square w-full flex-1 touch-none flex-row py-[3px]"
+      className={`flex aspect-square w-full flex-1 flex-row py-[3px] ${
+        isValidDay ? "touch-none" : ""
+      }`}
       onClick={handleClick}
-      disabled={!isDateValid(item.dateValue, challenge.startDate)}
+      disabled={!isValidDay}
       ref={buttonRef}
       {...bind()}
     >
@@ -242,9 +246,7 @@ function Day({
         <div
           className={`group relative mx-[3px] flex flex-1 flex-col items-center justify-center ${completedClasses}`}
         >
-          {isDateValid(item.dateValue, challenge.startDate) &&
-          !item.isPadding &&
-          !isMobile ? (
+          {isValidDay && !isMobile ? (
             <Maximize2
               className="absolute right-2 top-2 h-6 w-6 rounded-md p-1 text-neutral-400 opacity-0 transition-opacity duration-75 hover:bg-white group-hover:opacity-100"
               onClick={handleMaximizeDay}
@@ -252,9 +254,7 @@ function Day({
           ) : null}
           <span
             className={`text-sm leading-4 sm:text-lg sm:leading-normal ${
-              isDateValid(item.dateValue, challenge.startDate)
-                ? "font-bold text-black"
-                : "text-gray-400"
+              isValidDay ? "font-bold text-black" : "text-gray-400"
             }`}
           >
             {!item.isPadding ? getDate(item.dateValue) : null}
