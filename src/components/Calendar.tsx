@@ -111,11 +111,28 @@ function Day({
 }: DayProps) {
   const utils = trpc.useUtils();
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const bind = useGesture(
     isMobile
       ? {
+          onDragStart: ({ event, direction: [, dy] }) => {
+            if (
+              isDateValid(item.dateValue, challenge.startDate) &&
+              !item.isPadding &&
+              dy === -1
+            ) {
+              setIsDragging(true);
+              event.preventDefault();
+            }
+          },
+          onDrag: ({ event, direction: [, dy] }) => {
+            if (isDragging && dy === -1) {
+              event.preventDefault();
+            }
+          },
           onDragEnd: ({ movement: [, y], direction: [, dy], event }) => {
+            setIsDragging(false);
             if (dy === -1) {
               if (
                 isDateValid(item.dateValue, challenge.startDate) &&
@@ -234,12 +251,13 @@ function Day({
     <button
       key={index}
       className={`flex aspect-square w-full flex-1 flex-row py-[3px] ${
-        isValidDay ? "touch-none" : ""
+        isDragging ? "select-none overscroll-none" : ""
       }`}
       onClick={handleClick}
       disabled={!isValidDay}
       ref={buttonRef}
       {...bind()}
+      style={{ touchAction: isDragging ? "none" : "pan-y" }}
     >
       <div className="relative flex h-full w-full flex-1">
         <StridePadding index={index} item={item} />
