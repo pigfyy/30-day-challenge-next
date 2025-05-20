@@ -7,25 +7,48 @@ import { Loader2 } from "lucide-react";
 import { BackButton } from "./BackButton";
 import { useEffect } from "react";
 
+const handleSwipe = (
+  direction: SwipeDirection,
+  challenges: any[] | undefined,
+  currentChallengeId: string | null,
+  updateQueryParam: (key: string, value: string) => void,
+) => {
+  if (!challenges || !currentChallengeId) return;
+
+  const currentIndex = challenges.findIndex((c) => c.id === currentChallengeId);
+  if (currentIndex === -1) return;
+
+  let nextIndex: number;
+  if (direction === SwipeDirection.LEFT) {
+    // Move to next challenge (or wrap around to first)
+    nextIndex = (currentIndex + 1) % challenges.length;
+  } else {
+    // Move to previous challenge (or wrap around to last)
+    nextIndex = (currentIndex - 1 + challenges.length) % challenges.length;
+  }
+
+  const nextChallenge = challenges[nextIndex];
+  updateQueryParam("challenge", nextChallenge.id);
+};
+
 export const ViewChallenge = () => {
-  const { searchParams, getQueryParam, removeQueryParam } = useUrlState();
+  const { searchParams, getQueryParam, removeQueryParam, updateQueryParam } =
+    useUrlState();
+  const { data: challenges, isLoading: isChallengesLoading } =
+    trpc.challenge.getChallenges.useQuery();
+
   const { containerRef, bind } = useEdgeSwipe({
-    onSwipe: (direction) => {
-      switch (direction) {
-        case SwipeDirection.LEFT:
-          console.log("User swiped left");
-          break;
-        case SwipeDirection.RIGHT:
-          console.log("User swiped right");
-          break;
-      }
-    },
+    onSwipe: (direction) =>
+      handleSwipe(
+        direction,
+        challenges,
+        getQueryParam("challenge"),
+        updateQueryParam,
+      ),
   });
 
   const challengeId = getQueryParam("challenge");
 
-  const { data: challenges, isLoading: isChallengesLoading } =
-    trpc.challenge.getChallenges.useQuery();
   const challenge = challenges?.find((c) => c.id === challengeId);
 
   const { data: dailyProgress, isLoading: isDailyProgressLoading } =
