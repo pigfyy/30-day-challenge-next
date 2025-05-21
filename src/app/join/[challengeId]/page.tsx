@@ -2,14 +2,9 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getChallengeIdea } from "@/lib/db/challengeIdeas";
 import JoinAuthPageLayout from "@/components/layout/JoinAuthPageLayout";
+import { Metadata } from "next";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { challengeId: string };
-}) {
-  return { title: `Join Challenge - 30 Day Me` };
-}
+export const metadata: Metadata = { title: "Join Challenge - 30 Day Me" };
 
 export default async function JoinChallengePage({
   params,
