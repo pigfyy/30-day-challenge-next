@@ -39,10 +39,10 @@ export default function JoinAuthPageLayout({
       {isInAppBrowserClient && (
         <div className="mb-4 rounded bg-yellow-100 p-3 text-center text-yellow-700">
           <p>
-            It looks like you&apos;re in an in-app browser. To be able to use
-            Sign In with Google, please either copy the link and paste it into
-            your browser or click on the top-right ellipsis and select Open in
-            Browser
+            It looks like you&apos;re in an in-app browser. To be able to create
+            an account or use Sign In with Google, please either copy the link
+            and paste it into your browser or click on the top-right ellipsis
+            and select Open in Browser
           </p>
         </div>
       )}
