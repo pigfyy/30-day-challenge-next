@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { db, user } from "@/lib/db/drizzle";
 import { eq } from "drizzle-orm";
-import { deleteUser } from "@/lib/db/user";
+import { deleteUser, findUserByClerkId } from "@/lib/db/user";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -20,9 +20,7 @@ export async function POST(req: Request) {
   const svix_signature = headerPayload.get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response("Error occured -- no svix headers", {
-      status: 400,
-    });
+    return new Response("Error occured -- no svix headers", { status: 400 });
   }
 
   const payload = await req.json();
@@ -40,9 +38,7 @@ export async function POST(req: Request) {
     }) as WebhookEvent;
   } catch (err) {
     console.error("Error verifying webhook:", err);
-    return new Response("Error occured", {
-      status: 400,
-    });
+    return new Response("Error occured", { status: 400 });
   }
 
   const eventType = evt.type;
@@ -80,13 +76,15 @@ export async function POST(req: Request) {
         updated_at &&
         image_url
       ) {
-        await db.insert(user).values({
-          email: email_addresses[0].email_address,
-          username: username!,
-          imageUrl: image_url,
-          clerkId: id,
-          createdAt: new Date(created_at),
-        });
+        await db
+          .insert(user)
+          .values({
+            email: email_addresses[0].email_address,
+            username: username!,
+            imageUrl: image_url,
+            clerkId: id,
+            createdAt: new Date(created_at),
+          });
       }
 
       return new Response("New user created!", { status: 200 });
@@ -97,11 +95,17 @@ export async function POST(req: Request) {
   } else if (eventType == "user.deleted") {
     const { id } = evt.data;
 
-    try {
-      if (!id) {
-        throw new Error("No id provided");
-      }
+    if (!id) {
+      return new Response("No id provided", { status: 400 });
+    }
 
+    try {
+      await findUserByClerkId(id, true);
+    } catch (e: unknown) {
+      return new Response("User doesn't exist.", { status: 200 });
+    }
+
+    try {
       await deleteUser(id);
 
       return new Response("User deleted!", { status: 200 });

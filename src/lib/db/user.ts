@@ -3,14 +3,14 @@ import { NewUser } from "@/lib/db/drizzle/zod";
 import { eq } from "drizzle-orm";
 import { cache } from "react";
 
-export const findUserByClerkId = async (clerkId: string) => {
+export const findUserByClerkId = async (clerkId: string, noThrow?: boolean) => {
   const data = await db
     .select()
     .from(user)
     .where(eq(user.clerkId, clerkId))
     .execute();
 
-  if (!data || data.length === 0)
+  if (!noThrow && (!data || data.length === 0))
     throw Error(`User with clerkId ${clerkId} not found`);
   return data[0];
 };
