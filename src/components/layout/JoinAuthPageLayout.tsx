@@ -67,6 +67,9 @@ export default function JoinAuthPageLayout({
             }
           `}</style>
           <div className="rounded bg-yellow-200 p-2.5">
+            <p className="mb-1 text-lg font-bold uppercase text-yellow-900">
+              Warning
+            </p>
             <p className="text-yellow-800">
               It looks like you&apos;re in an in-app browser. To be able to
               create an account or use Sign In with Google, please either copy
