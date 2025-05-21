@@ -8,7 +8,11 @@ export const trpc = createTRPCReact<AppRouter>();
 export const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: process.env.NEXT_PUBLIC_TRPC_URL || "http://localhost:3000/api/trpc",
+      url:
+        process.env.NEXT_PUBLIC_TRPC_URL ||
+        (process.env.IS_USING_LOCALHOST === "true"
+          ? "http://localhost:3000/api/trpc"
+          : "http://192.168.68.73:3000/api/trpc"),
       transformer: superjson,
     }),
     loggerLink({
