@@ -100,7 +100,11 @@ export async function POST(req: Request) {
     }
 
     try {
-      await findUserByClerkId(id, true);
+      const user = await findUserByClerkId(id, true);
+
+      if (!user) {
+        return new Response("User doesn't exist.", { status: 200 });
+      }
     } catch (e: unknown) {
       return new Response("User doesn't exist.", { status: 200 });
     }
