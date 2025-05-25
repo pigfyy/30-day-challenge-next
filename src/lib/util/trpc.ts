@@ -10,7 +10,7 @@ export const trpcClient = trpc.createClient({
     httpBatchLink({
       url:
         process.env.NEXT_PUBLIC_TRPC_URL ||
-        (process.env.IS_USING_LOCALHOST === "true"
+        (true
           ? "http://localhost:3000/api/trpc"
           : "http://192.168.68.73:3000/api/trpc"),
       transformer: superjson,

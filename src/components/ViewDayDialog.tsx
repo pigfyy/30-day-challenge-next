@@ -11,7 +11,13 @@ import { ChevronDown, X } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 import { Separator } from "./ui/separator";
 import { Textarea } from "./ui/textarea";
 
@@ -250,6 +256,9 @@ export const ViewDayDialog = ({
             {date.toLocaleDateString()}
           </DialogTitle>
         </DialogHeader>
+        <DialogDescription hidden>
+          Record a progress image or notes for the day!
+        </DialogDescription>
         <div className="flex flex-col gap-7">
           <Collapsible
             defaultOpen={true}

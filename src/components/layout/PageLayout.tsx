@@ -1,6 +1,7 @@
 "use client";
 
-import { ChallengeList } from "@/components/ChallengeGrid";
+import { ChallengeGrid } from "@/components/ChallengeGrid";
+import { Home } from "@/components/Home";
 import { CreateChallenge } from "@/components/molecule/challenge-form/CreateChallenge";
 import { ViewChallenge } from "@/components/ViewChallenge";
 import { useUrlState } from "@/hooks/use-url-state";
@@ -44,7 +45,7 @@ const Challenges = () => {
   }
 
   if (!challengeId) {
-    return <ChallengeList />;
+    return <Home />;
   }
 
   return <ViewChallenge />;

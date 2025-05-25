@@ -172,7 +172,7 @@ const ChallengeCard = ({
   );
 };
 
-export const ChallengeList = () => {
+export const ChallengeGrid = () => {
   const { data: challenges } = trpc.challenge.getChallenges.useQuery({
     includeDailyProgressData: true,
   });
