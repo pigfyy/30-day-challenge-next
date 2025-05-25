@@ -73,7 +73,7 @@ export const challengeRouter = router({
         throw new Error("Not authenticated");
       }
 
-      const challenge = await deleteChallenge(input, ctx.user.id);
+      const challenge = await deleteChallenge(input);
       return challenge;
     }),
 });
