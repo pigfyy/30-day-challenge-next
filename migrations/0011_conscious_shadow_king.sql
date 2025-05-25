@@ -1,0 +1,1 @@
+ALTER TABLE "User" ADD COLUMN "completedDaysInLast30Days" integer DEFAULT 0 NOT NULL;
