@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   try {
     if (timeInDays > 0) {
       await db.update(user).set({
-        completedDays: sql`COALESCE(
+        completedDaysInLast30Days: sql`COALESCE(
           (
             SELECT COUNT(DISTINCT DATE(${dailyProgress.date}))
             FROM ${dailyProgress}
