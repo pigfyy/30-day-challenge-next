@@ -1,4 +1,7 @@
+import { ADMIN_IDS } from "@/lib/constants";
+import { auth } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { redirect } from "next/navigation";
 import OpenAI from "openai";
 
 export const openai = new OpenAI({
@@ -21,4 +24,11 @@ export const base64ToBlob = (base64String: string, mimeType: string) => {
     ia[i] = byteString.charCodeAt(i);
   }
   return new Blob([ab], { type: mimeType });
+};
+
+export const validateAdmin = async () => {
+  const { userId } = await auth();
+  if (!userId || !ADMIN_IDS.includes(userId)) {
+    redirect("/");
+  }
 };
