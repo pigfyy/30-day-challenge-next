@@ -1,8 +1,8 @@
-import { db, dailyProgress } from "@/lib/db/drizzle";
+import { db, dailyProgress, user } from "@/lib/db/drizzle";
 import { NewDailyProgress } from "@/lib/db/drizzle/zod";
 import { base64ToBlob } from "../util";
 import { put, del } from "@vercel/blob";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export const editDailyProgressCompletion = async (
   progressInformation: NewDailyProgress,
@@ -16,27 +16,46 @@ export const editDailyProgressCompletion = async (
     .limit(1);
 
   if (existingRecord.length > 0) {
-    const data = await db
-      .update(dailyProgress)
-      .set({
-        completed: progressInformation.completed,
-        imageUrl: progressInformation.imageUrl,
-        note: progressInformation.note,
-      })
-      .where(eq(dailyProgress.id, recordId))
-      .returning();
-    return data[0];
-  } else {
-    const data = await db
-      .insert(dailyProgress)
-      .values({
-        ...progressInformation,
-        id: recordId,
-        completed: progressInformation.completed ?? true,
-      })
-      .returning();
+    return await db.transaction(async (tx) => {
+      const data = await tx
+        .update(dailyProgress)
+        .set({
+          completed: progressInformation.completed,
+          imageUrl: progressInformation.imageUrl,
+          note: progressInformation.note,
+        })
+        .where(eq(dailyProgress.id, recordId))
+        .returning();
 
-    return data[0];
+      await tx
+        .update(user)
+        .set({
+          completedDays: sql`${user.completedDays} ${progressInformation.completed ? sql`+ 1` : sql`- 1`}`,
+        })
+        .where(eq(user.id, progressInformation.userId));
+
+      return data[0];
+    });
+  } else {
+    return await db.transaction(async (tx) => {
+      const data = await tx
+        .insert(dailyProgress)
+        .values({
+          ...progressInformation,
+          id: recordId,
+          completed: progressInformation.completed ?? true,
+        })
+        .returning();
+
+      await tx
+        .update(user)
+        .set({
+          completedDays: sql`${user.completedDays} + 1`,
+        })
+        .where(eq(user.id, progressInformation.userId));
+
+      return data[0];
+    });
   }
 };
 

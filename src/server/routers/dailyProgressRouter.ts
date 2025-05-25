@@ -37,11 +37,10 @@ export const dailyProgressRouter = router({
         throw new Error("Not authenticated");
       }
 
-      const dailyProgress = await editDailyProgressCompletion({
+      return await editDailyProgressCompletion({
         ...input,
         userId: ctx.user.id,
       });
-      return dailyProgress;
     }),
   deleteDailyProgressImage: procedure
     .input(z.string())
