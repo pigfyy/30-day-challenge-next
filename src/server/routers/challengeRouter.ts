@@ -54,7 +54,11 @@ export const challengeRouter = router({
     }),
   updateChallenge: procedure
     .input(updateChallengeSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new Error("Not authenticated");
+      }
+
       const [updatedChallenge] = await db
         .update(challenge)
         .set(input)
@@ -62,8 +66,14 @@ export const challengeRouter = router({
         .returning();
       return updatedChallenge;
     }),
-  deleteChallenge: procedure.input(z.string()).mutation(async ({ input }) => {
-    const challenge = await deleteChallenge(input);
-    return challenge;
-  }),
+  deleteChallenge: procedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new Error("Not authenticated");
+      }
+
+      const challenge = await deleteChallenge(input, ctx.user.id);
+      return challenge;
+    }),
 });

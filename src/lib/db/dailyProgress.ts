@@ -2,7 +2,7 @@ import { db, dailyProgress, user } from "@/lib/db/drizzle";
 import { NewDailyProgress } from "@/lib/db/drizzle/zod";
 import { base64ToBlob } from "../util";
 import { put, del } from "@vercel/blob";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, notExists, exists, SQL } from "drizzle-orm";
 
 export const editDailyProgressCompletion = async (
   progressInformation: NewDailyProgress,
@@ -15,48 +15,99 @@ export const editDailyProgressCompletion = async (
     .where(eq(dailyProgress.id, recordId))
     .limit(1);
 
-  if (existingRecord.length > 0) {
-    return await db.transaction(async (tx) => {
-      const data = await tx
-        .update(dailyProgress)
-        .set({
-          completed: progressInformation.completed,
-          imageUrl: progressInformation.imageUrl,
-          note: progressInformation.note,
-        })
-        .where(eq(dailyProgress.id, recordId))
-        .returning();
+  return await db.transaction(async (tx) => {
+    const updatedProgressEntries =
+      existingRecord.length > 0
+        ? await tx
+            .update(dailyProgress)
+            .set({
+              completed: progressInformation.completed,
+              imageUrl: progressInformation.imageUrl,
+              note: progressInformation.note,
+            })
+            .where(eq(dailyProgress.id, recordId))
+            .returning()
+        : await tx
+            .insert(dailyProgress)
+            .values({
+              ...progressInformation,
+              id: recordId,
+              completed: progressInformation.completed ?? true,
+            })
+            .returning();
 
+    if (!updatedProgressEntries || updatedProgressEntries.length === 0) {
+      console.error(
+        `Failed to update dailyProgress for recordId: ${recordId}. User stats not updated.`,
+      );
+      throw new Error(
+        `DailyProgress record ${recordId} not found or update failed.`,
+      );
+    }
+    const updatedEntry = updatedProgressEntries[0];
+
+    const userIdForUpdate = updatedEntry.userId;
+    const dateForCondition = updatedEntry.date;
+
+    const count = await tx
+      .select({ count: sql<number>`count(*)` })
+      .from(dailyProgress)
+      .where(
+        and(
+          eq(dailyProgress.userId, userIdForUpdate),
+          eq(dailyProgress.completed, true),
+          sql`DATE(${dailyProgress.date} AT TIME ZONE 'America/Los_Angeles') = DATE(${dateForCondition} AT TIME ZONE 'America/Los_Angeles')`,
+        ),
+      )
+      .limit(1);
+
+    console.log(count[0].count);
+
+    if (progressInformation.completed && count[0].count < 2) {
+      const setClauseUpdate: {
+        completedDays: SQL;
+        completedDaysInLast30Days?: SQL;
+      } = {
+        completedDays: sql`${user.completedDays} + 1`,
+      };
+      if (updatedEntry.date) {
+        setClauseUpdate.completedDaysInLast30Days = sql`
+          CASE
+            WHEN ${updatedEntry.date} >= (DATE_TRUNC('day', NOW() AT TIME ZONE 'America/Los_Angeles') - INTERVAL '29 day')
+            THEN ${user.completedDaysInLast30Days} + 1
+            ELSE ${user.completedDaysInLast30Days}
+          END
+        `;
+      }
       await tx
         .update(user)
-        .set({
-          completedDays: sql`${user.completedDays} ${progressInformation.completed ? sql`+ 1` : sql`- 1`}`,
-        })
-        .where(eq(user.id, progressInformation.userId));
-
-      return data[0];
-    });
-  } else {
-    return await db.transaction(async (tx) => {
-      const data = await tx
-        .insert(dailyProgress)
-        .values({
-          ...progressInformation,
-          id: recordId,
-          completed: progressInformation.completed ?? true,
-        })
-        .returning();
-
+        .set(setClauseUpdate)
+        .where(and(eq(user.id, userIdForUpdate)));
+    } else if (!progressInformation.completed && count[0].count < 1) {
+      console.log("decreasing");
+      const setClauseUpdate: {
+        completedDays: SQL;
+        completedDaysInLast30Days?: SQL;
+      } = {
+        completedDays: sql`${user.completedDays} - 1`,
+      };
+      if (updatedEntry.date) {
+        setClauseUpdate.completedDaysInLast30Days = sql`
+          CASE
+            WHEN ${updatedEntry.date} >= (DATE_TRUNC('day', NOW() AT TIME ZONE 'America/Los_Angeles') - INTERVAL '29 day')
+            THEN ${user.completedDaysInLast30Days} - 1
+            ELSE ${user.completedDaysInLast30Days}
+          END
+        `;
+      }
       await tx
         .update(user)
-        .set({
-          completedDays: sql`${user.completedDays} + 1`,
-        })
-        .where(eq(user.id, progressInformation.userId));
+        .set(setClauseUpdate)
+        .where(and(eq(user.id, userIdForUpdate)));
+    }
 
-      return data[0];
-    });
-  }
+    return updatedEntry;
+  });
 };
 
 export const viewDailyProgressCompletion = async (
