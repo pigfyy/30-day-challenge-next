@@ -1,0 +1,1 @@
+ALTER TABLE "User" ADD COLUMN "completedDays" integer DEFAULT 0 NOT NULL;

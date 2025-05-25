@@ -35,6 +35,7 @@ export const editDailyProgressCompletion = async (
         completed: progressInformation.completed ?? true,
       })
       .returning();
+
     return data[0];
   }
 };

@@ -54,6 +54,7 @@ export const user = pgTable(
     username: text().notNull(),
     imageUrl: text().notNull(),
     clerkId: text().notNull(),
+    completedDays: integer().default(0).notNull(),
     createdAt: timestamp({ precision: 3, mode: "date" }).defaultNow().notNull(),
   },
   (table) => [
