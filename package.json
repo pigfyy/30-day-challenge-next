@@ -10,7 +10,9 @@
     "db:triggers": "tsx src/lib/db/drizzle/migrate.ts",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:prod:generate": "drizzle-kit generate --config drizzle-prod.config.ts",
+    "db:prod:push": "drizzle-kit push --config drizzle-prod.config.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.1.17",
