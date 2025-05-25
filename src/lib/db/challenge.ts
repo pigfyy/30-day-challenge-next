@@ -1,10 +1,7 @@
-import { db, challenge, dailyProgress } from "@/lib/db/drizzle";
+import { challenge, dailyProgress, db, user } from "@/lib/db/drizzle";
 import { NewChallenge } from "@/lib/db/drizzle/zod";
-import { addDays } from "date-fns";
-import { cache } from "react";
+import { desc, eq, and, exists, sql } from "drizzle-orm";
 import { deleteImage } from "./dailyProgress";
-import { eq, desc } from "drizzle-orm";
-import cuid from "cuid";
 
 export type CreateChallengeInput = NewChallenge;
 
@@ -42,23 +39,76 @@ export const updateChallenge = async (
 
 export const deleteChallenge = async (challengeId: string) => {
   try {
-    const imageUrls = await db
-      .select({ imageUrl: dailyProgress.imageUrl })
-      .from(dailyProgress)
-      .where(eq(dailyProgress.challengeId, challengeId));
+    await db.transaction(async (tx) => {
+      const exclusiveDaysCount = await tx
+        .select({ count: sql<number>`count(*)` })
+        .from(dailyProgress)
+        .where(
+          and(
+            eq(dailyProgress.challengeId, challengeId),
+            eq(dailyProgress.completed, true),
+            sql`NOT EXISTS (
+            SELECT 1 FROM "DailyProgress" dp2 
+            WHERE dp2."userId" = ${dailyProgress.userId}
+            AND DATE_TRUNC('day', dp2."date" AT TIME ZONE 'America/Los_Angeles') = DATE_TRUNC('day', ${dailyProgress.date} AT TIME ZONE 'America/Los_Angeles')
+            AND dp2."challengeId" != ${challengeId}
+            AND dp2."completed" = true
+          )`,
+          ),
+        );
 
-    await Promise.all(
-      imageUrls
-        .map((imageUrl) => imageUrl.imageUrl)
-        .filter((url): url is string => !!url)
-        .map((validUrl) => deleteImage(validUrl)),
-    );
+      const exclusiveDaysCountLast30Days = await tx
+        .select({ count: sql<number>`count(*)` })
+        .from(dailyProgress)
+        .where(
+          and(
+            eq(dailyProgress.challengeId, challengeId),
+            eq(dailyProgress.completed, true),
+            sql`DATE_TRUNC('day', ${dailyProgress.date} AT TIME ZONE 'America/Los_Angeles') >= DATE_TRUNC('day', NOW() AT TIME ZONE 'America/Los_Angeles') - INTERVAL '29 day'`,
+            sql`NOT EXISTS (
+            SELECT 1 FROM "DailyProgress" dp2 
+            WHERE dp2."userId" = ${dailyProgress.userId}
+            AND DATE_TRUNC('day', dp2."date" AT TIME ZONE 'America/Los_Angeles') = DATE_TRUNC('day', ${dailyProgress.date} AT TIME ZONE 'America/Los_Angeles')
+            AND dp2."challengeId" != ${challengeId}
+            AND dp2."completed" = true
+          )`,
+          ),
+        );
 
-    await db
-      .delete(dailyProgress)
-      .where(eq(dailyProgress.challengeId, challengeId));
+      const imageUrls = await tx
+        .select({ imageUrl: dailyProgress.imageUrl })
+        .from(dailyProgress)
+        .where(eq(dailyProgress.challengeId, challengeId));
+      await Promise.all(
+        imageUrls
+          .map((imageUrl) => imageUrl.imageUrl)
+          .filter((url): url is string => !!url)
+          .map((validUrl) => deleteImage(validUrl)),
+      );
 
-    await db.delete(challenge).where(eq(challenge.id, challengeId));
+      await tx
+        .delete(dailyProgress)
+        .where(eq(dailyProgress.challengeId, challengeId));
+
+      const [deletedChallenge] = await tx
+        .delete(challenge)
+        .where(eq(challenge.id, challengeId))
+        .returning();
+
+      if (!deletedChallenge) {
+        throw new Error("Challenge not found");
+      }
+
+      await tx
+        .update(user)
+        .set({
+          completedDays: sql`${user.completedDays} - ${exclusiveDaysCount[0]?.count || 0}`,
+          completedDaysInLast30Days: sql`${user.completedDaysInLast30Days} - ${exclusiveDaysCountLast30Days[0]?.count || 0}`,
+        })
+        .where(eq(user.id, deletedChallenge.userId));
+
+      return deletedChallenge;
+    });
   } catch (error) {
     console.error("Error deleting challenge:", error);
     throw error;
@@ -80,7 +130,6 @@ export const getChallenges = async (
       .where(eq(challenge.userId, userId))
       .orderBy(desc(challenge.startDate));
 
-    // Group the results by challenge and nest the daily progress
     const challengeMap = new Map();
 
     data.forEach((row) => {
@@ -120,7 +169,6 @@ export const getChallenge = async (challengeId: string) => {
 
   if (!data || data.length === 0) return null;
 
-  // Transform the flat data into nested structure
   const challengeData = data[0].challenge;
   const dailyProgressArray = data
     .map((row) => row.dailyProgress)

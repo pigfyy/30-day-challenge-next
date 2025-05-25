@@ -61,8 +61,6 @@ export const editDailyProgressCompletion = async (
       )
       .limit(1);
 
-    console.log(count[0].count);
-
     if (progressInformation.completed && count[0].count < 2) {
       const setClauseUpdate: {
         completedDays: SQL;
@@ -84,7 +82,6 @@ export const editDailyProgressCompletion = async (
         .set(setClauseUpdate)
         .where(and(eq(user.id, userIdForUpdate)));
     } else if (!progressInformation.completed && count[0].count < 1) {
-      console.log("decreasing");
       const setClauseUpdate: {
         completedDays: SQL;
         completedDaysInLast30Days?: SQL;
