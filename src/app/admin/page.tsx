@@ -18,8 +18,10 @@ export default async function Admin() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-10">
-      <Commands />
-      <Leaderboard />
+      {/* <Commands /> */}
+      <div className="mx-auto flex w-11/12 max-w-[410px]">
+        <Leaderboard />
+      </div>
     </div>
   );
 }
