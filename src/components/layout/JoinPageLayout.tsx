@@ -1,7 +1,5 @@
 "use client";
 
-import { trpc } from "@/lib/util/trpc";
-import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,9 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { trpc } from "@/lib/util/trpc";
 import { addDays } from "date-fns";
 import { useRouter } from "next/navigation";
-
 export default function JoinPageLayout({
   challengeId,
 }: {
@@ -37,7 +36,7 @@ export default function JoinPageLayout({
   if (isChallengeIdeaLoading) {
     return (
       <div className="my-6 flex flex-1 items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin" />
+        <LoadingSpinner />
       </div>
     );
   }

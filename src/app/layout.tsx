@@ -2,16 +2,15 @@
 
 import { DevDialog } from "@/components/DevDialog";
 import { Header } from "@/components/Header";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Toaster } from "@/components/ui/toaster";
+import { queryClient } from "@/lib/util/queryClient";
 import { trpc, trpcClient } from "@/lib/util/trpc";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
-import "./globals.css";
 import { Suspense } from "react";
-import { Loader2 } from "lucide-react";
-import { Metadata } from "next";
-import { queryClient } from "@/lib/util/queryClient";
+import "./globals.css";
 
 export default function RootLayout({
   children,
@@ -40,7 +39,7 @@ export default function RootLayout({
               <Suspense
                 fallback={
                   <div className="flex h-screen w-full items-center justify-center">
-                    <Loader2 className="h-10 w-10 animate-spin" />
+                    <LoadingSpinner />
                   </div>
                 }
               >

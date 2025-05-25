@@ -1,11 +1,11 @@
 import Calendar from "@/components/Calendar";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ViewChallengeHeader } from "@/components/ViewChallengeHeader";
+import { SwipeDirection, useEdgeSwipe } from "@/hooks/use-edge-swipe";
 import { useUrlState } from "@/hooks/use-url-state";
-import { useEdgeSwipe, SwipeDirection } from "@/hooks/use-edge-swipe";
 import { trpc } from "@/lib/util/trpc";
-import { Loader2 } from "lucide-react";
-import { BackButton } from "./BackButton";
 import { useEffect, useState } from "react";
+import { BackButton } from "./BackButton";
 
 const handleSwipe = (
   direction: SwipeDirection,
@@ -39,8 +39,7 @@ const handleSwipe = (
 };
 
 export const ViewChallenge = () => {
-  const { searchParams, getQueryParam, removeQueryParam, updateQueryParam } =
-    useUrlState();
+  const { getQueryParam, removeQueryParam, updateQueryParam } = useUrlState();
   const utils = trpc.useUtils();
   const [isNavigating, setIsNavigating] = useState(false);
 
@@ -57,7 +56,7 @@ export const ViewChallenge = () => {
         updateQueryParam,
         utils,
       );
-      // Reset navigation state after a short delay
+
       setTimeout(() => setIsNavigating(false), 300);
     },
   });
@@ -85,7 +84,7 @@ export const ViewChallenge = () => {
   }, [isLoading, challenge, challengeId, removeQueryParam]);
 
   if (isLoading || !challenge || !dailyProgress) {
-    return <Loader2 className="h-12 w-12 animate-spin" />;
+    return <LoadingSpinner />;
   }
 
   return (

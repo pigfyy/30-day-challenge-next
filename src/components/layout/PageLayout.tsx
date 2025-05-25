@@ -1,12 +1,11 @@
 "use client";
 
-import { ChallengeGrid } from "@/components/ChallengeGrid";
 import { Home } from "@/components/Home";
 import { CreateChallenge } from "@/components/molecule/challenge-form/CreateChallenge";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ViewChallenge } from "@/components/ViewChallenge";
 import { useUrlState } from "@/hooks/use-url-state";
 import { trpc } from "@/lib/util/trpc";
-import { Loader2 } from "lucide-react";
 import { Suspense, useEffect } from "react";
 
 const Challenges = () => {
@@ -33,7 +32,7 @@ const Challenges = () => {
   }, [isChallengesLoading, challenges, updateQueryParam, challengeId]);
 
   if (isChallengesLoading) {
-    return <Loader2 className="h-12 w-12 animate-spin" />;
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -60,7 +59,7 @@ export function PageLayout() {
   if (isLoading) {
     return (
       <div className="my-6 flex flex-1 items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin" />
+        <LoadingSpinner />
       </div>
     );
   }
@@ -69,7 +68,7 @@ export function PageLayout() {
     return (
       <div className="my-6 flex flex-1 items-center justify-center">
         <div className="text-center">
-          <Loader2 className="mx-auto h-12 w-12 animate-spin" />
+          <LoadingSpinner className="mx-auto" />
           <p className="mt-4 text-gray-600">
             Setting up your account. This might take a moment...
           </p>
@@ -84,7 +83,7 @@ export function PageLayout() {
         <Suspense
           fallback={
             <div className="flex items-center justify-center">
-              <Loader2 className="h-12 w-12 animate-spin" />
+              <LoadingSpinner />
             </div>
           }
         >

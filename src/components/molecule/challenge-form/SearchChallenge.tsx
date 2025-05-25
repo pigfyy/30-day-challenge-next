@@ -11,16 +11,17 @@ import {
 } from "@/components/ui/card";
 import ExpandableText from "@/components/ui/expandable-text";
 import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
+import { useUrlState } from "@/hooks/use-url-state";
 import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
-import { Loader2, Pencil } from "lucide-react";
-import { useMediaQuery } from "react-responsive";
-import { useState } from "react";
-import { useUrlState } from "@/hooks/use-url-state";
 import { addDays } from "date-fns";
+import { Pencil } from "lucide-react";
+import { useState } from "react";
+import { useMediaQuery } from "react-responsive";
 
 const ChallengeIdea = ({
   challengeIdea,
@@ -75,11 +76,7 @@ const ChallengeIdea = ({
           onClick={() => onJoinChallenge(challengeIdea)}
           disabled={disabled}
         >
-          {isActive ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            "Join Challenge"
-          )}
+          {isActive ? <LoadingSpinner /> : "Join Challenge"}
         </Button>
         <Button
           variant={"outline"}
