@@ -11,8 +11,7 @@ import "./globals.css";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { Metadata } from "next";
-
-export const queryClient = new QueryClient();
+import { queryClient } from "@/lib/util/queryClient";
 
 export default function RootLayout({
   children,
