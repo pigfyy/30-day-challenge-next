@@ -34,29 +34,48 @@ export const userRouter = router({
         )
       `.as("last30DaysPercentile");
 
-      const rankedUsersSubquery = db
+      // Create separate subqueries for lifetime and last 30 days percentiles
+      // to exclude users with 0 completed days from each calculation
+      const lifetimeRankedUsersSubquery = db
         .select({
           clerkId: user.clerkId,
           lifetimePercentile: lifetimePercentileExpr,
+        })
+        .from(user)
+        .where(sql`${user.completedDays} > 0`)
+        .as("lifetime_ranked_users");
+
+      const last30DaysRankedUsersSubquery = db
+        .select({
+          clerkId: user.clerkId,
           last30DaysPercentile: last30DaysPercentileExpr,
         })
         .from(user)
-        .as("ranked_users");
+        .where(sql`${user.completedDaysInLast30Days} > 0`)
+        .as("last30days_ranked_users");
 
-      const results = await db
+      // Get lifetime percentile
+      const lifetimeResults = await db
         .select({
-          lifetimePercentile: rankedUsersSubquery.lifetimePercentile,
-          last30DaysPercentile: rankedUsersSubquery.last30DaysPercentile,
+          lifetimePercentile: lifetimeRankedUsersSubquery.lifetimePercentile,
         })
-        .from(rankedUsersSubquery)
-        .where(eq(rankedUsersSubquery.clerkId, ctx.clerkUserId))
+        .from(lifetimeRankedUsersSubquery)
+        .where(eq(lifetimeRankedUsersSubquery.clerkId, ctx.clerkUserId))
         .limit(1);
 
-      const percentileData = results[0];
+      // Get last 30 days percentile
+      const last30DaysResults = await db
+        .select({
+          last30DaysPercentile:
+            last30DaysRankedUsersSubquery.last30DaysPercentile,
+        })
+        .from(last30DaysRankedUsersSubquery)
+        .where(eq(last30DaysRankedUsersSubquery.clerkId, ctx.clerkUserId))
+        .limit(1);
 
       return {
-        lifetimePercentile: percentileData?.lifetimePercentile || 0,
-        last30DaysPercentile: percentileData?.last30DaysPercentile || 0,
+        lifetimePercentile: lifetimeResults[0]?.lifetimePercentile || 0,
+        last30DaysPercentile: last30DaysResults[0]?.last30DaysPercentile || 0,
       };
     } catch (error) {
       console.error(error);

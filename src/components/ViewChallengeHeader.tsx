@@ -40,8 +40,9 @@ export const ViewChallengeHeader = () => {
 
   const challengeId = searchParams.get("challenge");
 
-  const { data: challenges, isLoading: isChallengesLoading } =
-    trpc.challenge.getChallenges.useQuery();
+  const { data: challenges } = trpc.challenge.getChallenges.useQuery({
+    includeDailyProgressData: true,
+  });
   const challenge = challenges?.find((c) => c.id === challengeId);
 
   const { data: dailyProgress, isLoading: isDailyProgressLoading } =

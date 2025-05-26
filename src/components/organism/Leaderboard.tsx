@@ -60,11 +60,14 @@ const ProgressDisplay = ({
 }) => {
   const badgeData = getBadgeData(percentile);
 
+  const displayNumber = Math.round(100 - percentile);
+
   return (
     <div className="flex flex-col gap-2">
       <Progress value={percentile} variant={badgeData.variant} />
       <p className="text-sm text-muted-foreground">
-        Top {percentile}% of users {isLifetime ? "all time" : "in last 30 days"}
+        Top {displayNumber === 0 ? "1" : displayNumber}% of users{" "}
+        {isLifetime ? "all time" : "in last 30 days"}
       </p>
     </div>
   );
@@ -99,7 +102,7 @@ export const Leaderboard = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="mt-2 w-full">
-        <div className="flex items-start gap-6">
+        <div className="flex items-center gap-6">
           <div className="flex w-full flex-col gap-5">
             <div className="w-full">
               {isLoading ? (
@@ -131,7 +134,7 @@ export const Leaderboard = () => {
                 alt={badgeData.alt}
                 width={100}
                 height={100}
-                className="h-20 w-20 object-contain sm:h-24 sm:w-24 md:h-28 md:w-28"
+                className="mb-3 h-20 w-20 object-contain sm:h-24 sm:w-24 md:h-28 md:w-28"
               />
             )}
           </div>
