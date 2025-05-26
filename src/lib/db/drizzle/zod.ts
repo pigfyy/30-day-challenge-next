@@ -41,6 +41,9 @@ export type NewUser = typeof user.$inferInsert;
 
 export type Challenge = typeof challenge.$inferSelect;
 export type NewChallenge = typeof challenge.$inferInsert;
+export type ChallengeWithDailyProgress = Challenge & {
+  dailyProgress: DailyProgress[];
+};
 
 export type DailyProgress = typeof dailyProgress.$inferSelect;
 export type NewDailyProgress = typeof dailyProgress.$inferInsert;

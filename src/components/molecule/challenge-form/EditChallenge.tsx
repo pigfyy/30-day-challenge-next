@@ -24,6 +24,7 @@ export const EditChallenge = ({
     trpc.challenge.updateChallenge.useMutation({
       onSettled: async () => {
         await utils.challenge.getChallenges.invalidate();
+        await utils.challenge.getChallengesWithDailyProgress.invalidate();
         setIsDialogOpen(false);
       },
     });
@@ -31,6 +32,7 @@ export const EditChallenge = ({
     trpc.challenge.deleteChallenge.useMutation({
       onSettled: async () => {
         await utils.challenge.getChallenges.invalidate();
+        await utils.challenge.getChallengesWithDailyProgress.invalidate();
         setIsDialogOpen(false);
         removeQueryParam("challenge");
       },

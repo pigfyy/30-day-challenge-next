@@ -176,9 +176,7 @@ const ChallengeCard = ({
 
 export const ChallengeGrid = () => {
   const { data: challenges, isLoading: isChallengesLoading } =
-    trpc.challenge.getChallenges.useQuery({
-      includeDailyProgressData: true,
-    });
+    trpc.challenge.getChallengesWithDailyProgress.useQuery();
   const { getQueryParam, updateQueryParam } = useUrlState();
 
   const [isMounted, setIsMounted] = useState(false);

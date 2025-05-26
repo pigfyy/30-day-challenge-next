@@ -80,6 +80,7 @@ const Content: React.FC<{
 
       await changeDates(challenge, startDateObj, endDateObj);
       await utils.challenge.getChallenges.invalidate();
+      await utils.challenge.getChallengesWithDailyProgress.invalidate();
       await utils.dailyProgress.getDailyProgress.invalidate();
       setIsModalOpen(false);
     } catch (error) {

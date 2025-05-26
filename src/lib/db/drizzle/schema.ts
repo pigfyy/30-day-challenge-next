@@ -1,16 +1,15 @@
-import {
-  pgTable,
-  varchar,
-  timestamp,
-  text,
-  integer,
-  serial,
-  uniqueIndex,
-  foreignKey,
-  boolean,
-} from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 import cuid from "cuid";
+import { relations } from "drizzle-orm";
+import {
+  boolean,
+  foreignKey,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 export const prismaMigrations = pgTable("_prisma_migrations", {
   id: varchar({ length: 36 }).primaryKey().notNull(),
@@ -142,3 +141,36 @@ export const dailyProgress = pgTable(
       .onDelete("restrict"),
   ],
 );
+
+// Relations
+export const userRelations = relations(user, ({ many }) => ({
+  challenges: many(challenge),
+  dailyProgress: many(dailyProgress),
+}));
+
+export const challengeRelations = relations(challenge, ({ one, many }) => ({
+  user: one(user, {
+    fields: [challenge.userId],
+    references: [user.id],
+  }),
+  challengeIdea: one(challengeIdea, {
+    fields: [challenge.challengeIdeaId],
+    references: [challengeIdea.id],
+  }),
+  dailyProgress: many(dailyProgress),
+}));
+
+export const dailyProgressRelations = relations(dailyProgress, ({ one }) => ({
+  challenge: one(challenge, {
+    fields: [dailyProgress.challengeId],
+    references: [challenge.id],
+  }),
+  user: one(user, {
+    fields: [dailyProgress.userId],
+    references: [user.id],
+  }),
+}));
+
+export const challengeIdeaRelations = relations(challengeIdea, ({ many }) => ({
+  challenges: many(challenge),
+}));

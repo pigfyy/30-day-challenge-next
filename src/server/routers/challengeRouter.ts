@@ -6,29 +6,27 @@ import {
   createChallenge,
   deleteChallenge,
   getChallenges,
+  getChallengesWithDailyProgress,
 } from "@/lib/db/challenge";
 import { updateChallengeSchema } from "@/lib/db/drizzle/zod";
 
 export const challengeRouter = router({
-  getChallenges: procedure
-    .input(
-      z
-        .object({
-          includeDailyProgressData: z.boolean().optional().default(false),
-        })
-        .optional(),
-    )
-    .query(async ({ ctx, input }) => {
-      if (!ctx.user) {
-        throw new Error("Not authenticated");
-      }
+  getChallenges: procedure.query(async ({ ctx }) => {
+    if (!ctx.user) {
+      throw new Error("Not authenticated");
+    }
 
-      const challenges = await getChallenges(
-        ctx.user.id,
-        input?.includeDailyProgressData,
-      );
-      return challenges;
-    }),
+    const challenges = await getChallenges(ctx.user.id);
+    return challenges;
+  }),
+  getChallengesWithDailyProgress: procedure.query(async ({ ctx }) => {
+    if (!ctx.user) {
+      throw new Error("Not authenticated");
+    }
+
+    const challenges = await getChallengesWithDailyProgress(ctx.user.id);
+    return challenges;
+  }),
   createChallenge: procedure
     .input(
       z.object({

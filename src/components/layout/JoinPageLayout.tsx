@@ -28,6 +28,7 @@ export default function JoinPageLayout({
     trpc.challenge.createChallenge.useMutation({
       onSuccess: async (challenge) => {
         await utils.challenge.getChallenges.invalidate();
+        await utils.challenge.getChallengesWithDailyProgress.invalidate();
 
         router.push(`/app?challenge=${challenge.id}`);
       },

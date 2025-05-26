@@ -1,7 +1,12 @@
 import { challenge, dailyProgress, db, user } from "@/lib/db/drizzle";
-import { NewChallenge } from "@/lib/db/drizzle/zod";
+import {
+  NewChallenge,
+  ChallengeWithDailyProgress,
+  Challenge,
+} from "@/lib/db/drizzle/zod";
 import { desc, eq, and, exists, sql } from "drizzle-orm";
 import { deleteImage } from "./dailyProgress";
+import { PgSelect } from "drizzle-orm/pg-core";
 
 export type CreateChallengeInput = NewChallenge;
 
@@ -115,46 +120,19 @@ export const deleteChallenge = async (challengeId: string) => {
   }
 };
 
-export const getChallenges = async (
-  userId: string,
-  includeDailyProgressData = false,
-) => {
-  if (includeDailyProgressData) {
-    const data = await db
-      .select({
-        challenge: challenge,
-        dailyProgress: dailyProgress,
-      })
-      .from(challenge)
-      .leftJoin(dailyProgress, eq(challenge.id, dailyProgress.challengeId))
-      .where(eq(challenge.userId, userId))
-      .orderBy(desc(challenge.startDate));
+export const getChallenges = async (userId: string) => {
+  return await db.query.challenge.findMany({
+    where: eq(challenge.userId, userId),
+    orderBy: desc(challenge.startDate),
+  });
+};
 
-    const challengeMap = new Map();
-
-    data.forEach((row) => {
-      if (!challengeMap.has(row.challenge.id)) {
-        challengeMap.set(row.challenge.id, {
-          ...row.challenge,
-          dailyProgress: [],
-        });
-      }
-
-      if (row.dailyProgress) {
-        challengeMap
-          .get(row.challenge.id)
-          .dailyProgress.push(row.dailyProgress);
-      }
-    });
-
-    return Array.from(challengeMap.values());
-  }
-
-  return await db
-    .select()
-    .from(challenge)
-    .where(eq(challenge.userId, userId))
-    .orderBy(desc(challenge.startDate));
+export const getChallengesWithDailyProgress = async (userId: string) => {
+  return await db.query.challenge.findMany({
+    where: eq(challenge.userId, userId),
+    orderBy: desc(challenge.startDate),
+    with: { dailyProgress: true },
+  });
 };
 
 export const getChallenge = async (challengeId: string) => {

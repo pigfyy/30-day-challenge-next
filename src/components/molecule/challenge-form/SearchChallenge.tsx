@@ -113,6 +113,7 @@ export const ChallengeSearchCard = ({
     trpc.challenge.createChallenge.useMutation({
       onSuccess: async (challenge) => {
         await utils.challenge.getChallenges.invalidate();
+        await utils.challenge.getChallengesWithDailyProgress.invalidate();
         updateQueryParam("challenge", challenge.id);
         setActiveChallengeId(null);
       },

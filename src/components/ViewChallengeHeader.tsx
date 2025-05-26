@@ -40,9 +40,8 @@ export const ViewChallengeHeader = () => {
 
   const challengeId = searchParams.get("challenge");
 
-  const { data: challenges } = trpc.challenge.getChallenges.useQuery({
-    includeDailyProgressData: true,
-  });
+  const { data: challenges } =
+    trpc.challenge.getChallengesWithDailyProgress.useQuery();
   const challenge = challenges?.find((c) => c.id === challengeId);
 
   const { data: dailyProgress, isLoading: isDailyProgressLoading } =
@@ -296,7 +295,7 @@ const EditNoteForm = ({
 
   const { mutate, isPending } = trpc.challenge.updateChallenge.useMutation({
     onSettled: async () => {
-      await utils.challenge.getChallenges.invalidate();
+      await utils.challenge.getChallengesWithDailyProgress.invalidate();
       setIsDialogOpen(false);
     },
   });
