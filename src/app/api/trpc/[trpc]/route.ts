@@ -9,6 +9,9 @@ export async function GET(req: NextRequest) {
     req,
     router: appRouter,
     createContext: async ({ req }) => await createContext({ req }),
+    onError: (opts) => {
+      // console.error(opts.error);
+    },
   });
 }
 
@@ -18,5 +21,8 @@ export async function POST(req: NextRequest) {
     req,
     router: appRouter,
     createContext: async ({ req }) => await createContext({ req }),
+    onError: (opts) => {
+      // console.error(opts.error);
+    },
   });
 }

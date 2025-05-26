@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   BRONZE_BADGE_THRESHOLD,
   SILVER_BADGE_THRESHOLD,
@@ -69,15 +70,25 @@ const ProgressDisplay = ({
   );
 };
 
+const ProgressDisplaySkeleton = () => {
+  return (
+    <div className="flex flex-col gap-2">
+      <Skeleton className="h-2 w-full rounded-full" />
+      <Skeleton className="h-4 w-48" />
+    </div>
+  );
+};
+
 export const Leaderboard = () => {
-  const { data: userPercentiles, isLoading } =
-    trpc.user.getUserPercentiles.useQuery();
+  const {
+    data: userPercentiles,
+    isLoading,
+    error,
+  } = trpc.user.getUserPercentiles.useQuery(undefined, {
+    retry: false,
+  });
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
-  const badgeData = getBadgeData(userPercentiles?.last30DaysPercentile ?? 100);
+  const badgeData = getBadgeData(userPercentiles?.last30DaysPercentile ?? 40);
 
   return (
     <Card className="flex w-full flex-col justify-center transition-shadow duration-200 hover:shadow-lg">
@@ -91,26 +102,38 @@ export const Leaderboard = () => {
         <div className="flex items-start gap-6">
           <div className="flex w-full flex-col gap-5">
             <div className="w-full">
-              <ProgressDisplay
-                percentile={userPercentiles?.last30DaysPercentile ?? 0}
-                isLifetime={false}
-              />
+              {isLoading ? (
+                <ProgressDisplaySkeleton />
+              ) : (
+                <ProgressDisplay
+                  percentile={userPercentiles?.last30DaysPercentile ?? 0}
+                  isLifetime={false}
+                />
+              )}
             </div>
             <div className="w-full">
-              <ProgressDisplay
-                percentile={userPercentiles?.lifetimePercentile ?? 0}
-                isLifetime={true}
-              />
+              {isLoading ? (
+                <ProgressDisplaySkeleton />
+              ) : (
+                <ProgressDisplay
+                  percentile={userPercentiles?.lifetimePercentile ?? 0}
+                  isLifetime={true}
+                />
+              )}
             </div>
           </div>
           <div className="flex-shrink-0">
-            <Image
-              src={badgeData.src}
-              alt={badgeData.alt}
-              width={100}
-              height={100}
-              className="h-20 w-20 object-contain sm:h-24 sm:w-24 md:h-28 md:w-28"
-            />
+            {isLoading ? (
+              <Skeleton className="h-20 w-20 rounded-lg sm:h-24 sm:w-24 md:h-28 md:w-28" />
+            ) : (
+              <Image
+                src={badgeData.src}
+                alt={badgeData.alt}
+                width={100}
+                height={100}
+                className="h-20 w-20 object-contain sm:h-24 sm:w-24 md:h-28 md:w-28"
+              />
+            )}
           </div>
         </div>
       </CardContent>
