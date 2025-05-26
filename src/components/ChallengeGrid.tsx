@@ -26,8 +26,9 @@ import { Pencil, PlusCircle, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
-import { PwaInstallDialog } from "./PwaInstallDialog";
 import { Leaderboard } from "./organism/Leaderboard";
+import { PwaInstallDialog } from "./PwaInstallDialog";
+import { LoadingSpinner } from "./ui/loading-spinner";
 
 const ProgressBar = ({
   elapsedTime,
@@ -174,11 +175,11 @@ const ChallengeCard = ({
 };
 
 export const ChallengeGrid = () => {
-  const { data: challenges } = trpc.challenge.getChallenges.useQuery({
-    includeDailyProgressData: true,
-  });
-  const { searchParams, removeQueryParam, getQueryParam, updateQueryParam } =
-    useUrlState();
+  const { data: challenges, isLoading: isChallengesLoading } =
+    trpc.challenge.getChallenges.useQuery({
+      includeDailyProgressData: true,
+    });
+  const { getQueryParam, updateQueryParam } = useUrlState();
 
   const [isMounted, setIsMounted] = useState(false);
   const [isEditChallengeDialogOpen, setIsEditChallengeDialogOpen] =
@@ -195,17 +196,18 @@ export const ChallengeGrid = () => {
   }, []);
 
   useEffect(() => {
-    const challengeId = getQueryParam("challenge");
-    if (challengeId && isMounted) {
-      removeQueryParam("challenge");
-
-      toast({
-        variant: "destructive",
-        title: "Challenge not found!",
-        duration: 1000,
-      });
+    if (
+      !isChallengesLoading &&
+      (!challenges || !challenges.length) &&
+      getQueryParam("challenge") !== "new"
+    ) {
+      updateQueryParam("challenge", "new");
     }
-  }, [searchParams, removeQueryParam, getQueryParam, isMounted]);
+  }, [isChallengesLoading, challenges, updateQueryParam, getQueryParam]);
+
+  if (challenges?.length === 0 || isChallengesLoading) {
+    return <LoadingSpinner />;
+  }
 
   const handleCreateChallengeClick = () => {
     updateQueryParam("challenge", "new");

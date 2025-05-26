@@ -44,7 +44,9 @@ export const ViewChallenge = () => {
   const [isNavigating, setIsNavigating] = useState(false);
 
   const { data: challenges, isLoading: isChallengesLoading } =
-    trpc.challenge.getChallenges.useQuery();
+    trpc.challenge.getChallenges.useQuery({
+      includeDailyProgressData: true,
+    });
 
   const { containerRef, bind, style } = useEdgeSwipe({
     onSwipe: (direction) => {
