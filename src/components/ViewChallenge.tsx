@@ -65,17 +65,7 @@ export const ViewChallenge = () => {
 
   const challenge = challenges?.find((c) => c.id === challengeId);
 
-  const { data: dailyProgress, isLoading: isDailyProgressLoading } =
-    trpc.dailyProgress.getDailyProgress.useQuery(
-      { challengeId: challengeId },
-      {
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-        staleTime: Infinity,
-      },
-    );
-
-  const isLoading = isChallengesLoading || isDailyProgressLoading;
+  const isLoading = isChallengesLoading;
 
   useEffect(() => {
     if (!isLoading && !challenge && challengeId) {
@@ -83,8 +73,12 @@ export const ViewChallenge = () => {
     }
   }, [isLoading, challenge, challengeId, removeQueryParam]);
 
-  if (isLoading || !challenge || !dailyProgress) {
+  if (isLoading) {
     return <LoadingSpinner />;
+  }
+
+  if (!challenge) {
+    return <div>Something went wrong.</div>;
   }
 
   return (
@@ -101,7 +95,7 @@ export const ViewChallenge = () => {
       </div>
       <ViewChallengeHeader />
       <div className="mt-6 rounded-lg border border-neutral-100 bg-neutral-50 p-1 sm:p-4 lg:p-8">
-        <Calendar challenge={challenge} dailyProgress={dailyProgress} />
+        <Calendar challenge={challenge} />
       </div>
     </div>
   );

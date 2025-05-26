@@ -3,24 +3,28 @@
 import { toast } from "@/hooks/use-toast";
 import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
 import { trpc } from "@/lib/util/trpc";
-import { Challenge, DailyProgress } from "@/lib/db/drizzle/zod";
+import {
+  Challenge,
+  ChallengeWithDailyProgress,
+  DailyProgress,
+} from "@/lib/db/drizzle/zod";
 import { getDate } from "date-fns";
 import { Maximize2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
 import { ViewDayDialog } from "./ViewDayDialog";
 import { useGesture } from "@use-gesture/react";
 import cuid from "cuid";
 
-type CalendarProps = { challenge: Challenge; dailyProgress: DailyProgress[] };
+type CalendarProps = { challenge: ChallengeWithDailyProgress };
 
-export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
+export default function Calendar({ challenge }: CalendarProps) {
   const [isViewDayDialogOpen, setIsViewDayDialogOpen] = useState(false);
   const [viewDayDialogDate, setViewDayDialogDate] = useState<
     undefined | Date
   >();
 
-  const gridData = createCalendarDates(challenge, dailyProgress);
+  const gridData = createCalendarDates(challenge);
 
   return (
     <>
@@ -33,7 +37,6 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
               index={index}
               item={item}
               challenge={challenge}
-              dailyProgress={dailyProgress}
               setIsViewDayDialogOpen={setIsViewDayDialogOpen}
               setViewDayDialogDate={setViewDayDialogDate}
             />
@@ -45,7 +48,6 @@ export default function Calendar({ challenge, dailyProgress }: CalendarProps) {
           isOpen={isViewDayDialogOpen}
           setIsOpen={setIsViewDayDialogOpen}
           challenge={challenge}
-          dailyProgress={dailyProgress}
           date={viewDayDialogDate}
         />
       </>
@@ -95,8 +97,7 @@ function StridePadding({
 type DayProps = {
   index: number;
   item: gridData[number];
-  challenge: Challenge;
-  dailyProgress: DailyProgress[];
+  challenge: ChallengeWithDailyProgress;
   setIsViewDayDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setViewDayDialogDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
 };
@@ -105,7 +106,6 @@ function Day({
   index,
   item,
   challenge,
-  dailyProgress,
   setIsViewDayDialogOpen,
   setViewDayDialogDate,
 }: DayProps) {
@@ -148,10 +148,8 @@ function Day({
 
   const { mutate } = trpc.dailyProgress.upsertDailyProgress.useMutation({
     onMutate: async ({ newDailyProgress, existingRecord }) => {
-      const previousDailyProgress =
-        utils.dailyProgress.getDailyProgress.getData({
-          challengeId: challenge.id,
-        }) || [];
+      const previousChallenges =
+        utils.challenge.getChallengesWithDailyProgress.getData() || [];
 
       const newRecord = {
         ...newDailyProgress,
@@ -162,32 +160,44 @@ function Day({
         note: newDailyProgress.note || "",
       };
 
-      utils.dailyProgress.getDailyProgress.setData(
-        { challengeId: challenge.id },
-        (oldData) => {
-          const currentData = oldData ?? previousDailyProgress;
+      utils.challenge.getChallengesWithDailyProgress.setData(
+        undefined,
+        (oldChallenges) => {
+          const currentChallenges = oldChallenges ?? previousChallenges;
 
-          const existingRecordIndex = currentData.findIndex(
-            (dp) => dp.id === newRecord.id,
-          );
+          return currentChallenges.map((c) => {
+            if (c.id !== challenge.id) {
+              return c;
+            }
 
-          if (existingRecordIndex !== -1) {
-            const updatedData = [...currentData];
-            updatedData[existingRecordIndex] = newRecord;
-            return updatedData;
-          } else {
-            return [...currentData, newRecord];
-          }
+            const existingDailyProgressIndex = c.dailyProgress.findIndex(
+              (dp) => dp.id === newRecord.id,
+            );
+
+            let updatedDailyProgress;
+            if (existingDailyProgressIndex !== -1) {
+              updatedDailyProgress = c.dailyProgress.map((dp, index) =>
+                index === existingDailyProgressIndex ? newRecord : dp,
+              );
+            } else {
+              updatedDailyProgress = [...c.dailyProgress, newRecord];
+            }
+
+            return {
+              ...c,
+              dailyProgress: updatedDailyProgress,
+            };
+          });
         },
       );
 
-      return { previousDailyProgress };
+      return { previousChallenges };
     },
-    onError: (error, newDailyProgress, context) => {
-      if (context?.previousDailyProgress) {
-        utils.dailyProgress.getDailyProgress.setData(
-          { challengeId: challenge.id },
-          context.previousDailyProgress,
+    onError: (error, newChallenges, context) => {
+      if (context?.previousChallenges) {
+        utils.challenge.getChallengesWithDailyProgress.setData(
+          undefined,
+          context.previousChallenges,
         );
       }
       toast({
@@ -200,7 +210,7 @@ function Day({
   const isLeftEdge = index % 7 === 0;
   const isRightEdge = index % 7 === 6;
 
-  const localItem = dailyProgress.find(
+  const localItem = challenge.dailyProgress.find(
     (dp) =>
       dp.date.toDateString() === item.dateValue.toDateString() &&
       !item.isPadding,

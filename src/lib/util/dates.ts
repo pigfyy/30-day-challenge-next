@@ -1,4 +1,8 @@
-import { Challenge, DailyProgress } from "@/lib/db/drizzle/zod";
+import {
+  Challenge,
+  ChallengeWithDailyProgress,
+  DailyProgress,
+} from "@/lib/db/drizzle/zod";
 import cuid from "cuid";
 import {
   addDays,
@@ -25,8 +29,7 @@ export type gridData = {
 }[];
 
 export const createCalendarDates = (
-  challenge: Challenge,
-  dailyProgressData: DailyProgress[],
+  challenge: ChallengeWithDailyProgress,
 ): gridData => {
   const dates = eachDayOfInterval({
     start: challenge.startDate,
@@ -57,7 +60,7 @@ export const createCalendarDates = (
   dates.forEach((date) => {
     let dailyProgress: DailyProgress | undefined = undefined;
 
-    const existingProgress = dailyProgressData.find(
+    const existingProgress = challenge.dailyProgress.find(
       (dailyProgressDay) =>
         isSameDay(date, dailyProgressDay.date) &&
         dailyProgressDay.challengeId === challenge.id,
@@ -73,7 +76,7 @@ export const createCalendarDates = (
       dailyProgress,
       challengeId: challenge.id,
       dailyProgressId: dailyProgress ? dailyProgress.id : cuid(),
-      leftCompleted: false, // Will be updated in the next pass
+      leftCompleted: false,
       rightCompleted: false,
     });
   });

@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/collapsible";
 import { handleDailyProgressImageUpload } from "@/lib/actions";
 import { trpc } from "@/lib/util/trpc";
-import { Challenge, DailyProgress } from "@/lib/db/drizzle/zod";
+import { Challenge, ChallengeWithDailyProgress } from "@/lib/db/drizzle/zod";
 import { isSameDay } from "date-fns";
 import { ChevronDown, X } from "lucide-react";
 import Image from "next/image";
@@ -113,13 +113,11 @@ export const ViewDayDialog = ({
   isOpen,
   setIsOpen,
   challenge,
-  dailyProgress,
   date,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  challenge: Challenge;
-  dailyProgress: DailyProgress[];
+  challenge: ChallengeWithDailyProgress;
   date: Date | undefined;
 }) => {
   const utils = trpc.useUtils();
@@ -134,9 +132,8 @@ export const ViewDayDialog = ({
   const { mutateAsync: upsertDailyProgress, isPending: isPendingSubmit } =
     trpc.dailyProgress.upsertDailyProgress.useMutation({
       onSettled: () => {
-        utils.dailyProgress.getDailyProgress.invalidate({
-          challengeId: challenge.id,
-        });
+        utils.dailyProgress.invalidate();
+        utils.challenge.getChallengesWithDailyProgress.invalidate();
       },
     });
 
@@ -144,7 +141,7 @@ export const ViewDayDialog = ({
     trpc.dailyProgress.deleteDailyProgressImage.useMutation();
 
   const day = date
-    ? dailyProgress.find((dp) => isSameDay(dp.date, date))
+    ? challenge.dailyProgress.find((dp) => isSameDay(dp.date, date))
     : undefined;
 
   useEffect(() => {
@@ -154,7 +151,7 @@ export const ViewDayDialog = ({
     }
   }, [isOpen, day, setSelectedFile]);
 
-  function getChallengeDay(challenge: Challenge, date: Date) {
+  function getChallengeDay(challenge: ChallengeWithDailyProgress, date: Date) {
     const startDate = new Date(challenge.startDate);
     const endDate = new Date(challenge.endDate);
     const targetDate = new Date(date);

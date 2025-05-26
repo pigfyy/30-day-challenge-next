@@ -26,7 +26,7 @@ export async function validateRequest<T>(
 }
 
 export function handleError(error: unknown) {
-  console.log(error);
+  console.error(error);
 
   if (error instanceof ValidationError) {
     return NextResponse.json(
