@@ -61,3 +61,11 @@ export type NewPrismaMigration = typeof prismaMigrations.$inferInsert;
 
 export type DailyTask = typeof dailyTask.$inferSelect;
 export type NewDailyTask = typeof dailyTask.$inferInsert;
+export type DailyTaskOptional = {
+  id: string;
+  title: string;
+  completed: boolean;
+  order: number;
+  dailyProgressId?: string;
+  createdAt?: Date;
+};

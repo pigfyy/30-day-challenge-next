@@ -8,12 +8,13 @@ import {
   ChallengeWithDailyProgress,
   DailyProgress,
 } from "@/lib/db/drizzle/zod";
-import { getDate } from "date-fns";
-import { Maximize2 } from "lucide-react";
+import { getDate, isSameDay } from "date-fns";
+import { Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
-import { ViewDayDialog } from "./ViewDayDialog";
+import { ViewDayDialog } from "./organism/ViewDayDialog";
 import { useGesture } from "@use-gesture/react";
+import { Button } from "./ui/button";
 import cuid from "cuid";
 
 type CalendarProps = { challenge: ChallengeWithDailyProgress };
