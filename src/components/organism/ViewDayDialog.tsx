@@ -13,6 +13,7 @@ import { DailyTasksSection } from "../molecule/view-day-dialog/DailyTasksSection
 import { NotesSection } from "../molecule/view-day-dialog/NotesSection";
 import { ImageUploadSection } from "../molecule/view-day-dialog/ImageUploadSection";
 import { useDailyProgressForm } from "@/hooks/use-daily-progress-form";
+import { getChallengeDay } from "@/lib/util/dates";
 
 export const ViewDayDialog = ({
   isOpen,
@@ -46,41 +47,6 @@ export const ViewDayDialog = ({
       initializeForm();
     }
   }, [isOpen, day?.id, initializeForm]);
-
-  function getChallengeDay(challenge: ChallengeWithDailyProgress, date: Date) {
-    const startDate = new Date(challenge.startDate);
-    const endDate = new Date(challenge.endDate);
-    const targetDate = new Date(date);
-
-    const startOfDayStartDate = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate(),
-    );
-    const startOfDayEndDate = new Date(
-      endDate.getFullYear(),
-      endDate.getMonth(),
-      endDate.getDate(),
-    );
-    const startOfDayTargetDate = new Date(
-      targetDate.getFullYear(),
-      targetDate.getMonth(),
-      targetDate.getDate(),
-    );
-
-    if (
-      startOfDayTargetDate < startOfDayStartDate ||
-      startOfDayTargetDate > startOfDayEndDate
-    ) {
-      return null;
-    }
-
-    const diffInMs =
-      startOfDayTargetDate.getTime() - startOfDayStartDate.getTime();
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
-
-    return diffInDays;
-  }
 
   if (!date) {
     return null;

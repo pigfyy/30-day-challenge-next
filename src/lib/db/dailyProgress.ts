@@ -8,44 +8,6 @@ import { base64ToBlob } from "../util";
 import { put, del } from "@vercel/blob";
 import { eq, and, sql, notExists, exists, SQL } from "drizzle-orm";
 
-export function getChallengeDay(
-  challenge: ChallengeWithDailyProgress,
-  date: Date,
-) {
-  const startDate = new Date(challenge.startDate);
-  const endDate = new Date(challenge.endDate);
-  const targetDate = new Date(date);
-
-  const startOfDayStartDate = new Date(
-    startDate.getFullYear(),
-    startDate.getMonth(),
-    startDate.getDate(),
-  );
-  const startOfDayEndDate = new Date(
-    endDate.getFullYear(),
-    endDate.getMonth(),
-    endDate.getDate(),
-  );
-  const startOfDayTargetDate = new Date(
-    targetDate.getFullYear(),
-    targetDate.getMonth(),
-    targetDate.getDate(),
-  );
-
-  if (
-    startOfDayTargetDate < startOfDayStartDate ||
-    startOfDayTargetDate > startOfDayEndDate
-  ) {
-    return null;
-  }
-
-  const diffInMs =
-    startOfDayTargetDate.getTime() - startOfDayStartDate.getTime();
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
-
-  return diffInDays;
-}
-
 export const editDailyProgressCompletion = async (
   progressInformation: NewDailyProgress,
   existingRecord: NewDailyProgress | undefined,
