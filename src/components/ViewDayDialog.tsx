@@ -21,7 +21,7 @@ import {
 import { Separator } from "./ui/separator";
 import { Textarea } from "./ui/textarea";
 
-export const UploadButton = ({
+const UploadButton = ({
   setSelectedFile,
 }: {
   setSelectedFile: React.Dispatch<React.SetStateAction<File | string | null>>;

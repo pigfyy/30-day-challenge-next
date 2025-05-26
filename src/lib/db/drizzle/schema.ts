@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   foreignKey,
+  index,
   integer,
   pgTable,
   text,
@@ -106,6 +107,8 @@ export const challenge = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("set null"),
+    index("challenge_userId_idx").on(table.userId),
+    index("challenge_challengeIdeaId_idx").on(table.challengeIdeaId),
   ],
 );
 
@@ -139,6 +142,35 @@ export const dailyProgress = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("restrict"),
+    index("dailyProgress_challengeId_idx").on(table.challengeId),
+    index("dailyProgress_userId_idx").on(table.userId),
+  ],
+);
+
+export const dailyTask = pgTable(
+  "DailyTask",
+  {
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .$defaultFn(() => cuid()),
+    dailyProgressId: text("daily_progress_id").notNull(),
+    description: text("description").notNull(),
+    completed: boolean("completed").default(false).notNull(),
+    order: integer("order").default(0).notNull(),
+    createdAt: timestamp("created_at", { precision: 3, mode: "date" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.dailyProgressId],
+      foreignColumns: [dailyProgress.id],
+      name: "DailyTask_dailyProgressId_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("cascade"),
+    index("dailyTask_dailyProgressId_idx").on(table.dailyProgressId),
   ],
 );
 
@@ -160,14 +192,25 @@ export const challengeRelations = relations(challenge, ({ one, many }) => ({
   dailyProgress: many(dailyProgress),
 }));
 
-export const dailyProgressRelations = relations(dailyProgress, ({ one }) => ({
-  challenge: one(challenge, {
-    fields: [dailyProgress.challengeId],
-    references: [challenge.id],
+export const dailyProgressRelations = relations(
+  dailyProgress,
+  ({ one, many }) => ({
+    challenge: one(challenge, {
+      fields: [dailyProgress.challengeId],
+      references: [challenge.id],
+    }),
+    user: one(user, {
+      fields: [dailyProgress.userId],
+      references: [user.id],
+    }),
+    dailyTasks: many(dailyTask),
   }),
-  user: one(user, {
-    fields: [dailyProgress.userId],
-    references: [user.id],
+);
+
+export const dailyTaskRelations = relations(dailyTask, ({ one }) => ({
+  dailyProgress: one(dailyProgress, {
+    fields: [dailyTask.dailyProgressId],
+    references: [dailyProgress.id],
   }),
 }));
 

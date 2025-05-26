@@ -85,6 +85,13 @@
       "when": 1748153476900,
       "tag": "0011_conscious_shadow_king",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1748230264930,
+      "tag": "0012_short_misty_knight",
+      "breakpoints": true
     }
   ]
 }
