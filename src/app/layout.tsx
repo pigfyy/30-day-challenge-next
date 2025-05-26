@@ -4,6 +4,7 @@ import { DevDialog } from "@/components/DevDialog";
 import { Header } from "@/components/Header";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Toaster } from "@/components/ui/toaster";
+import { PostHogProvider } from "@/components/PostHogProvider";
 import { queryClient } from "@/lib/util/queryClient";
 import { trpc, trpcClient } from "@/lib/util/trpc";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
@@ -36,25 +37,27 @@ export default function RootLayout({
               />
             </head>
             <body className="flex min-h-screen flex-col bg-gray-50">
-              <Suspense
-                fallback={
-                  <div className="flex h-screen w-full items-center justify-center">
-                    <LoadingSpinner />
-                  </div>
-                }
-              >
-                <Header />
-                <SignedIn>
-                  <main className="flex flex-1">{children}</main>
-                </SignedIn>
-                <SignedOut>
-                  <main className="flex flex-1">{children}</main>
-                </SignedOut>
-                <Toaster />
-                {/* DEVELOPER TOOLS */}
-                <DevDialog />
-                <Analytics />
-              </Suspense>
+              <PostHogProvider>
+                <Suspense
+                  fallback={
+                    <div className="flex h-screen w-full items-center justify-center">
+                      <LoadingSpinner />
+                    </div>
+                  }
+                >
+                  <Header />
+                  <SignedIn>
+                    <main className="flex flex-1">{children}</main>
+                  </SignedIn>
+                  <SignedOut>
+                    <main className="flex flex-1">{children}</main>
+                  </SignedOut>
+                  <Toaster />
+                  {/* DEVELOPER TOOLS */}
+                  <DevDialog />
+                  <Analytics />
+                </Suspense>
+              </PostHogProvider>
             </body>
           </html>
         </ClerkProvider>
