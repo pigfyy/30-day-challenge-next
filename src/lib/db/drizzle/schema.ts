@@ -155,7 +155,7 @@ export const dailyTask = pgTable(
       .notNull()
       .$defaultFn(() => cuid()),
     dailyProgressId: text("daily_progress_id").notNull(),
-    description: text("description").notNull(),
+    title: text("title").notNull(),
     completed: boolean("completed").default(false).notNull(),
     order: integer("order").default(0).notNull(),
     createdAt: timestamp("created_at", { precision: 3, mode: "date" })

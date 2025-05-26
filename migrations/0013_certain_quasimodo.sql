@@ -1,0 +1,1 @@
+ALTER TABLE "DailyTask" RENAME COLUMN "description" TO "title";

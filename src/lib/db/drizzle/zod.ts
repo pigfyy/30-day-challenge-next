@@ -9,6 +9,7 @@ import {
   dailyProgress,
   challengeIdea,
   prismaMigrations,
+  dailyTask,
 } from "./schema";
 
 // Create Zod schemas for each table
@@ -27,6 +28,10 @@ export const updateDailyProgressSchema = createUpdateSchema(dailyProgress);
 export const insertChallengeIdeaSchema = createInsertSchema(challengeIdea);
 export const selectChallengeIdeaSchema = createSelectSchema(challengeIdea);
 export const updateChallengeIdeaSchema = createUpdateSchema(challengeIdea);
+
+export const insertDailyTaskSchema = createInsertSchema(dailyTask);
+export const selectDailyTaskSchema = createSelectSchema(dailyTask);
+export const updateDailyTaskSchema = createUpdateSchema(dailyTask);
 
 export const insertPrismaMigrationsSchema =
   createInsertSchema(prismaMigrations);
@@ -53,3 +58,6 @@ export type NewChallengeIdea = typeof challengeIdea.$inferInsert;
 
 export type PrismaMigration = typeof prismaMigrations.$inferSelect;
 export type NewPrismaMigration = typeof prismaMigrations.$inferInsert;
+
+export type DailyTask = typeof dailyTask.$inferSelect;
+export type NewDailyTask = typeof dailyTask.$inferInsert;
