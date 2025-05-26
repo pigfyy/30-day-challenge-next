@@ -60,13 +60,19 @@ const ProgressDisplay = ({
 }) => {
   const badgeData = getBadgeData(percentile);
 
-  const displayNumber = Math.round(100 - percentile);
+  const reversedPercentile = Math.round(100 - percentile);
+  const displayNumber =
+    reversedPercentile === 0
+      ? 1
+      : reversedPercentile === 100
+        ? 99
+        : reversedPercentile;
 
   return (
     <div className="flex flex-col gap-2">
       <Progress value={percentile} variant={badgeData.variant} />
       <p className="text-sm text-muted-foreground">
-        Top {displayNumber === 0 ? "1" : displayNumber}% of users{" "}
+        Top {displayNumber}% of users{" "}
         {isLifetime ? "all time" : "in last 30 days"}
       </p>
     </div>
