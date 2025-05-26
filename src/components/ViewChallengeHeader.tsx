@@ -44,17 +44,12 @@ export const ViewChallengeHeader = () => {
     trpc.challenge.getChallengesWithDailyProgress.useQuery();
   const challenge = challenges?.find((c) => c.id === challengeId);
 
-  const { data: dailyProgress, isLoading: isDailyProgressLoading } =
-    trpc.dailyProgress.getDailyProgress.useQuery({
-      challengeId: challengeId,
-    });
-
   const [isImagesSheetOpen, setIsImagesSheetOpen] = useState(false);
   const [isReflectDialogOpen, setIsReflectDialogOpen] = useState(false);
   const [isEditChallengeDialogOpen, setIsEditChallengeDialogOpen] =
     useState(false);
 
-  if (challenge == undefined || dailyProgress == undefined) {
+  if (challenge == undefined) {
     return null;
   }
 
@@ -107,7 +102,7 @@ export const ViewChallengeHeader = () => {
           setIsOpen={setIsImagesSheetOpen}
         >
           <ProgressImageDisplay
-            dailyProgress={dailyProgress}
+            dailyProgress={challenge.dailyProgress}
             startDate={new Date(challenge.startDate)}
             endDate={new Date(challenge.endDate)}
           />
