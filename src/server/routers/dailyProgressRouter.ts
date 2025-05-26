@@ -31,16 +31,26 @@ export const dailyProgressRouter = router({
       return progress;
     }),
   upsertDailyProgress: procedure
-    .input(insertDailyProgressSchema.extend({ userId: z.string().optional() }))
+    .input(
+      z.object({
+        newDailyProgress: insertDailyProgressSchema.extend({
+          userId: z.string().optional(),
+        }),
+        existingRecord: insertDailyProgressSchema.optional(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user) {
         throw new Error("Not authenticated");
       }
 
-      return await editDailyProgressCompletion({
-        ...input,
-        userId: ctx.user.id,
-      });
+      return await editDailyProgressCompletion(
+        {
+          ...input.newDailyProgress,
+          userId: ctx.user.id,
+        },
+        input.existingRecord,
+      );
     }),
   deleteDailyProgressImage: procedure
     .input(z.string())

@@ -229,7 +229,10 @@ export const ViewDayDialog = ({
         note: note,
       };
 
-      await upsertDailyProgress(updateData);
+      await upsertDailyProgress({
+        newDailyProgress: updateData,
+        existingRecord: day,
+      });
 
       if (oldImageUrlToDelete) {
         await deleteDailyProgressImage(oldImageUrlToDelete);

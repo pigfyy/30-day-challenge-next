@@ -147,7 +147,7 @@ function Day({
   );
 
   const { mutate } = trpc.dailyProgress.upsertDailyProgress.useMutation({
-    onMutate: async (newDailyProgress) => {
+    onMutate: async ({ newDailyProgress, existingRecord }) => {
       const previousDailyProgress =
         utils.dailyProgress.getDailyProgress.getData({
           challengeId: challenge.id,
@@ -229,10 +229,13 @@ function Day({
     }
 
     mutate({
-      id: localItem?.id || item.dailyProgressId,
-      date: item.dateValue,
-      challengeId: challenge.id,
-      completed: !isCompleted,
+      newDailyProgress: {
+        id: localItem?.id || item.dailyProgressId,
+        date: item.dateValue,
+        challengeId: challenge.id,
+        completed: !isCompleted,
+      },
+      existingRecord: localItem,
     });
   }
 

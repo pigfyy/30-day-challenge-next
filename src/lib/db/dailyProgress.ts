@@ -1,40 +1,34 @@
 import { db, dailyProgress, user } from "@/lib/db/drizzle";
-import { NewDailyProgress } from "@/lib/db/drizzle/zod";
+import { DailyProgress, NewDailyProgress } from "@/lib/db/drizzle/zod";
 import { base64ToBlob } from "../util";
 import { put, del } from "@vercel/blob";
 import { eq, and, sql, notExists, exists, SQL } from "drizzle-orm";
 
 export const editDailyProgressCompletion = async (
   progressInformation: NewDailyProgress,
+  existingRecord: NewDailyProgress | undefined,
 ) => {
   const recordId = progressInformation.id!;
 
-  const existingRecord = await db
-    .select({ id: dailyProgress.id, completed: dailyProgress.completed })
-    .from(dailyProgress)
-    .where(eq(dailyProgress.id, recordId))
-    .limit(1);
-
   return await db.transaction(async (tx) => {
-    const updatedProgressEntries =
-      existingRecord.length > 0
-        ? await tx
-            .update(dailyProgress)
-            .set({
-              completed: progressInformation.completed,
-              imageUrl: progressInformation.imageUrl,
-              note: progressInformation.note,
-            })
-            .where(eq(dailyProgress.id, recordId))
-            .returning()
-        : await tx
-            .insert(dailyProgress)
-            .values({
-              ...progressInformation,
-              id: recordId,
-              completed: progressInformation.completed ?? true,
-            })
-            .returning();
+    const updatedProgressEntries = existingRecord
+      ? await tx
+          .update(dailyProgress)
+          .set({
+            completed: progressInformation.completed,
+            imageUrl: progressInformation.imageUrl,
+            note: progressInformation.note,
+          })
+          .where(eq(dailyProgress.id, recordId))
+          .returning()
+      : await tx
+          .insert(dailyProgress)
+          .values({
+            ...progressInformation,
+            id: recordId,
+            completed: progressInformation.completed ?? true,
+          })
+          .returning();
 
     if (!updatedProgressEntries || updatedProgressEntries.length === 0) {
       console.error(
@@ -46,10 +40,8 @@ export const editDailyProgressCompletion = async (
     }
     const updatedEntry = updatedProgressEntries[0];
 
-    const existingCompleted =
-      existingRecord.length > 0 ? existingRecord[0].completed : null;
     const hasCompletionChanged =
-      existingCompleted !== progressInformation.completed;
+      existingRecord?.completed !== progressInformation.completed;
 
     if (!hasCompletionChanged) {
       return updatedEntry;
