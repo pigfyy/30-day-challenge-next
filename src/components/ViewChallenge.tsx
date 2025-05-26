@@ -30,11 +30,6 @@ const handleSwipe = (
 
   const nextChallenge = challenges[nextIndex];
 
-  // Prefetch the next challenge's data
-  utils.dailyProgress.getDailyProgress.prefetch({
-    challengeId: nextChallenge.id,
-  });
-
   updateQueryParam("challenge", nextChallenge.id);
 };
 
