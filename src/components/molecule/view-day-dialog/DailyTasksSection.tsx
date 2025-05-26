@@ -68,7 +68,7 @@ const TaskItem = ({
   return (
     <div
       key={task.id}
-      className="group flex cursor-pointer items-center gap-3 rounded-md px-2 py-1 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+      className="group flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 sm:py-1"
       onClick={(e) => handleTaskClick(task.id, e)}
     >
       <Checkbox
