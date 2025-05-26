@@ -10,7 +10,7 @@ export const editDailyProgressCompletion = async (
   const recordId = progressInformation.id!;
 
   const existingRecord = await db
-    .select({ id: dailyProgress.id })
+    .select({ id: dailyProgress.id, completed: dailyProgress.completed })
     .from(dailyProgress)
     .where(eq(dailyProgress.id, recordId))
     .limit(1);
@@ -45,6 +45,15 @@ export const editDailyProgressCompletion = async (
       );
     }
     const updatedEntry = updatedProgressEntries[0];
+
+    const existingCompleted =
+      existingRecord.length > 0 ? existingRecord[0].completed : null;
+    const hasCompletionChanged =
+      existingCompleted !== progressInformation.completed;
+
+    if (!hasCompletionChanged) {
+      return updatedEntry;
+    }
 
     const userIdForUpdate = updatedEntry.userId;
     const dateForCondition = updatedEntry.date;
