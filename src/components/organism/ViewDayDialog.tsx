@@ -46,7 +46,9 @@ export const ViewDayDialog = ({
     if (isOpen) {
       initializeForm();
     }
-  }, [isOpen, day?.id, initializeForm]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, day?.id]);
 
   if (!date) {
     return null;
@@ -54,7 +56,15 @@ export const ViewDayDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-h-[80vh] overflow-y-auto lg:max-w-[60%]">
+      <DialogContent
+        className="max-h-[80vh] overflow-y-auto lg:max-w-[60%]"
+        onEscapeKeyDown={(e) => {
+          const activeElement = document.activeElement;
+          if (activeElement && activeElement.tagName === "INPUT") {
+            e.preventDefault();
+          }
+        }}
+      >
         <DialogHeader>
           <DialogTitle>
             Day {getChallengeDay(challenge, date)} ---{" "}

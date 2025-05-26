@@ -8,9 +8,145 @@ import { Button } from "../../ui/button";
 import { Separator } from "../../ui/separator";
 import { Input } from "../../ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDown, X, Plus, Check } from "lucide-react";
+import { ChevronDown, X, Plus, Check, Edit2 } from "lucide-react";
 import { DailyTaskOptional } from "@/lib/db/drizzle/zod";
 import cuid from "cuid";
+
+interface TaskItemProps {
+  task: DailyTaskOptional;
+  onToggleTask: (taskId: string) => void;
+  onRemoveTask: (taskId: string) => void;
+  onUpdateTask: (taskId: string, title: string) => void;
+}
+
+const TaskItem = ({
+  task,
+  onToggleTask,
+  onRemoveTask,
+  onUpdateTask,
+}: TaskItemProps) => {
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
+
+  const startEditing = (task: DailyTaskOptional, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingTaskId(task.id);
+    setEditingTitle(task.title);
+  };
+
+  const saveEdit = () => {
+    if (editingTitle.trim() && editingTaskId) {
+      onUpdateTask(editingTaskId, editingTitle.trim());
+    }
+    setEditingTaskId(null);
+    setEditingTitle("");
+  };
+
+  const cancelEdit = () => {
+    setEditingTaskId(null);
+    setEditingTitle("");
+  };
+
+  const handleEditKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      saveEdit();
+    } else if (e.key === "Escape") {
+      cancelEdit();
+    }
+  };
+
+  const handleTaskClick = (taskId: string, e: React.MouseEvent) => {
+    if (
+      (e.target as HTMLElement).closest("button") ||
+      (e.target as HTMLElement).closest("input")
+    ) {
+      return;
+    }
+    onToggleTask(taskId);
+  };
+
+  return (
+    <div
+      key={task.id}
+      className="group flex cursor-pointer items-center gap-3 rounded-md px-2 py-1 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+      onClick={(e) => handleTaskClick(task.id, e)}
+    >
+      <Checkbox
+        checked={task.completed}
+        onCheckedChange={() => onToggleTask(task.id)}
+        className="flex-shrink-0"
+        onClick={(e) => e.stopPropagation()}
+      />
+
+      {editingTaskId === task.id ? (
+        <div className="flex flex-1 items-center gap-2">
+          <Input
+            value={editingTitle}
+            onChange={(e) => setEditingTitle(e.target.value)}
+            onKeyDown={handleEditKeyPress}
+            onBlur={saveEdit}
+            className="h-6 flex-1 border-none bg-transparent px-0 shadow-none focus-visible:ring-0"
+            autoFocus
+            onClick={(e) => e.stopPropagation()}
+          />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={(e) => {
+              e.stopPropagation();
+              saveEdit();
+            }}
+            className="h-6 w-6 p-0"
+          >
+            <Check size={12} />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={(e) => {
+              e.stopPropagation();
+              cancelEdit();
+            }}
+            className="h-6 w-6 p-0"
+          >
+            <X size={12} />
+          </Button>
+        </div>
+      ) : (
+        <>
+          <span
+            className={`flex-1 select-none ${
+              task.completed
+                ? "text-gray-500 line-through"
+                : "text-gray-900 dark:text-gray-100"
+            }`}
+          >
+            {task.title}
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={(e) => startEditing(task, e)}
+            className="h-6 w-6 p-0 opacity-0 transition-opacity group-hover:opacity-100"
+          >
+            <Edit2 size={12} />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveTask(task.id);
+            }}
+            className="h-6 w-6 p-0 opacity-0 transition-opacity group-hover:opacity-100"
+          >
+            <X size={12} />
+          </Button>
+        </>
+      )}
+    </div>
+  );
+};
 
 interface DailyTasksListProps {
   tasks: DailyTaskOptional[];
@@ -49,6 +185,13 @@ const DailyTasksList = ({ tasks, onTasksChange }: DailyTasksListProps) => {
     onTasksChange(reorderedTasks);
   };
 
+  const updateTask = (taskId: string, title: string) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId ? { ...task, title: title } : task,
+    );
+    onTasksChange(updatedTasks);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       addTask();
@@ -56,38 +199,23 @@ const DailyTasksList = ({ tasks, onTasksChange }: DailyTasksListProps) => {
   };
 
   return (
-    <div className="space-y-3">
-      {tasks.map((task) => (
-        <div key={task.id} className="group flex items-center gap-3">
-          <Checkbox
-            checked={task.completed}
-            onCheckedChange={() => toggleTask(task.id)}
-            className="flex-shrink-0"
+    <>
+      <div className="space-y-1">
+        {tasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            onToggleTask={toggleTask}
+            onRemoveTask={removeTask}
+            onUpdateTask={updateTask}
           />
-          <span
-            className={`flex-1 ${
-              task.completed
-                ? "text-gray-500 line-through"
-                : "text-gray-900 dark:text-gray-100"
-            }`}
-          >
-            {task.title}
-          </span>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => removeTask(task.id)}
-            className="opacity-0 transition-opacity group-hover:opacity-100"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      ))}
+        ))}
+      </div>
 
       <div
-        className={`flex items-center gap-3 ${
+        className={`flex items-center gap-3 px-2 py-1 ${
           tasks.length > 0
-            ? "border-t border-gray-200 dark:border-gray-700"
+            ? "mt-3 border-t border-gray-200 pt-2 dark:border-gray-700"
             : ""
         }`}
       >
@@ -107,7 +235,7 @@ const DailyTasksList = ({ tasks, onTasksChange }: DailyTasksListProps) => {
           </Button>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
