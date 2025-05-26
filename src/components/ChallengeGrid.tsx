@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { EditChallengeDialog } from "./organism/challenge-form/EditChallengeDialog";
 import { PwaInstallDialog } from "./PwaInstallDialog";
+import { Leaderboard } from "./organism/Leaderboard";
 
 const ProgressBar = ({
   elapsedTime,
@@ -238,28 +239,29 @@ export const ChallengeGrid = () => {
             </Button>
           )}
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
+          <Leaderboard />
           <Card
-            className="cursor-pointer transition-shadow duration-200 hover:shadow-lg"
+            className="flex cursor-pointer flex-col justify-center transition-shadow duration-200 hover:shadow-lg"
             onClick={handleCreateChallengeClick}
           >
-            <CardHeader>
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl">
+            <CardHeader className="flex flex-row items-center justify-start gap-3 space-y-0 md:flex-col md:items-start md:justify-center">
+              <div className="mb-0 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl md:mb-4">
                 <PlusCircle />
               </div>
-              <CardTitle className="text-lg font-semibold">
+              <CardTitle className="mt-0 text-lg font-semibold">
                 Create New Challenge
               </CardTitle>
-              <CardDescription className="text-base text-foreground">
+              <CardDescription className="hidden text-base text-foreground md:block">
                 Start a new personalized challenge.
               </CardDescription>
             </CardHeader>
-            <CardContent className="mt-2">
-              <p className="text-base text-muted-foreground">
+            <CardContent>
+              <p className="text-sm text-muted-foreground md:block md:text-base">
                 Define your goals and track your progress.
               </p>
             </CardContent>
-            <CardFooter className="mt-4">
+            <CardFooter className="md:mt-4">
               <Button variant="outline" className="w-full">
                 Get Started
               </Button>
