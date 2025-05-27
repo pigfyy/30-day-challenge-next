@@ -27,10 +27,9 @@ export const Page4 = ({ control, errors }: Page4Props) => {
             <CardTitle>General App Feedback</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
-            {/* Question 1: Do you see yourself using this app? */}
             <div className="space-y-3">
               <Label className="text-base font-semibold">
-                1. Do you see yourself using this app?
+                1. Are you interested in using this app?
               </Label>
               <Controller
                 control={control}
@@ -43,13 +42,17 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                       className="flex flex-col gap-2"
                     >
                       {[
-                        { value: "Yes", label: "Yes" },
-                        { value: "No", label: "No" },
+                        { value: "Will use soon", label: "Will use soon" },
+                        {
+                          value: "Will use sometime in future",
+                          label: "Will use sometime in future",
+                        },
+                        { value: "Unlikely", label: "Unlikely" },
                       ].map((option) => (
                         <CustomRadioItem
                           key={option.value}
                           value={option.value}
-                          id={`using-${option.value.toLowerCase()}`}
+                          id={`using-${option.value.toLowerCase().replace(/\s+/g, "-")}`}
                           label={option.label}
                           isSelected={field.value === option.value}
                           variant="card"
@@ -65,16 +68,16 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 )}
               />
 
-              {/* Conditional field: If no, why? */}
+              {/* Conditional field: If unlikely, why? */}
               <Controller
                 control={control}
                 name="page4.seeYourselfUsing"
                 render={({ field: parentField }) => (
                   <div>
-                    {parentField.value === "No" && (
+                    {parentField.value === "Unlikely" && (
                       <div className="ml-6 space-y-2">
                         <Label className="text-sm font-medium text-gray-700">
-                          If no, why?
+                          Why?
                         </Label>
                         <Controller
                           control={control}
@@ -82,7 +85,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                           render={({ field, fieldState }) => (
                             <div className="space-y-2">
                               <Textarea
-                                placeholder="Please explain why you wouldn't use this app..."
+                                placeholder="Please explain why you're unlikely to use this app..."
                                 value={field.value || ""}
                                 onChange={field.onChange}
                                 rows={3}
@@ -102,10 +105,151 @@ export const Page4 = ({ control, errors }: Page4Props) => {
               />
             </div>
 
-            {/* Question 2: What would you track every day? */}
+            {/* Question 2: Habit change */}
             <div className="space-y-3">
               <Label className="text-base font-semibold">
-                2. What would you track every day if you use 30 Day Me? (Select
+                2. If you have already used 30 Day Me, do you think it is
+                changing your habits?
+              </Label>
+              <Controller
+                control={control}
+                name="page4.habitChange"
+                render={({ field, fieldState }) => (
+                  <div className="space-y-2">
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      value={field.value || ""}
+                      className="flex flex-col gap-2"
+                    >
+                      {[
+                        {
+                          value: "Yes. It has helped me achieve my goals",
+                          label: "Yes. It has helped me achieve my goals",
+                        },
+                        {
+                          value:
+                            "I have been seeing progress, but have not achieved my goals",
+                          label:
+                            "I have been seeing progress, but have not achieved my goals",
+                        },
+                        {
+                          value: "It is not obvious yet",
+                          label: "It is not obvious yet",
+                        },
+                        {
+                          value: "Not applicable, I have not used it",
+                          label: "Not applicable, I have not used it",
+                        },
+                      ].map((option) => (
+                        <CustomRadioItem
+                          key={option.value}
+                          value={option.value}
+                          id={`habit-${option.value.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
+                          label={option.label}
+                          isSelected={field.value === option.value}
+                          variant="card"
+                        />
+                      ))}
+                    </RadioGroup>
+                    {fieldState.error && (
+                      <p className="text-sm text-red-500">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+
+            {/* Question 3: What features will best help you engage? */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">
+                3. Which features would help make the app more engaging? (Select
+                all that apply)
+              </Label>
+              <Controller
+                control={control}
+                name="page4.engagementFeatures"
+                render={({ field, fieldState }) => (
+                  <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
+                      {[
+                        "No more features needed",
+                        "Notifications",
+                        "Leaderboard",
+                        "Community",
+                        "Personal coaches",
+                        "Others (please specify)",
+                      ].map((feature) => (
+                        <CustomCheckboxItem
+                          key={feature}
+                          value={feature}
+                          id={`engagement-${feature}`}
+                          label={feature}
+                          isChecked={field.value?.includes(feature) || false}
+                          onCheckedChange={(checked) => {
+                            const currentValues = field.value || [];
+                            if (checked) {
+                              field.onChange([...currentValues, feature]);
+                            } else {
+                              field.onChange(
+                                currentValues.filter((v) => v !== feature),
+                              );
+                            }
+                          }}
+                          variant="card"
+                        />
+                      ))}
+                    </div>
+                    {fieldState.error && (
+                      <p className="text-sm text-red-500">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+
+              {/* Conditional field: Others specify */}
+              <Controller
+                control={control}
+                name="page4.engagementFeatures"
+                render={({ field: parentField }) => (
+                  <div>
+                    {parentField.value?.includes("Others (please specify)") && (
+                      <div className="ml-6 space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">
+                          Please specify:
+                        </Label>
+                        <Controller
+                          control={control}
+                          name="page4.othersSpecify"
+                          render={({ field, fieldState }) => (
+                            <div className="space-y-2">
+                              <Input
+                                placeholder="Please specify other features..."
+                                value={field.value || ""}
+                                onChange={field.onChange}
+                              />
+                              {fieldState.error && (
+                                <p className="text-sm text-red-500">
+                                  {fieldState.error.message}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+
+            {/* Question 4: What would you track every day? */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">
+                4. What would you track every day if you use 30 Day Me? (Select
                 all that apply)
               </Label>
               <Controller
@@ -186,147 +330,6 @@ export const Page4 = ({ control, errors }: Page4Props) => {
               />
             </div>
 
-            {/* Question 3: What features will best help you engage? */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold">
-                3. What features will best help you engage? (Select all that
-                apply)
-              </Label>
-              <Controller
-                control={control}
-                name="page4.engagementFeatures"
-                render={({ field, fieldState }) => (
-                  <div className="space-y-2">
-                    <div className="flex flex-col gap-2">
-                      {[
-                        "No more feature needed",
-                        "Notifications",
-                        "Leaderboard",
-                        "Community",
-                        "Personal coaches",
-                        "Others (please specify)",
-                      ].map((feature) => (
-                        <CustomCheckboxItem
-                          key={feature}
-                          value={feature}
-                          id={`engagement-${feature}`}
-                          label={feature}
-                          isChecked={field.value?.includes(feature) || false}
-                          onCheckedChange={(checked) => {
-                            const currentValues = field.value || [];
-                            if (checked) {
-                              field.onChange([...currentValues, feature]);
-                            } else {
-                              field.onChange(
-                                currentValues.filter((v) => v !== feature),
-                              );
-                            }
-                          }}
-                          variant="card"
-                        />
-                      ))}
-                    </div>
-                    {fieldState.error && (
-                      <p className="text-sm text-red-500">
-                        {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
-
-              {/* Conditional field: Others specify */}
-              <Controller
-                control={control}
-                name="page4.engagementFeatures"
-                render={({ field: parentField }) => (
-                  <div>
-                    {parentField.value?.includes("Others (please specify)") && (
-                      <div className="ml-6 space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">
-                          Please specify:
-                        </Label>
-                        <Controller
-                          control={control}
-                          name="page4.othersSpecify"
-                          render={({ field, fieldState }) => (
-                            <div className="space-y-2">
-                              <Input
-                                placeholder="Please specify other features..."
-                                value={field.value || ""}
-                                onChange={field.onChange}
-                              />
-                              {fieldState.error && (
-                                <p className="text-sm text-red-500">
-                                  {fieldState.error.message}
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-              />
-            </div>
-
-            {/* Question 4: Habit change */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold">
-                4. If you have already used 30 Day Me, do you think it is
-                changing your habits?
-              </Label>
-              <Controller
-                control={control}
-                name="page4.habitChange"
-                render={({ field, fieldState }) => (
-                  <div className="space-y-2">
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      value={field.value || ""}
-                      className="flex flex-col gap-2"
-                    >
-                      {[
-                        {
-                          value: "Yes. It has been helping me achieve my goals",
-                          label: "Yes. It has been helping me achieve my goals",
-                        },
-                        {
-                          value:
-                            "I have been seeing progress, but have not achieved my goals",
-                          label:
-                            "I have been seeing progress, but have not achieved my goals",
-                        },
-                        {
-                          value: "It is not obvious yet",
-                          label: "It is not obvious yet",
-                        },
-                        {
-                          value: "Not applicable, I have not used it",
-                          label: "Not applicable, I have not used it",
-                        },
-                      ].map((option) => (
-                        <CustomRadioItem
-                          key={option.value}
-                          value={option.value}
-                          id={`habit-${option.value.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
-                          label={option.label}
-                          isSelected={field.value === option.value}
-                          variant="card"
-                        />
-                      ))}
-                    </RadioGroup>
-                    {fieldState.error && (
-                      <p className="text-sm text-red-500">
-                        {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
-            </div>
-
             {/* Question 5: App store engagement */}
             <div className="space-y-3">
               <Label className="text-base font-semibold">
@@ -347,21 +350,21 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                       {[
                         {
                           value:
-                            "I would only use it if it was published to the app store",
+                            "Yes, I will only use the app if it is published to app stores",
                           label:
-                            "I would only use it if it was published to the app store",
+                            "Yes, I will only use the app if it is published to app stores",
                         },
                         {
                           value:
-                            "I'm more likely to use the app if published to the app store",
+                            "Yes, I would be more likely to use the app if it is published to app stores",
                           label:
-                            "I'm more likely to use the app if published to the app store",
+                            "Yes, I would be more likely to use the app if it is published to app stores",
                         },
                         {
                           value:
-                            "I can install it as a shortcut now and it will not change my engagement",
+                            "No, I am okay with installing the app as a shortcut and adding it to the app store will not change my engagement",
                           label:
-                            "I can install it as a shortcut now and it will not change my engagement",
+                            "No, I am okay with installing the app as a shortcut and adding it to the app store will not change my engagement",
                         },
                       ].map((option) => (
                         <CustomRadioItem
@@ -387,7 +390,8 @@ export const Page4 = ({ control, errors }: Page4Props) => {
             {/* Question 6: Additional Comments */}
             <div className="space-y-3">
               <Label className="text-base font-semibold">
-                6. Please share any additional comments (optional)
+                6. Please share any additional comments about the app in general
+                (optional)
               </Label>
               <Controller
                 control={control}
@@ -395,7 +399,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 render={({ field, fieldState }) => (
                   <div className="space-y-2">
                     <Textarea
-                      placeholder="Please share any additional thoughts or feedback..."
+                      placeholder="Please share any additional thoughts or feedback about the app..."
                       value={field.value || ""}
                       onChange={field.onChange}
                       rows={4}

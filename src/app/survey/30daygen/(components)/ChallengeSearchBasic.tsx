@@ -28,23 +28,22 @@ const ChallengeIdea = ({
       key={challengeIdea.id}
       className="transition-shadow duration-300 hover:shadow-xl"
     >
-      <CardHeader>
+      <CardHeader className="gap-3">
         <CardTitle className="text-xl text-gray-800">
           {challengeIdea.title}
         </CardTitle>
+        <div className="mb-2 text-base text-gray-700">
+          <span className="font-semibold">Daily Action: </span>
+          {challengeIdea.dailyAction}
+        </div>
         <CardDescription>
-          <ExpandableText text={challengeIdea.description} />
+          <ExpandableText
+            text={challengeIdea.description}
+            className="text-xsm text-muted-foreground"
+          />
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <p className="text-sm text-gray-700">
-          <span className="font-semibold">Wish: </span>
-          {challengeIdea.wish}
-        </p>
-        <p className="text-sm text-gray-700">
-          <span className="font-semibold">Daily Action: </span>
-          {challengeIdea.dailyAction}
-        </p>
         <p className="text-sm text-gray-700">
           <span className="font-semibold">Source: </span>
           <a

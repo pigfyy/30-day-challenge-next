@@ -139,15 +139,17 @@ const Survey = ({
     resolver: zodResolver(SurveyFormSchema),
     defaultValues: {
       page1: {
-        email: "",
+        age: "",
       },
       page3: {
         q1: "",
-        q2: "",
+        q2a: "",
+        q2b: "",
+        q2c: "",
+        q2d: "",
+        q2e: "",
         q3: "",
         q4: "",
-        q5: "",
-        q6: "",
       },
       page4: {
         seeYourselfUsing: "",
@@ -185,14 +187,8 @@ const Survey = ({
       if (!name) return;
 
       if (currentPage === 1 && name.startsWith("page1.")) {
-        if (
-          name === "page1.email" &&
-          ((data.page1?.email &&
-            data.page1.email.includes("@") &&
-            data.page1.email.includes(".")) ||
-            data.page1?.email == "")
-        ) {
-          form.clearErrors("page1.email");
+        if (name === "page1.age" && data.page1?.age !== undefined) {
+          form.clearErrors("page1.age");
         }
       } else if (currentPage === 3 && name.startsWith("page3.")) {
         const fieldValue =
@@ -295,14 +291,16 @@ export default function Survey30DayGenPage() {
   const [isFormCompleted, setIsFormCompleted] = useState(false);
 
   const { mutate: createSurveyResponse } =
-    trpc.surveyResponse.create.useMutation();
+    trpc.surveyResponse.create.useMutation({
+      onSettled: () => {
+        clearLocalStorage();
+        setIsFormCompleted(true);
+      },
+    });
 
   const onSubmit = async (data: SurveyFormData) => {
     try {
-      await createSurveyResponse(data);
-
-      setIsFormCompleted(true);
-      clearLocalStorage();
+      createSurveyResponse(data);
     } catch (error) {
       console.error("Failed to save survey:", error);
     }

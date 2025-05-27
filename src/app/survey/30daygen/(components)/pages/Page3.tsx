@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
 import { Controller } from "react-hook-form";
 import { type Page3Props } from "../../types";
 import { CustomRadioItem } from "../ui/custom-radio-item";
@@ -36,7 +37,7 @@ export const Page3 = ({ control, errors }: Page3Props) => {
             {/* Question 1: How many prompts */}
             <div className="space-y-3">
               <Label className="text-base font-semibold">
-                How many prompts did you ask the AI?
+                1. How many questions did you try with the search system?
               </Label>
               <Controller
                 control={control}
@@ -73,10 +74,10 @@ export const Page3 = ({ control, errors }: Page3Props) => {
               />
             </div>
 
-            {/* Questions 2-5: Likert Scale Table */}
+            {/* Questions 2: Likert Scale Table */}
             <div className="space-y-4">
               <Label className="text-base font-semibold">
-                Please rate the following questions on a scale of 1-5:
+                2. Please rate the following questions on a scale of 1-5:
               </Label>
 
               <div className="overflow-x-auto">
@@ -90,26 +91,26 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                       Question
                     </div>
                     <div className="flex items-center justify-center border-r border-gray-300 p-3 text-center text-sm font-semibold">
-                      Strongly Disagree (1)
+                      Strongly Agree (5)
                     </div>
                     <div className="flex items-center justify-center border-r border-gray-300 p-3 text-center text-sm font-semibold">
-                      Disagree (2)
+                      Agree (4)
                     </div>
                     <div className="flex items-center justify-center border-r border-gray-300 p-3 text-center text-sm font-semibold">
                       Neutral (3)
                     </div>
                     <div className="flex items-center justify-center border-r border-gray-300 p-3 text-center text-sm font-semibold">
-                      Agree (4)
+                      Disagree (2)
                     </div>
                     <div className="flex items-center justify-center p-3 text-center text-sm font-semibold">
-                      Strongly Agree (5)
+                      Strongly Disagree (1)
                     </div>
                   </div>
 
-                  {/* Question 2 */}
+                  {/* Question 2a */}
                   <Controller
                     control={control}
-                    name="page3.q2"
+                    name="page3.q2a"
                     render={({ field, fieldState }) => (
                       <>
                         <RadioGroup
@@ -126,7 +127,7 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                               I&apos;m satisfied with the challenge search
                               system.
                             </div>
-                            {[1, 2, 3, 4, 5].map((value, index) => (
+                            {[5, 4, 3, 2, 1].map((value, index) => (
                               <div
                                 key={value}
                                 className={`flex items-center justify-center ${
@@ -135,7 +136,7 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                               >
                                 <CustomRadioItem
                                   value={value.toString()}
-                                  id={`q2-${value}`}
+                                  id={`q2a-${value}`}
                                   label=""
                                   isSelected={field.value === value.toString()}
                                   variant="card"
@@ -155,10 +156,10 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                     )}
                   />
 
-                  {/* Question 3 */}
+                  {/* Question 2b */}
                   <Controller
                     control={control}
-                    name="page3.q3"
+                    name="page3.q2b"
                     render={({ field, fieldState }) => (
                       <>
                         <RadioGroup
@@ -175,7 +176,7 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                               The recommended challenges are clear and
                               understandable.
                             </div>
-                            {[1, 2, 3, 4, 5].map((value, index) => (
+                            {[5, 4, 3, 2, 1].map((value, index) => (
                               <div
                                 key={value}
                                 className={`flex items-center justify-center ${
@@ -184,7 +185,7 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                               >
                                 <CustomRadioItem
                                   value={value.toString()}
-                                  id={`q3-${value}`}
+                                  id={`q2b-${value}`}
                                   label=""
                                   isSelected={field.value === value.toString()}
                                   variant="card"
@@ -204,10 +205,10 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                     )}
                   />
 
-                  {/* Question 4 */}
+                  {/* Question 2c */}
                   <Controller
                     control={control}
-                    name="page3.q4"
+                    name="page3.q2c"
                     render={({ field, fieldState }) => (
                       <>
                         <RadioGroup
@@ -221,10 +222,10 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                             }}
                           >
                             <div className="flex items-center border-r border-gray-300 p-3 text-sm">
-                              The recommended challenges are aligned with my
+                              The recommended challenges are relevant to the
                               searched goal.
                             </div>
-                            {[1, 2, 3, 4, 5].map((value, index) => (
+                            {[5, 4, 3, 2, 1].map((value, index) => (
                               <div
                                 key={value}
                                 className={`flex items-center justify-center ${
@@ -233,7 +234,7 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                               >
                                 <CustomRadioItem
                                   value={value.toString()}
-                                  id={`q4-${value}`}
+                                  id={`q2c-${value}`}
                                   label=""
                                   isSelected={field.value === value.toString()}
                                   variant="card"
@@ -253,10 +254,59 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                     )}
                   />
 
-                  {/* Question 5 */}
+                  {/* Question 2d */}
                   <Controller
                     control={control}
-                    name="page3.q5"
+                    name="page3.q2d"
+                    render={({ field, fieldState }) => (
+                      <>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value || ""}
+                        >
+                          <div
+                            className="grid min-h-[60px] border-b border-gray-300"
+                            style={{
+                              gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr",
+                            }}
+                          >
+                            <div className="flex items-center border-r border-gray-300 p-3 text-sm">
+                              Following challenges recommended by the system
+                              would help achieve the searched goal.
+                            </div>
+                            {[5, 4, 3, 2, 1].map((value, index) => (
+                              <div
+                                key={value}
+                                className={`flex items-center justify-center ${
+                                  index < 4 ? "border-r border-gray-300" : ""
+                                }`}
+                              >
+                                <CustomRadioItem
+                                  value={value.toString()}
+                                  id={`q2d-${value}`}
+                                  label=""
+                                  isSelected={field.value === value.toString()}
+                                  variant="card"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </RadioGroup>
+                        {fieldState.error && (
+                          <div className="col-span-6 bg-red-50 p-2">
+                            <p className="text-sm text-red-500">
+                              {fieldState.error.message}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  />
+
+                  {/* Question 2e */}
+                  <Controller
+                    control={control}
+                    name="page3.q2e"
                     render={({ field, fieldState }) => (
                       <>
                         <RadioGroup
@@ -272,7 +322,7 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                             <div className="flex items-center border-r border-gray-300 p-3 text-sm">
                               The search latency is acceptable.
                             </div>
-                            {[1, 2, 3, 4, 5].map((value, index) => (
+                            {[5, 4, 3, 2, 1].map((value, index) => (
                               <div
                                 key={value}
                                 className={`flex items-center justify-center ${
@@ -281,7 +331,7 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                               >
                                 <CustomRadioItem
                                   value={value.toString()}
-                                  id={`q5-${value}`}
+                                  id={`q2e-${value}`}
                                   label=""
                                   isSelected={field.value === value.toString()}
                                   variant="card"
@@ -304,15 +354,14 @@ export const Page3 = ({ control, errors }: Page3Props) => {
               </div>
             </div>
 
-            {/* Question 6: Challenge preference */}
+            {/* Question 3: Challenge preference */}
             <div className="space-y-3">
               <Label className="text-base font-semibold">
-                How likely are you to start making challenges from the search
-                results?
+                3. Would you use the AI challenge search feature?
               </Label>
               <Controller
                 control={control}
-                name="page3.q6"
+                name="page3.q3"
                 render={({ field, fieldState }) => (
                   <div className="space-y-2">
                     <RadioGroup
@@ -323,31 +372,58 @@ export const Page3 = ({ control, errors }: Page3Props) => {
                       {[
                         {
                           value:
-                            "I will directly join the recommended challenges",
+                            "Yes, I will directly join the recommended challenges",
                           label:
-                            "I will directly join the recommended challenges",
+                            "Yes, I will directly join the recommended challenges",
                         },
                         {
                           value:
-                            "I will start with the recommended challenges but tailor them for my own needs",
+                            "Yes, but I will edit and tailor them to my own needs",
                           label:
-                            "I will start with the recommended challenges but tailor them for my own needs",
+                            "Yes, but I will edit and tailor them to my own needs",
                         },
                         {
-                          value: "I prefer to make my own challenges",
-                          label: "I prefer to make my own challenges",
+                          value: "No, I prefer to make my own challenges",
+                          label: "No, I prefer to make my own challenges",
                         },
                       ].map((option, index) => (
                         <CustomRadioItem
                           key={option.value}
                           value={option.value}
-                          id={`q6-${index + 1}`}
+                          id={`q3-${index + 1}`}
                           label={option.label}
                           isSelected={field.value === option.value}
                           variant="card"
                         />
                       ))}
                     </RadioGroup>
+                    {fieldState.error && (
+                      <p className="text-sm text-red-500">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+
+            {/* Question 4: Search system comments */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">
+                4. Please provide any additional comments about the search
+                system (optional):
+              </Label>
+              <Controller
+                control={control}
+                name="page3.q4"
+                render={({ field, fieldState }) => (
+                  <div className="space-y-2">
+                    <Textarea
+                      placeholder="Please share any additional thoughts about the search system..."
+                      value={field.value || ""}
+                      onChange={field.onChange}
+                      rows={4}
+                    />
                     {fieldState.error && (
                       <p className="text-sm text-red-500">
                         {fieldState.error.message}

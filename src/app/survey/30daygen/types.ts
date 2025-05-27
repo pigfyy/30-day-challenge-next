@@ -3,17 +3,7 @@ import { Control, FieldErrors } from "react-hook-form";
 
 // Page 1 Form Data Schema - Contact Information
 export const Page1Schema = z.object({
-  email: z
-    .string()
-    .email("Please enter a valid email address")
-    .optional()
-    .or(z.literal("")),
-  age: z
-    .number()
-    .min(1, "Age must be at least 1")
-    .max(120, "Age must be less than 120")
-    .optional()
-    .or(z.string().transform((val) => (val === "" ? undefined : Number(val)))),
+  age: z.string().min(1, "Please select an age range"),
 });
 
 // Page 2 has no form fields (just search demo)
@@ -21,11 +11,13 @@ export const Page1Schema = z.object({
 // Page 3 Form Data Schema (formerly Page 2)
 export const Page3Schema = z.object({
   q1: z.string().min(1, "This field is required"),
-  q2: z.string().min(1, "This field is required"),
+  q2a: z.string().min(1, "This field is required"),
+  q2b: z.string().min(1, "This field is required"),
+  q2c: z.string().min(1, "This field is required"),
+  q2d: z.string().min(1, "This field is required"),
+  q2e: z.string().min(1, "This field is required"),
   q3: z.string().min(1, "This field is required"),
-  q4: z.string().min(1, "This field is required"),
-  q5: z.string().min(1, "This field is required"),
-  q6: z.string().min(1, "This field is required"),
+  q4: z.string().optional(),
 });
 
 // Page 4 Form Data Schema (formerly Page 3) - matching exact requirements

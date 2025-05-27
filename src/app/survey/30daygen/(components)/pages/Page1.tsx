@@ -3,10 +3,19 @@
 import { Controller } from "react-hook-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { type Page1Props } from "../../types";
+import { CustomRadioItem } from "../ui/custom-radio-item";
 
 export const Page1 = ({ control, errors }: Page1Props) => {
+  const ageOptions = [
+    { value: "under-15", label: "Under 15" },
+    { value: "15-25", label: "15-25" },
+    { value: "25-40", label: "25-40" },
+    { value: "40-55", label: "40-55" },
+    { value: "55+", label: "55+" },
+  ];
+
   return (
     <div className="w-full bg-gray-50 py-8">
       <div className="mx-auto max-w-4xl px-4">
@@ -20,14 +29,18 @@ export const Page1 = ({ control, errors }: Page1Props) => {
         {/* Introduction */}
         <Card className="mb-8">
           <CardContent className="pt-6">
-            <p className="text-lg leading-relaxed text-gray-700">
-              The 30day.me app aims to help you develop habits to reach your
-              personal goals. Using this app, you can create a 30-day challenge,
-              track your progress, … Small steps, big changes!
+            <p className="text-md leading-relaxed text-gray-700">
+              30day.me is a self-improvement app designed to help you reach your
+              personal goals through 30-day challenges. A 30-day challenge
+              encourages small, consistent actions every day for 30 days,
+              helping you form habits and make real progress. Using this app,
+              you can create 30-day challenges and track your progress using our
+              calendar, uploading progress photos, and taking notes along the
+              way. Small steps, Big changes!
             </p>
-            <p className="mt-4 text-lg leading-relaxed text-gray-700">
-              Please take a quick tour of the app and answer 10 survey
-              questions. The survey will take you approximately 10–15 minutes.
+            <p className="text-md mt-4 leading-relaxed text-gray-700">
+              Please follow the directions in the survey and answer the 10
+              survey questions. The survey will take you ~10 minutes.
             </p>
           </CardContent>
         </Card>
@@ -36,54 +49,30 @@ export const Page1 = ({ control, errors }: Page1Props) => {
         <Card>
           <CardContent className="pt-6">
             <div className="space-y-6">
-              {/* Email Field */}
-              <div className="space-y-4">
-                <Label htmlFor="email" className="text-base font-semibold">
-                  Email Address (Optional)
-                </Label>
-                <Controller
-                  control={control}
-                  name="page1.email"
-                  render={({ field, fieldState }) => (
-                    <div className="space-y-2">
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email address (optional)"
-                        value={field.value || ""}
-                        onChange={field.onChange}
-                        className="w-full"
-                      />
-                      {fieldState.error && (
-                        <p className="text-sm text-red-500">
-                          {fieldState.error.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                />
-              </div>
-
               {/* Age Field */}
               <div className="space-y-4">
-                <Label htmlFor="age" className="text-base font-semibold">
-                  Age (Optional)
-                </Label>
+                <Label className="text-base font-semibold">Age Range</Label>
                 <Controller
                   control={control}
                   name="page1.age"
                   render={({ field, fieldState }) => (
                     <div className="space-y-2">
-                      <Input
-                        id="age"
-                        type="number"
-                        placeholder="Enter your age (optional)"
+                      <RadioGroup
                         value={field.value || ""}
-                        onChange={field.onChange}
-                        className="w-full"
-                        min="1"
-                        max="120"
-                      />
+                        onValueChange={field.onChange}
+                        className="flex flex-col gap-2"
+                      >
+                        {ageOptions.map((option, index) => (
+                          <CustomRadioItem
+                            key={option.value}
+                            value={option.value}
+                            id={`age-${index + 1}`}
+                            label={option.label}
+                            isSelected={field.value === option.value}
+                            variant="card"
+                          />
+                        ))}
+                      </RadioGroup>
                       {fieldState.error && (
                         <p className="text-sm text-red-500">
                           {fieldState.error.message}

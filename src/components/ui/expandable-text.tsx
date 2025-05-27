@@ -1,13 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ExpandableTextProps {
   text: string;
   maxLines?: number;
+  className?: string;
 }
 
 const ExpandableText: React.FC<ExpandableTextProps> = ({
   text,
+  className,
   maxLines = 4,
 }) => {
   const [expanded, setExpanded] = useState(false);
@@ -28,7 +31,10 @@ const ExpandableText: React.FC<ExpandableTextProps> = ({
     <div className="relative">
       <p
         ref={textRef}
-        className={`text-gray-600 ${!expanded ? "line-clamp-4" : ""}`}
+        className={cn(
+          `text-gray-600 ${!expanded ? "line-clamp-4" : ""}`,
+          className,
+        )}
       >
         {text}
       </p>
