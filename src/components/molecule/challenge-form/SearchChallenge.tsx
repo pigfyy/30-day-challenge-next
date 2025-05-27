@@ -18,10 +18,12 @@ import { toast } from "@/hooks/use-toast";
 import { useUrlState } from "@/hooks/use-url-state";
 import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
+import { PostHogEvents, PostHogProperties } from "@/lib/analytics/events";
 import { addDays } from "date-fns";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
+import { usePostHog } from "posthog-js/react";
 
 const ChallengeIdea = ({
   challengeIdea,
@@ -108,6 +110,7 @@ export const ChallengeSearchCard = ({
 
   const { updateQueryParam } = useUrlState();
   const utils = trpc.useUtils();
+  const posthog = usePostHog();
 
   const { mutate: createChallenge } =
     trpc.challenge.createChallenge.useMutation({
@@ -162,6 +165,15 @@ export const ChallengeSearchCard = ({
     }
     const response = await searchChallenges(query);
     setResults(response);
+
+    // Track the search query with PostHog
+    if (posthog) {
+      posthog.capture(PostHogEvents.CHALLENGE_SEARCH_PERFORMED, {
+        [PostHogProperties.SEARCH_QUERY]: query,
+        [PostHogProperties.SEARCH_COMPONENT]: "ChallengeSearchCard",
+        [PostHogProperties.RESULTS_COUNT]: response.length,
+      });
+    }
   };
 
   return (

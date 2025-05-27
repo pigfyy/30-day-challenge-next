@@ -14,8 +14,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
+import { PostHogEvents, PostHogProperties } from "@/lib/analytics/events";
 import { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
+import { usePostHog } from "posthog-js/react";
 import React from "react";
 
 const ChallengeIdea = ({
@@ -63,9 +65,11 @@ const ChallengeIdea = ({
 export const ChallengeSearchBasic = ({
   leftCardHeight,
   externalQuery,
+  onSearchQuery,
 }: {
   leftCardHeight: number;
   externalQuery?: string;
+  onSearchQuery?: (query: string) => void;
 }) => {
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
@@ -77,6 +81,8 @@ export const ChallengeSearchBasic = ({
     isPending: isSearchChallengesPending,
   } = trpc.challengeIdea.search.useMutation();
 
+  const posthog = usePostHog();
+
   const performSearch = async (searchQuery: string) => {
     if (!searchQuery) {
       setResults([]);
@@ -84,6 +90,20 @@ export const ChallengeSearchBasic = ({
     }
     const response = await searchChallenges(searchQuery);
     setResults(response);
+
+    // Capture the search query for survey data
+    if (onSearchQuery) {
+      onSearchQuery(searchQuery);
+    }
+
+    // Track the search query with PostHog
+    if (posthog) {
+      posthog.capture(PostHogEvents.CHALLENGE_SEARCH_PERFORMED, {
+        [PostHogProperties.SEARCH_QUERY]: searchQuery,
+        [PostHogProperties.SEARCH_COMPONENT]: "ChallengeSearchBasic",
+        [PostHogProperties.RESULTS_COUNT]: response.length,
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

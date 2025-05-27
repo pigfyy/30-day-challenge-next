@@ -42,12 +42,19 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                       className="flex flex-col gap-2"
                     >
                       {[
+                        {
+                          value: "I'm already using it",
+                          label: "I'm already using it",
+                        },
                         { value: "Will use soon", label: "Will use soon" },
                         {
                           value: "Will use sometime in future",
                           label: "Will use sometime in future",
                         },
-                        { value: "Unlikely", label: "Unlikely" },
+                        {
+                          value: "No, I'm unlikely to use it",
+                          label: "No, I'm unlikely to use it",
+                        },
                       ].map((option) => (
                         <CustomRadioItem
                           key={option.value}
@@ -74,7 +81,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 name="page4.seeYourselfUsing"
                 render={({ field: parentField }) => (
                   <div>
-                    {parentField.value === "Unlikely" && (
+                    {parentField.value === "No, I'm unlikely to use it" && (
                       <div className="ml-6 space-y-2">
                         <Label className="text-sm font-medium text-gray-700">
                           Why?
@@ -177,6 +184,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                         "No more features needed",
                         "Notifications",
                         "Leaderboard",
+                        "Streaks",
                         "Community",
                         "Personal coaches",
                         "Others (please specify)",

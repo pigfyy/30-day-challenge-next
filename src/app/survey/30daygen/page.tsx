@@ -61,6 +61,24 @@ const SurveyCompleted = () => {
             </p>
           </div>
 
+          {/* Signup Invitation */}
+          <div className="mb-6 rounded-lg bg-green-50 p-6">
+            <h3 className="mb-2 text-lg font-semibold text-green-900">
+              Ready to start your 30-day journey?
+            </h3>
+            <p className="mb-4 text-sm leading-relaxed text-green-700">
+              Join thousands of others who are transforming their habits with
+              our 30-day challenges. Create your free account and start building
+              the life you want, one day at a time.
+            </p>
+            <Button
+              onClick={() => (window.location.href = "/sign-up")}
+              className="rounded-lg bg-green-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
+            >
+              Create Free Account
+            </Button>
+          </div>
+
           {/* Call to Action */}
           <div className="space-y-4">
             <Button
@@ -134,6 +152,7 @@ const Survey = ({
   const [validationAttempted, setValidationAttempted] = useState<{
     [key: number]: boolean;
   }>({});
+  const [searchQueries, setSearchQueries] = useState<string[]>([]);
 
   const form = useForm<SurveyFormData>({
     resolver: zodResolver(SurveyFormSchema),
@@ -161,6 +180,7 @@ const Survey = ({
         appStoreEngagement: "",
         additionalComments: "",
       },
+      searchQueries: [],
     },
     mode: "onSubmit",
   });
@@ -179,6 +199,12 @@ const Survey = ({
     currentPage,
     setCurrentPage,
   );
+
+  // Restore search queries from form data when form is loaded
+  useEffect(() => {
+    const currentSearchQueries = form.getValues("searchQueries") || [];
+    setSearchQueries(currentSearchQueries);
+  }, [form]);
 
   useEffect(() => {
     if (!validationAttempted[currentPage]) return;
@@ -250,6 +276,15 @@ const Survey = ({
     }
   };
 
+  const handleSearchQuery = (query: string) => {
+    setSearchQueries((prev) => {
+      const newQueries = [...prev, query];
+      // Update the form data with the new search queries
+      form.setValue("searchQueries", newQueries);
+      return newQueries;
+    });
+  };
+
   const renderCurrentPage = () => {
     const shouldShowErrors = validationAttempted[currentPage] || false;
     const pageErrors = shouldShowErrors ? errors : {};
@@ -258,7 +293,7 @@ const Survey = ({
       case 1:
         return <Page1 control={control} errors={pageErrors} />;
       case 2:
-        return <Page2 />;
+        return <Page2 onSearchQuery={handleSearchQuery} />;
       case 3:
         return <Page3 control={control} errors={pageErrors} />;
       case 4:

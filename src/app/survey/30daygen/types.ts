@@ -46,6 +46,7 @@ export const SurveyFormSchema = z.object({
   page1: Page1Schema,
   page3: Page3Schema,
   page4: Page4Schema,
+  searchQueries: z.array(z.string()).default([]),
 });
 
 export type SurveyFormData = z.infer<typeof SurveyFormSchema>;
@@ -54,6 +55,10 @@ export type SurveyFormData = z.infer<typeof SurveyFormSchema>;
 export interface Page1Props {
   control: Control<SurveyFormData>;
   errors: FieldErrors<SurveyFormData>;
+}
+
+export interface Page2Props {
+  onSearchQuery?: (query: string) => void;
 }
 
 export interface Page3Props {
