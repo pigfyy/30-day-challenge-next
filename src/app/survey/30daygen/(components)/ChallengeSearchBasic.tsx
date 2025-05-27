@@ -104,10 +104,9 @@ export const ChallengeSearchBasic = ({
     <Card
       className="flex w-full flex-col"
       style={{
-        height:
-          isMobile && !(results.length || isSearchChallengesPending)
-            ? "auto"
-            : leftCardHeight,
+        height: !(results.length || isSearchChallengesPending)
+          ? "auto"
+          : leftCardHeight,
       }}
     >
       <CardContent

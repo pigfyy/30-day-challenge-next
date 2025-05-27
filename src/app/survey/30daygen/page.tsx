@@ -13,23 +13,15 @@ import { useFormPersistence } from "./(components)/hooks/useFormPersistence";
 
 const Navigation = ({
   currentPage,
-  setCurrentPage,
-  isNextButtonDisabled,
+  handleNext,
+  handleBack,
   onSubmit,
 }: {
   currentPage: number;
-  setCurrentPage: (page: number) => void;
-  isNextButtonDisabled: () => boolean;
+  handleNext: () => void;
+  handleBack: () => void;
   onSubmit: () => void;
 }) => {
-  const handleNext = () => {
-    setCurrentPage(currentPage + 1);
-  };
-
-  const handleBack = () => {
-    setCurrentPage(currentPage - 1);
-  };
-
   return (
     <div className="bg-gray-50 py-8">
       <div className="mx-auto max-w-4xl px-4">
@@ -49,21 +41,13 @@ const Navigation = ({
           </div>
 
           {currentPage < 4 && (
-            <Button
-              onClick={handleNext}
-              className="px-8 py-2"
-              disabled={isNextButtonDisabled()}
-            >
+            <Button onClick={handleNext} className="px-8 py-2">
               Next
             </Button>
           )}
 
           {currentPage === 4 && (
-            <Button
-              onClick={onSubmit}
-              className="px-8 py-2"
-              disabled={isNextButtonDisabled()}
-            >
+            <Button onClick={onSubmit} className="px-8 py-2">
               Submit
             </Button>
           )}
@@ -102,7 +86,8 @@ const Survey = () => {
         additionalComments: "",
       },
     },
-    mode: "onChange",
+    mode: "onBlur",
+    reValidateMode: "onChange",
   });
 
   const {
@@ -110,6 +95,8 @@ const Survey = () => {
     formState: { errors },
     watch,
     handleSubmit,
+    trigger,
+    clearErrors,
   } = form;
 
   // Use form persistence hook
@@ -122,55 +109,47 @@ const Survey = () => {
   const formData = watch();
   console.log(formData);
 
-  const isNextButtonDisabled = () => {
+  const handleNext = async () => {
+    let isValid = false;
+
     if (currentPage === 1) {
-      const page1Errors = errors.page1;
-      const page1Data = formData.page1;
-
-      if (page1Errors || !page1Data.email) {
-        return true;
-      }
-    }
-
-    if (currentPage === 2) {
+      // Page 1 fields are optional, so always allow proceeding
+      isValid = true;
+    } else if (currentPage === 2) {
       // Page 2 is just a demo, no validation needed
-      return false;
-    }
+      isValid = true;
+    } else if (currentPage === 3) {
+      clearErrors("page3");
+      isValid = await trigger("page3");
+    } else if (currentPage === 4) {
+      // Clear any existing errors for page 4 and then validate
+      clearErrors("page4");
+      isValid = await trigger("page4");
 
-    if (currentPage === 3) {
-      const page3Errors = errors.page3;
-      const page3Data = formData.page3;
-
-      if (
-        page3Errors ||
-        !page3Data.q1 ||
-        !page3Data.q2 ||
-        !page3Data.q3 ||
-        !page3Data.q4 ||
-        !page3Data.q5 ||
-        !page3Data.q6
-      ) {
-        return true;
+      // Additional check for empty arrays as a fallback
+      if (isValid) {
+        const currentData = watch("page4");
+        if (
+          !currentData.dailyTracking?.length ||
+          !currentData.engagementFeatures?.length
+        ) {
+          isValid = false;
+          // Force trigger validation again to show errors
+          await trigger("page4");
+        }
       }
     }
 
-    if (currentPage === 4) {
-      const page4Errors = errors.page4;
-      const page4Data = formData.page4;
-
-      if (
-        page4Errors ||
-        !page4Data.seeYourselfUsing ||
-        !page4Data.dailyTracking?.length ||
-        !page4Data.engagementFeatures?.length ||
-        !page4Data.habitChange ||
-        !page4Data.appStoreEngagement
-      ) {
-        return true;
-      }
+    if (isValid) {
+      setCurrentPage(currentPage + 1);
     }
+    // If validation fails, user stays on current page and sees errors
+  };
 
-    return false;
+  const handleBack = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   const onSubmit = handleSubmit((data) => {
@@ -207,8 +186,8 @@ const Survey = () => {
       {renderCurrentPage()}
       <Navigation
         currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        isNextButtonDisabled={isNextButtonDisabled}
+        handleNext={handleNext}
+        handleBack={handleBack}
         onSubmit={onSubmit}
       />
     </div>
