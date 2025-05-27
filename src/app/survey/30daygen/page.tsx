@@ -17,9 +17,64 @@ import { trpc } from "@/lib/util/trpc";
 
 const SurveyCompleted = () => {
   return (
-    <div className="w-full">
-      <div className="mx-auto max-w-4xl px-4">
-        <p>Survey completed</p>
+    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
+      <div className="mx-auto max-w-2xl px-4 text-center">
+        <div className="rounded-2xl bg-white p-8 shadow-xl md:p-12">
+          {/* Success Icon */}
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+            <svg
+              className="h-10 w-10 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+
+          {/* Thank You Message */}
+          <h1 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
+            Thank You!
+          </h1>
+
+          <p className="mb-6 text-lg leading-relaxed text-gray-600">
+            We appreciate you taking the time to complete our 30-Day Challenge
+            survey. Your feedback is invaluable in helping us create better
+            experiences for our community.
+          </p>
+
+          {/* Additional Info */}
+          <div className="mb-6 rounded-lg bg-blue-50 p-6">
+            <h3 className="mb-2 text-lg font-semibold text-blue-900">
+              What happens next?
+            </h3>
+            <p className="text-sm leading-relaxed text-blue-700">
+              Your responses have been securely saved and will help us improve
+              our 30-day challenge program. Keep an eye out for updates and new
+              features based on community feedback like yours!
+            </p>
+          </div>
+
+          {/* Call to Action */}
+          <div className="space-y-4">
+            <Button
+              onClick={() => (window.location.href = "/")}
+              className="rounded-lg bg-blue-600 px-8 py-3 font-medium text-white transition-colors hover:bg-blue-700"
+            >
+              Return to Home
+            </Button>
+
+            <p className="text-sm text-gray-500">
+              Have questions? Feel free to reach out to our support team.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
