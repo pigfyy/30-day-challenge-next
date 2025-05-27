@@ -4,9 +4,9 @@ import { procedure, router } from "../init";
 
 export const challengeIdeaRouter = router({
   search: procedure.input(z.string()).mutation(async ({ input, ctx }) => {
-    if (!ctx.user) {
-      throw new Error("Not authenticated");
-    }
+    // if (!ctx.user) {
+    //   throw new Error("Not authenticated");
+    // }
     const challenges = await getChallengeIdeas(input);
 
     return challenges;
