@@ -176,7 +176,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                         <CustomRadioItem
                           key={option.value}
                           value={option.value}
-                          id={`using-${option.value.toLowerCase().replace(/\s+/g, "-")}`}
+                          id={`using-${(option.value || "").toLowerCase().replace(/\s+/g, "-")}`}
                           label={option.label}
                           isSelected={field.value === option.value}
                           variant="card"
@@ -268,7 +268,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                         <CustomRadioItem
                           key={option.value}
                           value={option.value}
-                          id={`habit-${option.value.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
+                          id={`habit-${(option.value || "").toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
                           label={option.label}
                           isSelected={field.value === option.value}
                           variant="card"
@@ -495,7 +495,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                         <CustomRadioItem
                           key={option.value}
                           value={option.value}
-                          id={`store-${option.value.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
+                          id={`store-${(option.value || "").toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
                           label={option.label}
                           isSelected={field.value === option.value}
                           variant="card"
