@@ -6,11 +6,51 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import { type Page4Props } from "../../types";
 import { CustomRadioItem } from "../ui/custom-radio-item";
 import { CustomCheckboxItem } from "../ui/custom-checkbox-item";
+import Image from "next/image";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const Page4 = ({ control, errors }: Page4Props) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const screenshots = [
+    {
+      src: "/survey/home.png",
+      alt: "Home screen of 30 Day Me app",
+      title: "Home Screen - Track Progress & View All Challenges",
+      description:
+        "Users can see how their daily completion stacks up against other users and easily view all their challenges in one place",
+    },
+    {
+      src: "/survey/view-challenge.png",
+      alt: "View challenge screen of 30 Day Me app",
+      title: "View Challenge - Daily Progress Tracking",
+      description:
+        "Easily set each day as complete or not complete, add progress images, and manage daily tasks",
+    },
+    {
+      src: "/survey/create-challenge.png",
+      alt: "Create challenge screen of 30 Day Me app",
+      title: "Create Challenge - Custom Challenges & AI Recommendations",
+      description:
+        "Make your own custom challenge or use the AI search system. Browse recommendations that you can instantly join or edit to fit your needs",
+    },
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % screenshots.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(
+      (prev) => (prev - 1 + screenshots.length) % screenshots.length,
+    );
+  };
+
   return (
     <div className="w-full bg-gray-50 py-8">
       <div className="mx-auto max-w-4xl px-4">
@@ -19,6 +59,83 @@ export const Page4 = ({ control, errors }: Page4Props) => {
           <h1 className="mb-4 text-3xl font-bold text-gray-900">
             Questions about the app
           </h1>
+
+          {/* App Overview Section */}
+          <Card className="mb-6">
+            <CardContent className="px-0 py-6">
+              <p className="mb-6 px-6 text-gray-700">
+                The following questions are about the 30 Day Me app as a whole.
+                Here are some screenshots to help you understand what the app
+                looks like:
+              </p>
+
+              {/* Carousel */}
+              <div className="relative mx-auto md:px-6">
+                {/* Main Image Container */}
+                <div className="relative overflow-hidden rounded-lg border bg-white shadow-lg">
+                  <Image
+                    src={screenshots[currentSlide].src}
+                    alt={screenshots[currentSlide].alt}
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    className="h-auto w-full"
+                  />
+                </div>
+
+                {/* Navigation Controls */}
+                <div className="mt-4 flex items-center justify-center gap-4">
+                  {/* Left Arrow */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={prevSlide}
+                    className="bg-white shadow-sm hover:bg-gray-50"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+
+                  {/* Dots Indicator */}
+                  <div className="flex gap-2">
+                    {screenshots.map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => setCurrentSlide(index)}
+                        className={`h-2 w-2 rounded-full transition-colors ${
+                          index === currentSlide
+                            ? "bg-blue-600"
+                            : "bg-gray-300 hover:bg-gray-400"
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Right Arrow */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={nextSlide}
+                    className="bg-white shadow-sm hover:bg-gray-50"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Image Title */}
+                <div className="mx-auto mt-3 max-w-md space-y-1 px-6 text-center">
+                  <p className="text-sm font-semibold text-gray-800">
+                    {screenshots[currentSlide].title}
+                  </p>
+                  <p className="mx-auto max-w-md text-xs text-gray-600">
+                    {screenshots[currentSlide].description}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Survey Questions */}
