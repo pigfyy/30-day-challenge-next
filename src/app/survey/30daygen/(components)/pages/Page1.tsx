@@ -6,8 +6,33 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { type Page1Props } from "../../types";
 import { CustomRadioItem } from "../ui/custom-radio-item";
+import { ScreenshotCarousel } from "../ui/ScreenshotCarousel";
 
 export const Page1 = ({ control, errors }: Page1Props) => {
+  const screenshots = [
+    {
+      src: "/survey/home.png",
+      alt: "Home screen of 30 Day Me app",
+      title: "Home Screen - Track Progress & View All Challenges",
+      description:
+        "Users can see how their daily completion stacks up against other users and easily view all their challenges in one place",
+    },
+    {
+      src: "/survey/view-challenge.png",
+      alt: "View challenge screen of 30 Day Me app",
+      title: "View Challenge - Daily Progress Tracking",
+      description:
+        "Easily set each day as complete or not complete, add progress images, and manage daily tasks",
+    },
+    {
+      src: "/survey/create-challenge.png",
+      alt: "Create challenge screen of 30 Day Me app",
+      title: "Create Challenge - Custom Challenges & AI Recommendations",
+      description:
+        "Make your own custom challenge or use the AI search system. Browse recommendations that you can instantly join or edit to fit your needs",
+    },
+  ];
+
   const ageOptions = [
     { value: "under-15", label: "Under 15" },
     { value: "15-25", label: "15-25" },
@@ -42,6 +67,18 @@ export const Page1 = ({ control, errors }: Page1Props) => {
               Please follow the directions in the survey and answer the 10
               survey questions. The survey will take you ~10 minutes.
             </p>
+          </CardContent>
+        </Card>
+
+        {/* App Screenshots Section */}
+        <Card className="mb-8">
+          <CardContent className="px-0 py-6">
+            <p className="mb-6 px-6 text-gray-700">
+              Here are some screenshots to help you understand what the app
+              looks like:
+            </p>
+
+            <ScreenshotCarousel screenshots={screenshots} />
           </CardContent>
         </Card>
 

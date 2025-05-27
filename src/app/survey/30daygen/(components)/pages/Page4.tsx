@@ -6,16 +6,20 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { type Page4Props } from "../../types";
 import { CustomRadioItem } from "../ui/custom-radio-item";
 import { CustomCheckboxItem } from "../ui/custom-checkbox-item";
-import Image from "next/image";
+import { ScreenshotCarousel } from "../ui/ScreenshotCarousel";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const Page4 = ({ control, errors }: Page4Props) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isScreenshotsOpen, setIsScreenshotsOpen] = useState(false);
 
   const screenshots = [
     {
@@ -41,16 +45,6 @@ export const Page4 = ({ control, errors }: Page4Props) => {
     },
   ];
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % screenshots.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide(
-      (prev) => (prev - 1 + screenshots.length) % screenshots.length,
-    );
-  };
-
   return (
     <div className="w-full bg-gray-50 py-8">
       <div className="mx-auto max-w-4xl px-4">
@@ -62,80 +56,40 @@ export const Page4 = ({ control, errors }: Page4Props) => {
 
           {/* App Overview Section */}
           <Card className="mb-6">
-            <CardContent className="px-0 py-6">
-              <p className="mb-6 px-6 text-gray-700">
+            <CardContent className="pt-6">
+              <p className="text-gray-700">
                 The following questions are about the 30 Day Me app as a whole.
-                Here are some screenshots to help you understand what the app
-                looks like:
+                You can answer roughly based on your impression from the
+                screenshots shown on the first page of this survey.
               </p>
-
-              {/* Carousel */}
-              <div className="relative mx-auto md:px-6">
-                {/* Main Image Container */}
-                <div className="relative overflow-hidden rounded-lg border bg-white shadow-lg">
-                  <Image
-                    src={screenshots[currentSlide].src}
-                    alt={screenshots[currentSlide].alt}
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    className="h-auto w-full"
-                  />
-                </div>
-
-                {/* Navigation Controls */}
-                <div className="mt-4 flex items-center justify-center gap-4">
-                  {/* Left Arrow */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={prevSlide}
-                    className="bg-white shadow-sm hover:bg-gray-50"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-
-                  {/* Dots Indicator */}
-                  <div className="flex gap-2">
-                    {screenshots.map((_, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => setCurrentSlide(index)}
-                        className={`h-2 w-2 rounded-full transition-colors ${
-                          index === currentSlide
-                            ? "bg-blue-600"
-                            : "bg-gray-300 hover:bg-gray-400"
-                        }`}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Right Arrow */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={nextSlide}
-                    className="bg-white shadow-sm hover:bg-gray-50"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                {/* Image Title */}
-                <div className="mx-auto mt-3 max-w-md space-y-1 px-6 text-center">
-                  <p className="text-sm font-semibold text-gray-800">
-                    {screenshots[currentSlide].title}
-                  </p>
-                  <p className="mx-auto max-w-md text-xs text-gray-600">
-                    {screenshots[currentSlide].description}
-                  </p>
-                </div>
-              </div>
             </CardContent>
           </Card>
+
+          {/* Collapsible Screenshots Section */}
+          <Collapsible
+            open={isScreenshotsOpen}
+            onOpenChange={setIsScreenshotsOpen}
+          >
+            <Card className="mb-6">
+              <CollapsibleTrigger className="w-full">
+                <CardContent className="flex items-center justify-between pb-6 pt-6">
+                  <p className="text-left font-medium text-gray-700">
+                    📱 View App Screenshots Again (Optional)
+                  </p>
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${
+                      isScreenshotsOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </CardContent>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="px-0 pb-6">
+                  <ScreenshotCarousel screenshots={screenshots} />
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
         </div>
 
         {/* Survey Questions */}
