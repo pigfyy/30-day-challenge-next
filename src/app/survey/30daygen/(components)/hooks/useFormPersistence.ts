@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { SurveyFormData } from "../../types";
 
-const STORAGE_KEY = "30daygen-survey-form-data";
-const STORAGE_PAGE_KEY = "30daygen-survey-current-page";
+export const STORAGE_KEY = "30daygen-survey-form-data";
+export const STORAGE_PAGE_KEY = "30daygen-survey-current-page";
 
 export const useFormPersistence = (
   form: UseFormReturn<SurveyFormData>,
@@ -38,7 +38,6 @@ export const useFormPersistence = (
     }
   }, [form, setCurrentPage]);
 
-  // Save form data to localStorage whenever it changes
   useEffect(() => {
     const subscription = form.watch((data) => {
       try {
@@ -51,7 +50,6 @@ export const useFormPersistence = (
     return () => subscription.unsubscribe();
   }, [form]);
 
-  // Save current page to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_PAGE_KEY, currentPage.toString());
@@ -71,4 +69,9 @@ export const useFormPersistence = (
   };
 
   return { clearSavedData };
+};
+
+export const clearLocalStorage = () => {
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(STORAGE_PAGE_KEY);
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,21 @@ import { Page2 } from "./(components)/pages/Page2";
 import { Page3 } from "./(components)/pages/Page3";
 import { Page4 } from "./(components)/pages/Page4";
 import { SurveyFormSchema, type SurveyFormData } from "./types";
-import { useFormPersistence } from "./(components)/hooks/useFormPersistence";
+import {
+  clearLocalStorage,
+  useFormPersistence,
+} from "./(components)/hooks/useFormPersistence";
+import { trpc } from "@/lib/util/trpc";
+
+const SurveyCompleted = () => {
+  return (
+    <div className="w-full">
+      <div className="mx-auto max-w-4xl px-4">
+        <p>Survey completed</p>
+      </div>
+    </div>
+  );
+};
 
 const Navigation = ({
   currentPage,
@@ -35,7 +49,6 @@ const Navigation = ({
             Back
           </Button>
 
-          {/* Section indicator */}
           <div className="text-sm font-medium text-gray-600">
             Section {currentPage}/4
           </div>
@@ -57,10 +70,16 @@ const Navigation = ({
   );
 };
 
-const Survey = () => {
+const Survey = ({
+  onSubmit: surveySubmit,
+}: {
+  onSubmit: (data: SurveyFormData) => void;
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [validationAttempted, setValidationAttempted] = useState<{
+    [key: number]: boolean;
+  }>({});
 
-  // Centralized form state management
   const form = useForm<SurveyFormData>({
     resolver: zodResolver(SurveyFormSchema),
     defaultValues: {
@@ -86,8 +105,7 @@ const Survey = () => {
         additionalComments: "",
       },
     },
-    mode: "onBlur",
-    reValidateMode: "onChange",
+    mode: "onSubmit",
   });
 
   const {
@@ -99,34 +117,65 @@ const Survey = () => {
     clearErrors,
   } = form;
 
-  // Use form persistence hook
   const { clearSavedData } = useFormPersistence(
     form,
     currentPage,
     setCurrentPage,
   );
 
-  const formData = watch();
-  console.log(formData);
+  useEffect(() => {
+    if (!validationAttempted[currentPage]) return;
+
+    const subscription = form.watch((data, { name }) => {
+      if (!name) return;
+
+      if (currentPage === 1 && name.startsWith("page1.")) {
+        if (
+          name === "page1.email" &&
+          ((data.page1?.email &&
+            data.page1.email.includes("@") &&
+            data.page1.email.includes(".")) ||
+            data.page1?.email == "")
+        ) {
+          form.clearErrors("page1.email");
+        }
+      } else if (currentPage === 3 && name.startsWith("page3.")) {
+        const fieldValue =
+          data.page3?.[name.split(".")[1] as keyof typeof data.page3];
+        if (fieldValue && fieldValue !== "") {
+          form.clearErrors(name as any);
+        }
+      } else if (currentPage === 4 && name.startsWith("page4.")) {
+        const fieldKey = name.split(".")[1] as keyof NonNullable<
+          typeof data.page4
+        >;
+        const fieldValue = data.page4?.[fieldKey];
+        if (
+          Array.isArray(fieldValue)
+            ? fieldValue.length > 0
+            : fieldValue && fieldValue !== ""
+        ) {
+          form.clearErrors(name as any);
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form, currentPage, validationAttempted]);
 
   const handleNext = async () => {
     let isValid = false;
 
+    setValidationAttempted((prev) => ({ ...prev, [currentPage]: true }));
+
     if (currentPage === 1) {
-      // Page 1 fields are optional, so always allow proceeding
-      isValid = true;
+      isValid = await trigger("page1");
     } else if (currentPage === 2) {
-      // Page 2 is just a demo, no validation needed
       isValid = true;
     } else if (currentPage === 3) {
-      clearErrors("page3");
       isValid = await trigger("page3");
     } else if (currentPage === 4) {
-      // Clear any existing errors for page 4 and then validate
-      clearErrors("page4");
       isValid = await trigger("page4");
-
-      // Additional check for empty arrays as a fallback
       if (isValid) {
         const currentData = watch("page4");
         if (
@@ -134,7 +183,6 @@ const Survey = () => {
           !currentData.engagementFeatures?.length
         ) {
           isValid = false;
-          // Force trigger validation again to show errors
           await trigger("page4");
         }
       }
@@ -143,7 +191,6 @@ const Survey = () => {
     if (isValid) {
       setCurrentPage(currentPage + 1);
     }
-    // If validation fails, user stays on current page and sees errors
   };
 
   const handleBack = () => {
@@ -152,24 +199,19 @@ const Survey = () => {
     }
   };
 
-  const onSubmit = handleSubmit((data) => {
-    console.log("Survey submitted:", data);
-
-    clearSavedData();
-
-    alert("Survey submitted successfully! Thank you for your feedback.");
-  });
-
   const renderCurrentPage = () => {
+    const shouldShowErrors = validationAttempted[currentPage] || false;
+    const pageErrors = shouldShowErrors ? errors : {};
+
     switch (currentPage) {
       case 1:
-        return <Page1 control={control} errors={errors} />;
+        return <Page1 control={control} errors={pageErrors} />;
       case 2:
         return <Page2 />;
       case 3:
-        return <Page3 control={control} errors={errors} />;
+        return <Page3 control={control} errors={pageErrors} />;
       case 4:
-        return <Page4 control={control} errors={errors} />;
+        return <Page4 control={control} errors={pageErrors} />;
       default:
         return (
           <div className="bg-gray-50 py-8">
@@ -188,12 +230,32 @@ const Survey = () => {
         currentPage={currentPage}
         handleNext={handleNext}
         handleBack={handleBack}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit(surveySubmit)}
       />
     </div>
   );
 };
 
 export default function Survey30DayGenPage() {
-  return <Survey />;
+  const [isFormCompleted, setIsFormCompleted] = useState(false);
+
+  const { mutate: createSurveyResponse } =
+    trpc.surveyResponse.create.useMutation();
+
+  const onSubmit = async (data: SurveyFormData) => {
+    try {
+      await createSurveyResponse(data);
+
+      setIsFormCompleted(true);
+      clearLocalStorage();
+    } catch (error) {
+      console.error("Failed to save survey:", error);
+    }
+  };
+
+  return (
+    <div className="relative w-full">
+      {isFormCompleted ? <SurveyCompleted /> : <Survey onSubmit={onSubmit} />}
+    </div>
+  );
 }

@@ -5,6 +5,7 @@ import {
   foreignKey,
   index,
   integer,
+  json,
   pgTable,
   text,
   timestamp,
@@ -217,3 +218,14 @@ export const dailyTaskRelations = relations(dailyTask, ({ one }) => ({
 export const challengeIdeaRelations = relations(challengeIdea, ({ many }) => ({
   challenges: many(challenge),
 }));
+
+export const surveyResponse = pgTable("SurveyResponse", {
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => cuid()),
+  responseData: json("response_data").notNull(),
+  submittedAt: timestamp("submitted_at", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+});
