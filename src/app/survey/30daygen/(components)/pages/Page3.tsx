@@ -80,192 +80,227 @@ export const Page3 = ({ control, errors }: Page3Props) => {
               </Label>
 
               <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-gray-300">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="border border-gray-300 p-3 text-left">
-                        Question
-                      </th>
-                      <th className="border border-gray-300 p-3 text-center">
-                        Very Satisfied/Strongly Agree (1)
-                      </th>
-                      <th className="border border-gray-300 p-3 text-center">
-                        Somewhat Satisfied/Agree (2)
-                      </th>
-                      <th className="border border-gray-300 p-3 text-center">
-                        Neutral (3)
-                      </th>
-                      <th className="border border-gray-300 p-3 text-center">
-                        Somewhat Dissatisfied/Disagree (4)
-                      </th>
-                      <th className="border border-gray-300 p-3 text-center">
-                        Very Dissatisfied/Strongly Disagree (5)
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* Question 2 */}
-                    <tr>
-                      <td className="border border-gray-300 p-3 font-medium">
-                        How satisfied are you in the challenge search?
-                      </td>
-                      <td colSpan={5} className="border border-gray-300 p-3">
-                        <Controller
-                          control={control}
-                          name="page3.q2"
-                          render={({ field, fieldState }) => (
-                            <div className="space-y-2">
-                              <RadioGroup
-                                onValueChange={field.onChange}
-                                value={field.value || ""}
-                                className="flex justify-between"
-                              >
-                                {[1, 2, 3, 4, 5].map((value) => (
-                                  <CustomRadioItem
-                                    key={value}
-                                    value={value.toString()}
-                                    id={`q2-${value}`}
-                                    label={value.toString()}
-                                    isSelected={
-                                      field.value === value.toString()
-                                    }
-                                    variant="simple"
-                                  />
-                                ))}
-                              </RadioGroup>
-                              {fieldState.error && (
-                                <p className="text-sm text-red-500">
-                                  {fieldState.error.message}
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        />
-                      </td>
-                    </tr>
+                <div className="min-w-[800px] overflow-hidden rounded-lg border border-gray-300">
+                  {/* Header */}
+                  <div
+                    className="grid min-h-[60px] border-b border-gray-300 bg-gray-50"
+                    style={{ gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr" }}
+                  >
+                    <div className="flex items-center border-r border-gray-300 p-3 text-left text-sm font-semibold">
+                      Question
+                    </div>
+                    <div className="flex items-center justify-center border-r border-gray-300 p-3 text-center text-sm font-semibold">
+                      Strongly Disagree (1)
+                    </div>
+                    <div className="flex items-center justify-center border-r border-gray-300 p-3 text-center text-sm font-semibold">
+                      Disagree (2)
+                    </div>
+                    <div className="flex items-center justify-center border-r border-gray-300 p-3 text-center text-sm font-semibold">
+                      Neutral (3)
+                    </div>
+                    <div className="flex items-center justify-center border-r border-gray-300 p-3 text-center text-sm font-semibold">
+                      Agree (4)
+                    </div>
+                    <div className="flex items-center justify-center p-3 text-center text-sm font-semibold">
+                      Strongly Agree (5)
+                    </div>
+                  </div>
 
-                    {/* Question 3 */}
-                    <tr>
-                      <td className="border border-gray-300 p-3 font-medium">
-                        Are the recommended challenges clear and understandable?
-                      </td>
-                      <td colSpan={5} className="border border-gray-300 p-3">
-                        <Controller
-                          control={control}
-                          name="page3.q3"
-                          render={({ field, fieldState }) => (
-                            <div className="space-y-2">
-                              <RadioGroup
-                                onValueChange={field.onChange}
-                                value={field.value || ""}
-                                className="flex justify-between"
-                              >
-                                {[1, 2, 3, 4, 5].map((value) => (
-                                  <CustomRadioItem
-                                    key={value}
-                                    value={value.toString()}
-                                    id={`q3-${value}`}
-                                    label={value.toString()}
-                                    isSelected={
-                                      field.value === value.toString()
-                                    }
-                                    variant="simple"
-                                  />
-                                ))}
-                              </RadioGroup>
-                              {fieldState.error && (
-                                <p className="text-sm text-red-500">
-                                  {fieldState.error.message}
-                                </p>
-                              )}
+                  {/* Question 2 */}
+                  <Controller
+                    control={control}
+                    name="page3.q2"
+                    render={({ field, fieldState }) => (
+                      <>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value || ""}
+                        >
+                          <div
+                            className="grid min-h-[60px] border-b border-gray-300"
+                            style={{
+                              gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr",
+                            }}
+                          >
+                            <div className="flex items-center border-r border-gray-300 p-3 text-sm">
+                              I&apos;m satisfied with the challenge search
+                              system.
                             </div>
-                          )}
-                        />
-                      </td>
-                    </tr>
+                            {[1, 2, 3, 4, 5].map((value, index) => (
+                              <div
+                                key={value}
+                                className={`flex items-center justify-center ${
+                                  index < 4 ? "border-r border-gray-300" : ""
+                                }`}
+                              >
+                                <CustomRadioItem
+                                  value={value.toString()}
+                                  id={`q2-${value}`}
+                                  label=""
+                                  isSelected={field.value === value.toString()}
+                                  variant="card"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </RadioGroup>
+                        {fieldState.error && (
+                          <div className="col-span-6 bg-red-50 p-2">
+                            <p className="text-sm text-red-500">
+                              {fieldState.error.message}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  />
 
-                    {/* Question 4 */}
-                    <tr>
-                      <td className="border border-gray-300 p-3 font-medium">
-                        Are the recommended challenges aligned with your goals?
-                      </td>
-                      <td colSpan={5} className="border border-gray-300 p-3">
-                        <Controller
-                          control={control}
-                          name="page3.q4"
-                          render={({ field, fieldState }) => (
-                            <div className="space-y-2">
-                              <RadioGroup
-                                onValueChange={field.onChange}
-                                value={field.value || ""}
-                                className="flex justify-between"
-                              >
-                                {[1, 2, 3, 4, 5].map((value) => (
-                                  <CustomRadioItem
-                                    key={value}
-                                    value={value.toString()}
-                                    id={`q4-${value}`}
-                                    label={value.toString()}
-                                    isSelected={
-                                      field.value === value.toString()
-                                    }
-                                    variant="simple"
-                                  />
-                                ))}
-                              </RadioGroup>
-                              {fieldState.error && (
-                                <p className="text-sm text-red-500">
-                                  {fieldState.error.message}
-                                </p>
-                              )}
+                  {/* Question 3 */}
+                  <Controller
+                    control={control}
+                    name="page3.q3"
+                    render={({ field, fieldState }) => (
+                      <>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value || ""}
+                        >
+                          <div
+                            className="grid min-h-[60px] border-b border-gray-300"
+                            style={{
+                              gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr",
+                            }}
+                          >
+                            <div className="flex items-center border-r border-gray-300 p-3 text-sm">
+                              The recommended challenges are clear and
+                              understandable.
                             </div>
-                          )}
-                        />
-                      </td>
-                    </tr>
+                            {[1, 2, 3, 4, 5].map((value, index) => (
+                              <div
+                                key={value}
+                                className={`flex items-center justify-center ${
+                                  index < 4 ? "border-r border-gray-300" : ""
+                                }`}
+                              >
+                                <CustomRadioItem
+                                  value={value.toString()}
+                                  id={`q3-${value}`}
+                                  label=""
+                                  isSelected={field.value === value.toString()}
+                                  variant="card"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </RadioGroup>
+                        {fieldState.error && (
+                          <div className="col-span-6 bg-red-50 p-2">
+                            <p className="text-sm text-red-500">
+                              {fieldState.error.message}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  />
 
-                    {/* Question 5 */}
-                    <tr>
-                      <td className="border border-gray-300 p-3 font-medium">
-                        How helpful are the recommended challenges in achieving
-                        the searched goal?
-                      </td>
-                      <td colSpan={5} className="border border-gray-300 p-3">
-                        <Controller
-                          control={control}
-                          name="page3.q5"
-                          render={({ field, fieldState }) => (
-                            <div className="space-y-2">
-                              <RadioGroup
-                                onValueChange={field.onChange}
-                                value={field.value || ""}
-                                className="flex justify-between"
-                              >
-                                {[1, 2, 3, 4, 5].map((value) => (
-                                  <CustomRadioItem
-                                    key={value}
-                                    value={value.toString()}
-                                    id={`q5-${value}`}
-                                    label={value.toString()}
-                                    isSelected={
-                                      field.value === value.toString()
-                                    }
-                                    variant="simple"
-                                  />
-                                ))}
-                              </RadioGroup>
-                              {fieldState.error && (
-                                <p className="text-sm text-red-500">
-                                  {fieldState.error.message}
-                                </p>
-                              )}
+                  {/* Question 4 */}
+                  <Controller
+                    control={control}
+                    name="page3.q4"
+                    render={({ field, fieldState }) => (
+                      <>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value || ""}
+                        >
+                          <div
+                            className="grid min-h-[60px] border-b border-gray-300"
+                            style={{
+                              gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr",
+                            }}
+                          >
+                            <div className="flex items-center border-r border-gray-300 p-3 text-sm">
+                              The recommended challenges are aligned with my
+                              searched goal.
                             </div>
-                          )}
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                            {[1, 2, 3, 4, 5].map((value, index) => (
+                              <div
+                                key={value}
+                                className={`flex items-center justify-center ${
+                                  index < 4 ? "border-r border-gray-300" : ""
+                                }`}
+                              >
+                                <CustomRadioItem
+                                  value={value.toString()}
+                                  id={`q4-${value}`}
+                                  label=""
+                                  isSelected={field.value === value.toString()}
+                                  variant="card"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </RadioGroup>
+                        {fieldState.error && (
+                          <div className="col-span-6 bg-red-50 p-2">
+                            <p className="text-sm text-red-500">
+                              {fieldState.error.message}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  />
+
+                  {/* Question 5 */}
+                  <Controller
+                    control={control}
+                    name="page3.q5"
+                    render={({ field, fieldState }) => (
+                      <>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value || ""}
+                        >
+                          <div
+                            className="grid min-h-[60px]"
+                            style={{
+                              gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr",
+                            }}
+                          >
+                            <div className="flex items-center border-r border-gray-300 p-3 text-sm">
+                              The search latency is acceptable.
+                            </div>
+                            {[1, 2, 3, 4, 5].map((value, index) => (
+                              <div
+                                key={value}
+                                className={`flex items-center justify-center ${
+                                  index < 4 ? "border-r border-gray-300" : ""
+                                }`}
+                              >
+                                <CustomRadioItem
+                                  value={value.toString()}
+                                  id={`q5-${value}`}
+                                  label=""
+                                  isSelected={field.value === value.toString()}
+                                  variant="card"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </RadioGroup>
+                        {fieldState.error && (
+                          <div className="col-span-6 bg-red-50 p-2">
+                            <p className="text-sm text-red-500">
+                              {fieldState.error.message}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  />
+                </div>
               </div>
             </div>
 

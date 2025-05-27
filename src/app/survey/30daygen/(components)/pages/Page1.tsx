@@ -32,34 +32,67 @@ export const Page1 = ({ control, errors }: Page1Props) => {
           </CardContent>
         </Card>
 
-        {/* Email Collection */}
+        {/* Contact Information */}
         <Card>
           <CardContent className="pt-6">
-            <div className="space-y-4">
-              <Label htmlFor="email" className="text-base font-semibold">
-                Email Address
-              </Label>
-              <Controller
-                control={control}
-                name="page1.email"
-                render={({ field, fieldState }) => (
-                  <div className="space-y-2">
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Enter your email address"
-                      value={field.value || ""}
-                      onChange={field.onChange}
-                      className="w-full"
-                    />
-                    {fieldState.error && (
-                      <p className="text-sm text-red-500">
-                        {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
+            <div className="space-y-6">
+              {/* Email Field */}
+              <div className="space-y-4">
+                <Label htmlFor="email" className="text-base font-semibold">
+                  Email Address (Optional)
+                </Label>
+                <Controller
+                  control={control}
+                  name="page1.email"
+                  render={({ field, fieldState }) => (
+                    <div className="space-y-2">
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email address (optional)"
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        className="w-full"
+                      />
+                      {fieldState.error && (
+                        <p className="text-sm text-red-500">
+                          {fieldState.error.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
+
+              {/* Age Field */}
+              <div className="space-y-4">
+                <Label htmlFor="age" className="text-base font-semibold">
+                  Age (Optional)
+                </Label>
+                <Controller
+                  control={control}
+                  name="page1.age"
+                  render={({ field, fieldState }) => (
+                    <div className="space-y-2">
+                      <Input
+                        id="age"
+                        type="number"
+                        placeholder="Enter your age (optional)"
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        className="w-full"
+                        min="1"
+                        max="120"
+                      />
+                      {fieldState.error && (
+                        <p className="text-sm text-red-500">
+                          {fieldState.error.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
             </div>
           </CardContent>
         </Card>

@@ -1,12 +1,19 @@
 import { z } from "zod";
 import { Control, FieldErrors } from "react-hook-form";
 
-// Page 1 Form Data Schema - Email Collection
+// Page 1 Form Data Schema - Contact Information
 export const Page1Schema = z.object({
   email: z
     .string()
     .email("Please enter a valid email address")
-    .min(1, "Email is required"),
+    .optional()
+    .or(z.literal("")),
+  age: z
+    .number()
+    .min(1, "Age must be at least 1")
+    .max(120, "Age must be less than 120")
+    .optional()
+    .or(z.string().transform((val) => (val === "" ? undefined : Number(val)))),
 });
 
 // Page 2 has no form fields (just search demo)
@@ -28,6 +35,7 @@ export const Page4Schema = z.object({
   dailyTracking: z
     .array(z.string())
     .min(1, "Please select at least one option"),
+  dailyTrackingOthersSpecify: z.string().optional(), // Conditional field when "Others" is selected in dailyTracking
   engagementFeatures: z
     .array(z.string())
     .min(1, "Please select at least one option"),

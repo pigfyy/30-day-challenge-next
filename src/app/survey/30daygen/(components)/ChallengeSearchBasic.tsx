@@ -14,8 +14,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChallengeIdeaResult } from "@/lib/db/challengeIdeas";
 import { trpc } from "@/lib/util/trpc";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
+import React from "react";
 
 const ChallengeIdea = ({
   challengeIdea,
@@ -62,9 +63,10 @@ const ChallengeIdea = ({
 
 export const ChallengeSearchBasic = ({
   leftCardHeight,
+  externalQuery,
 }: {
   leftCardHeight: number;
-  setDefaultValues?: React.Dispatch<React.SetStateAction<any>>;
+  externalQuery?: string;
 }) => {
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
@@ -76,15 +78,27 @@ export const ChallengeSearchBasic = ({
     isPending: isSearchChallengesPending,
   } = trpc.challengeIdea.search.useMutation();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!query) {
+  const performSearch = async (searchQuery: string) => {
+    if (!searchQuery) {
       setResults([]);
       return;
     }
-    const response = await searchChallenges(query);
+    const response = await searchChallenges(searchQuery);
     setResults(response);
   };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await performSearch(query);
+  };
+
+  // Handle external query changes
+  useEffect(() => {
+    if (externalQuery) {
+      setQuery(externalQuery);
+      performSearch(externalQuery);
+    }
+  }, [externalQuery]);
 
   return (
     <Card

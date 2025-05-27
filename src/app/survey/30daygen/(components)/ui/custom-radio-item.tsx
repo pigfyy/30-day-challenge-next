@@ -45,6 +45,38 @@ export const CustomRadioItem = ({
     );
   }
 
+  // Card variant - handle both labeled and unlabeled cases
+  const hasLabel = label && label.trim() !== "";
+
+  if (!hasLabel) {
+    // For Likert scale - just centered radio button with background
+    return (
+      <div className={cn("relative h-full w-full", className)}>
+        <RadioGroupItem value={value} id={id} className="sr-only" />
+        <Label
+          htmlFor={id}
+          className={cn(
+            "flex h-full w-full cursor-pointer items-center justify-center p-3 transition-all hover:bg-gray-100",
+            isSelected ? "bg-blue-100" : "bg-transparent",
+            labelClassName,
+          )}
+        >
+          <div
+            className={cn(
+              "h-[18px] w-[18px] flex-shrink-0 rounded-full border-2",
+              isSelected ? "border-blue-500 bg-blue-500" : "border-gray-300",
+            )}
+          >
+            {isSelected && (
+              <div className="h-full w-full scale-50 rounded-full bg-white"></div>
+            )}
+          </div>
+        </Label>
+      </div>
+    );
+  }
+
+  // Regular card variant with label
   return (
     <div className={cn("relative", className)}>
       <RadioGroupItem value={value} id={id} className="sr-only" />

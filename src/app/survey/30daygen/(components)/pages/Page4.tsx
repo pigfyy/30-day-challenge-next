@@ -119,6 +119,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                         "Add detailed to-do list",
                         "Take notes",
                         "Upload pictures to track progress",
+                        "Others (please specify)",
                       ].map((option) => (
                         <CustomCheckboxItem
                           key={option}
@@ -144,6 +145,41 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                       <p className="text-sm text-red-500">
                         {fieldState.error.message}
                       </p>
+                    )}
+                  </div>
+                )}
+              />
+
+              {/* Conditional field: Others specify for daily tracking */}
+              <Controller
+                control={control}
+                name="page4.dailyTracking"
+                render={({ field: parentField }) => (
+                  <div>
+                    {parentField.value?.includes("Others (please specify)") && (
+                      <div className="ml-6 space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">
+                          Please specify:
+                        </Label>
+                        <Controller
+                          control={control}
+                          name="page4.dailyTrackingOthersSpecify"
+                          render={({ field, fieldState }) => (
+                            <div className="space-y-2">
+                              <Input
+                                placeholder="Please specify other tracking options..."
+                                value={field.value || ""}
+                                onChange={field.onChange}
+                              />
+                              {fieldState.error && (
+                                <p className="text-sm text-red-500">
+                                  {fieldState.error.message}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        />
+                      </div>
                     )}
                   </div>
                 )}
@@ -267,8 +303,8 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                           label: "It is not obvious yet",
                         },
                         {
-                          value: "N/A",
-                          label: "N/A",
+                          value: "Not applicable, I have not used it",
+                          label: "Not applicable, I have not used it",
                         },
                       ].map((option) => (
                         <CustomRadioItem
@@ -311,17 +347,21 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                       {[
                         {
                           value:
-                            "I will only use it by downloading from app stores",
+                            "I would only use it if it was published to the app store",
                           label:
-                            "I will only use it by downloading from app stores",
+                            "I would only use it if it was published to the app store",
                         },
                         {
-                          value: "I'm more likely to use the app",
-                          label: "I'm more likely to use the app",
+                          value:
+                            "I'm more likely to use the app if published to the app store",
+                          label:
+                            "I'm more likely to use the app if published to the app store",
                         },
                         {
-                          value: "It will not change my engagement",
-                          label: "It will not change my engagement",
+                          value:
+                            "I can install it as a shortcut now and it will not change my engagement",
+                          label:
+                            "I can install it as a shortcut now and it will not change my engagement",
                         },
                       ].map((option) => (
                         <CustomRadioItem
@@ -347,7 +387,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
             {/* Question 6: Additional Comments */}
             <div className="space-y-3">
               <Label className="text-base font-semibold">
-                6. Please share any additional comments (not required)
+                6. Please share any additional comments (optional)
               </Label>
               <Controller
                 control={control}
