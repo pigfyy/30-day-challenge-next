@@ -71,8 +71,6 @@ export const ChallengeSearchBasic = ({
   externalQuery?: string;
   onSearchQuery?: (query: string) => void;
 }) => {
-  const isMobile = useMediaQuery({ maxWidth: 768 });
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ChallengeIdeaResult[]>([]);
 
