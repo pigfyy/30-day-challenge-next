@@ -11,13 +11,6 @@ import { ScreenshotCarousel } from "../ui/ScreenshotCarousel";
 export const Page1 = ({ control, errors }: Page1Props) => {
   const screenshots = [
     {
-      src: "/survey/create-challenge.png",
-      alt: "Create challenge screen of 30 Day Me app",
-      title: "Create Challenge - Custom Challenges & AI Recommendations",
-      description:
-        "Make your own custom challenge or use the AI search system. Browse recommendations that you can instantly join or edit to fit your needs",
-    },
-    {
       src: "/survey/home.png",
       alt: "Home screen of 30 Day Me app",
       title: "Home Screen - Track Progress & View All Challenges",
@@ -25,11 +18,11 @@ export const Page1 = ({ control, errors }: Page1Props) => {
         "Users can see their daily completion and easily view all their challenges in one place",
     },
     {
-      src: "/survey/leaderboard.png",
-      alt: "Leaderboard screen of 30 Day Me app",
-      title: "Leaderboard - Compare Progress with Others",
+      src: "/survey/create-challenge.png",
+      alt: "Create challenge screen of 30 Day Me app",
+      title: "Create Challenge - Custom Challenges & AI Recommendations",
       description:
-        "See how your daily completion stacks up against other users and stay motivated through friendly competition",
+        "Make your own custom challenge or use the AI search system. Browse recommendations that you can instantly join or edit to fit your needs",
     },
     {
       src: "/survey/view-challenge.png",
@@ -37,6 +30,13 @@ export const Page1 = ({ control, errors }: Page1Props) => {
       title: "View Challenge - Daily Progress Tracking",
       description:
         "Easily set each day as complete or not complete, add progress images, and manage daily tasks",
+    },
+    {
+      src: "/survey/leaderboard.png",
+      alt: "Leaderboard screen of 30 Day Me app",
+      title: "Leaderboard - Compare Progress with Others",
+      description:
+        "See how your daily completion stacks up against other users and stay motivated through friendly competition",
     },
   ];
 
@@ -80,13 +80,9 @@ export const Page1 = ({ control, errors }: Page1Props) => {
         {/* App Screenshots Section */}
         <Card className="mb-8">
           <CardContent className="px-0 py-6">
-            <h1 className="mb-6 px-6 text-2xl font-bold text-gray-900">
-              App Overview
-            </h1>
-
             <p className="mb-6 px-6 text-gray-700">
-              To get started, explore these screenshots of the app to better
-              understand what it&apos;s designed for and how it works:
+              Here are some screenshots to help you understand what the app
+              looks like:
             </p>
 
             <ScreenshotCarousel screenshots={screenshots} />

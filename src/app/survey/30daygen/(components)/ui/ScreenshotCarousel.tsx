@@ -32,9 +32,7 @@ export const ScreenshotCarousel = ({
   };
 
   return (
-    <div
-      className={`relative mx-auto md:px-6 ${currentSlide === 0 ? "w-full" : "max-w-lg"}`}
-    >
+    <div className="relative mx-auto md:px-6">
       {/* Main Image Container */}
       <div className="relative overflow-hidden rounded-lg border bg-white shadow-lg">
         <Image
