@@ -14,6 +14,7 @@ import {
   useFormPersistence,
 } from "./(components)/hooks/useFormPersistence";
 import { trpc } from "@/lib/util/trpc";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const SurveyCompleted = () => {
   return (
@@ -153,6 +154,9 @@ const Survey = ({
     [key: number]: boolean;
   }>({});
   const [searchQueries, setSearchQueries] = useState<string[]>([]);
+
+  const searchParams = useSearchParams();
+  const isAws = searchParams.get("is-aws") === "true";
 
   const form = useForm<SurveyFormData>({
     resolver: zodResolver(SurveyFormSchema),
