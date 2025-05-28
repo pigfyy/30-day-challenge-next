@@ -1,22 +1,63 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/util/trpc";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  clearLocalStorage,
+  useFormPersistence,
+} from "./(components)/hooks/useFormPersistence";
 import { Page1 } from "./(components)/pages/Page1";
 import { Page2 } from "./(components)/pages/Page2";
 import { Page3 } from "./(components)/pages/Page3";
 import { Page4 } from "./(components)/pages/Page4";
 import { SurveyFormSchema, type SurveyFormData } from "./types";
-import {
-  clearLocalStorage,
-  useFormPersistence,
-} from "./(components)/hooks/useFormPersistence";
-import { trpc } from "@/lib/util/trpc";
-import { usePathname, useSearchParams } from "next/navigation";
 
-const SurveyCompleted = () => {
+const generateTurkCode = (): string => {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};
+
+// Function to copy text to clipboard with fallback
+const copyToClipboard = async (text: string): Promise<boolean> => {
+  try {
+    // Try modern clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } else {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const result = document.execCommand("copy");
+      document.body.removeChild(textArea);
+      return result;
+    }
+  } catch (error) {
+    console.error("Failed to copy text: ", error);
+    return false;
+  }
+};
+
+const SurveyCompleted = ({
+  isTurk,
+  turkCode,
+}: {
+  isTurk: boolean;
+  turkCode: string;
+}) => {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
       <div className="mx-auto max-w-2xl px-4 text-center">
@@ -50,17 +91,80 @@ const SurveyCompleted = () => {
             experiences for our community.
           </p>
 
+          {/* Turk Code Display */}
+          {isTurk && (
+            <div className="mb-6 rounded-lg border-2 border-yellow-200 bg-yellow-50 p-6">
+              <h3 className="mb-2 text-lg font-semibold text-yellow-900">
+                Your Completion Code
+              </h3>
+              <div
+                className="mb-2 cursor-pointer rounded bg-yellow-100 p-3 transition-colors hover:bg-yellow-200"
+                onClick={async () => {
+                  const success = await copyToClipboard(turkCode);
+                  const element = document.getElementById("copy-feedback");
+                  if (element) {
+                    if (success) {
+                      element.textContent = "✓ Code copied to clipboard!";
+                      element.className =
+                        "text-sm font-medium text-green-600 mt-2";
+                    } else {
+                      element.textContent =
+                        "⚠ Failed to copy. Please select and copy manually.";
+                      element.className =
+                        "text-sm font-medium text-red-600 mt-2";
+                    }
+                    element.style.display = "block";
+                    setTimeout(() => {
+                      element.style.display = "none";
+                    }, 3000);
+                  }
+                }}
+                title="Click to copy to clipboard"
+              >
+                <div className="flex items-center justify-between">
+                  <p className="font-mono text-2xl font-bold text-yellow-900">
+                    {turkCode}
+                  </p>
+                  <svg
+                    className="ml-3 h-6 w-6 flex-shrink-0 text-yellow-700"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <p className="text-sm leading-relaxed text-yellow-700">
+                Click the code above to copy it to your clipboard, then paste it
+                into the MTurk HIT to receive your payment.
+              </p>
+              <p
+                id="copy-feedback"
+                className="mt-2 text-sm font-medium"
+                style={{ display: "none" }}
+              ></p>
+            </div>
+          )}
+
           {/* Additional Info */}
-          <div className="mb-6 rounded-lg bg-blue-50 p-6">
-            <h3 className="mb-2 text-lg font-semibold text-blue-900">
-              What happens next?
-            </h3>
-            <p className="text-sm leading-relaxed text-blue-700">
-              Your responses have been securely saved and will help us improve
-              our 30-day challenge program. Keep an eye out for updates and new
-              features based on community feedback like yours!
-            </p>
-          </div>
+          {!isTurk && (
+            <div className="mb-6 rounded-lg bg-blue-50 p-6">
+              <h3 className="mb-2 text-lg font-semibold text-blue-900">
+                What happens next?
+              </h3>
+              <p className="text-sm leading-relaxed text-blue-700">
+                Your responses have been securely saved and will help us improve
+                our 30-day challenge program. Keep an eye out for updates and
+                new features based on community feedback like yours!
+              </p>
+            </div>
+          )}
 
           {/* Signup Invitation */}
           <div className="mb-6 rounded-lg bg-green-50 p-6">
@@ -146,17 +250,16 @@ const Navigation = ({
 
 const Survey = ({
   onSubmit: surveySubmit,
+  isTurk,
 }: {
   onSubmit: (data: SurveyFormData) => void;
+  isTurk: boolean;
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [validationAttempted, setValidationAttempted] = useState<{
     [key: number]: boolean;
   }>({});
   const [searchQueries, setSearchQueries] = useState<string[]>([]);
-
-  const searchParams = useSearchParams();
-  const isAws = searchParams.get("is-aws") === "true";
 
   const form = useForm<SurveyFormData>({
     resolver: zodResolver(SurveyFormSchema),
@@ -204,7 +307,6 @@ const Survey = ({
     setCurrentPage,
   );
 
-  // Restore search queries from form data when form is loaded
   useEffect(() => {
     const currentSearchQueries = form.getValues("searchQueries") || [];
     setSearchQueries(currentSearchQueries);
@@ -271,6 +373,7 @@ const Survey = ({
 
     if (isValid) {
       setCurrentPage(currentPage + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -297,9 +400,9 @@ const Survey = ({
       case 1:
         return <Page1 control={control} errors={pageErrors} />;
       case 2:
-        return <Page2 onSearchQuery={handleSearchQuery} />;
+        return <Page2 onSearchQuery={handleSearchQuery} isTurk={isTurk} />;
       case 3:
-        return <Page3 control={control} errors={pageErrors} />;
+        return <Page3 control={control} errors={pageErrors} isTurk={isTurk} />;
       case 4:
         return <Page4 control={control} errors={pageErrors} />;
       default:
@@ -328,6 +431,13 @@ const Survey = ({
 
 export default function Survey30DayGenPage() {
   const [isFormCompleted, setIsFormCompleted] = useState(false);
+  const [generatedTurkCode, setGeneratedTurkCode] = useState<string>("");
+  const searchParams = useSearchParams();
+  const isTurk = searchParams.get("is-turk") === "true";
+
+  useEffect(() => {
+    setGeneratedTurkCode(generateTurkCode());
+  }, []);
 
   const { mutate: createSurveyResponse } =
     trpc.surveyResponse.create.useMutation({
@@ -339,7 +449,10 @@ export default function Survey30DayGenPage() {
 
   const onSubmit = async (data: SurveyFormData) => {
     try {
-      createSurveyResponse(data);
+      createSurveyResponse({
+        ...data,
+        turkCode: isTurk ? generatedTurkCode : undefined,
+      });
     } catch (error) {
       console.error("Failed to save survey:", error);
     }
@@ -347,7 +460,11 @@ export default function Survey30DayGenPage() {
 
   return (
     <div className="relative w-full">
-      {isFormCompleted ? <SurveyCompleted /> : <Survey onSubmit={onSubmit} />}
+      {isFormCompleted ? (
+        <SurveyCompleted isTurk={isTurk} turkCode={generatedTurkCode} />
+      ) : (
+        <Survey onSubmit={onSubmit} isTurk={isTurk} />
+      )}
     </div>
   );
 }

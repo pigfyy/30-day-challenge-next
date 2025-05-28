@@ -1,0 +1,1 @@
+ALTER TABLE "SurveyResponse" ADD COLUMN "turk_code" text;

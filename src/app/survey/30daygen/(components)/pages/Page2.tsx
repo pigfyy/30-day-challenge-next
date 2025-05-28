@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChallengeSearchBasic } from "../ChallengeSearchBasic";
 import { type Page2Props } from "../../types";
 
-export const Page2 = ({ onSearchQuery }: Page2Props) => {
+export const Page2 = ({ onSearchQuery, isTurk }: Page2Props) => {
   const [currentQuery, setCurrentQuery] = useState<string>("");
 
   const exampleQueries = [
@@ -36,9 +36,9 @@ export const Page2 = ({ onSearchQuery }: Page2Props) => {
           <CardContent className="pt-6">
             <p className="text-lg leading-relaxed text-gray-700">
               We have created an AI search system aimed to help you generate
-              challenges towards your goals. Please make at least 3 search
-              queries using the embedded UI below to familiarize yourself with
-              the system.
+              challenges towards your goals. Please make at least{" "}
+              {isTurk ? "5" : "3"} search queries using the embedded UI below to
+              familiarize yourself with the system.
             </p>
             <p className="mt-4 text-lg leading-relaxed text-gray-700">
               Here are some example queries to get you started:
@@ -78,10 +78,10 @@ export const Page2 = ({ onSearchQuery }: Page2Props) => {
                 Ready for the next step?
               </p>
               <p className="mt-2 text-base leading-relaxed text-blue-700">
-                Once you&apos;ve explored the search system with at least 3-5
-                queries, proceed to the next section where you&apos;ll share
-                your feedback about your experience with the AI search
-                functionality.
+                Once you&apos;ve explored the search system with at least{" "}
+                {isTurk ? "5" : "3-5"} queries, proceed to the next section
+                where you&apos;ll share your feedback about your experience with
+                the AI search functionality.
               </p>
             </div>
           </CardContent>

@@ -228,4 +228,5 @@ export const surveyResponse = pgTable("SurveyResponse", {
   submittedAt: timestamp("submitted_at", { precision: 3, mode: "date" })
     .defaultNow()
     .notNull(),
+  turkCode: text("turk_code"),
 });

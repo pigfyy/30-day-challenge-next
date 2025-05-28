@@ -59,11 +59,13 @@ export interface Page1Props {
 
 export interface Page2Props {
   onSearchQuery?: (query: string) => void;
+  isTurk?: boolean;
 }
 
 export interface Page3Props {
   control: Control<SurveyFormData>;
   errors: FieldErrors<SurveyFormData>;
+  isTurk?: boolean;
 }
 
 export interface Page4Props {
