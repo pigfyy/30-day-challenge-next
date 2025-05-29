@@ -54,11 +54,11 @@ export function SurveyAnalyticsDashboard({
   }, [responses, filterOption]);
 
   const questionLabels = {
-    q2a: "How easy was it to use the search feature?",
-    q2b: "How relevant were the search results?",
-    q2c: "How satisfied are you with the search experience?",
-    q2d: "How likely are you to use this search feature again?",
-    q2e: "How would you rate the overall quality of search results?",
+    q2a: "I'm satisfied with the challenge search system.",
+    q2b: "The recommended challenges are clear and understandable.",
+    q2c: "The recommended challenges are relevant to the searched goal.",
+    q2d: "Following challenges recommended by the system would help achieve the searched goal.",
+    q2e: "The search latency is acceptable.",
   };
 
   const formatAverage = (value: number) => {
