@@ -43,7 +43,7 @@ export const Page2 = ({ onSearchQuery, isTurk }: Page2Props) => {
             <p className="mt-4 text-lg leading-relaxed text-gray-700">
               Here are some example queries to get you started:
             </p>
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 flex flex-col gap-3">
               {exampleQueries.map((query, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <span className="flex-1 rounded-md bg-gray-100 px-3 py-2 font-mono text-base text-gray-700">

@@ -14,11 +14,11 @@ export default function LandingPage() {
     <div className="flex w-full flex-col items-center overflow-x-hidden">
       <PwaRedirectHandler />
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 py-24">
+      <section className="w-full bg-linear-to-br from-blue-50 via-white to-purple-50 py-24">
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="bg-grid-slate-400/[0.05] absolute inset-0 -z-10" />
           <div className="absolute inset-0 -z-10 flex items-center justify-center">
-            <div className="h-[40rem] w-[40rem] rounded-full bg-blue-100/20 blur-3xl" />
+            <div className="h-160 w-160 rounded-full bg-blue-100/20 blur-3xl" />
           </div>
           <div className="relative flex flex-col items-center text-center">
             <div className="animate-bounce-slow">
@@ -33,7 +33,7 @@ export default function LandingPage() {
             <h1 className="mt-8 text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
               30 Day Me
             </h1>
-            <div className="my-6 h-1 w-20 rounded-full bg-gradient-to-r from-blue-600 to-purple-600"></div>
+            <div className="my-6 h-1 w-20 rounded-full bg-linear-to-r from-blue-600 to-purple-600"></div>
             <p className="mt-4 max-w-2xl text-xl leading-relaxed text-gray-600">
               Track your habits, build your discipline, and build a new you
               month by month.
@@ -181,7 +181,7 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="relative w-full bg-gradient-to-br from-gray-50 to-blue-50 py-24">
+      <section className="relative w-full bg-linear-to-br from-gray-50 to-blue-50 py-24">
         <div className="bg-grid-slate-400/[0.05] absolute inset-x-0 top-0 -z-0 h-40" />
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center">
@@ -217,7 +217,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="mt-6 flex items-center border-t border-gray-100 pt-4">
-                <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-blue-400 to-purple-500">
+                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-linear-to-br from-blue-400 to-purple-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-full w-full p-1 text-white"
@@ -264,7 +264,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="mt-6 flex items-center border-t border-gray-100 pt-4">
-                <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-green-400 to-blue-500">
+                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-linear-to-br from-green-400 to-blue-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-full w-full p-1 text-white"
@@ -291,7 +291,7 @@ export default function LandingPage() {
         </div>
       </section>
       {/* DASHBOARD DEMO SECTION */}
-      <section className="relative w-full bg-gradient-to-br from-blue-50 to-white py-24">
+      <section className="relative w-full bg-linear-to-br from-blue-50 to-white py-24">
         <div className="absolute right-0 top-40 h-80 w-80 rounded-full bg-blue-300 opacity-10 blur-3xl"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center">
@@ -427,7 +427,7 @@ export default function LandingPage() {
       </section>
 
       {/* Challenge Page Demo Section */}
-      <section className="relative w-full bg-gradient-to-br from-blue-50 to-white py-24">
+      <section className="relative w-full bg-linear-to-br from-blue-50 to-white py-24">
         <div className="absolute right-0 top-40 h-80 w-80 rounded-full bg-blue-300 opacity-10 blur-3xl"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center">
@@ -563,7 +563,7 @@ export default function LandingPage() {
       </section>
 
       {/* Create Challenge Section */}
-      <section className="relative w-full bg-gradient-to-br from-purple-50 to-white py-24">
+      <section className="relative w-full bg-linear-to-br from-purple-50 to-white py-24">
         <div className="absolute left-0 top-40 h-80 w-80 rounded-full bg-purple-300 opacity-10 blur-3xl"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center">

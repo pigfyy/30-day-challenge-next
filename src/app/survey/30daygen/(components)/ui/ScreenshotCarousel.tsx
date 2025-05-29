@@ -53,7 +53,7 @@ export const ScreenshotCarousel = ({
           variant="outline"
           size="icon"
           onClick={prevSlide}
-          className="bg-white shadow-sm hover:bg-gray-50"
+          className="bg-white shadow-xs hover:bg-gray-50"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -80,14 +80,14 @@ export const ScreenshotCarousel = ({
           variant="outline"
           size="icon"
           onClick={nextSlide}
-          className="bg-white shadow-sm hover:bg-gray-50"
+          className="bg-white shadow-xs hover:bg-gray-50"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
 
       {/* Image Title */}
-      <div className="mx-auto mt-3 max-w-md space-y-1 px-6 text-center">
+      <div className="mx-auto mt-3 flex max-w-md flex-col gap-1 px-6 text-center">
         <p className="text-sm font-semibold text-gray-800">
           {screenshots[currentSlide].title}
         </p>

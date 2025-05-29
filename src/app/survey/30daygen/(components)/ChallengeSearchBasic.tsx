@@ -45,7 +45,7 @@ const ChallengeIdea = ({
           />
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-2">
+      <CardContent className="flex flex-col gap-2">
         <p className="text-sm text-gray-700">
           <span className="font-semibold">Source: </span>
           <a
@@ -165,7 +165,7 @@ export const ChallengeSearchBasic = ({
               </>
             ) : (
               <>
-                <div className="mb-4 mt-1.5 w-full text-left">
+                <div className="mt-1.5 mb-4 w-full text-left">
                   <Skeleton className="h-4 w-20" />
                 </div>
                 <div className="mb-6 grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
@@ -178,7 +178,7 @@ export const ChallengeSearchBasic = ({
                         <Skeleton className="h-6 w-1/2" />
                         <Skeleton className="mt-2 h-4 w-full" />
                       </CardHeader>
-                      <CardContent className="space-y-2">
+                      <CardContent className="flex flex-col gap-2">
                         <Skeleton className="h-4 w-2/3" />
                         <Skeleton className="h-4 w-2/3" />
                         <Skeleton className="h-4 w-1/2" />

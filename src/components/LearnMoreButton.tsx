@@ -11,7 +11,7 @@ export default function LearnMoreButton() {
     <Button
       size="lg"
       variant="outline"
-      className="transform border-2 text-lg font-semibold shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+      className="transform border-2 text-lg font-semibold shadow-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
       onClick={scrollToFeatures}
     >
       Learn More

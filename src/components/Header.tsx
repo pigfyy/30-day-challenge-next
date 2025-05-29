@@ -70,7 +70,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="w-full border-b bg-white shadow-sm">
+    <header className="w-full border-b bg-white shadow-xs">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         {renderLogoLink()}
         <div className="flex items-center space-x-4">

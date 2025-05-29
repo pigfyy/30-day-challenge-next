@@ -63,7 +63,7 @@ export const CustomRadioItem = ({
         >
           <div
             className={cn(
-              "h-[18px] w-[18px] flex-shrink-0 rounded-full border-2",
+              "h-[18px] w-[18px] shrink-0 rounded-full border-2",
               isSelected ? "border-blue-500 bg-blue-500" : "border-gray-300",
             )}
           >
@@ -90,7 +90,7 @@ export const CustomRadioItem = ({
       >
         <div
           className={cn(
-            "mr-3 h-[18px] w-[18px] flex-shrink-0 rounded-full border-2",
+            "mr-3 h-[18px] w-[18px] shrink-0 rounded-full border-2",
             isSelected ? "border-blue-500 bg-blue-500" : "border-gray-300",
           )}
         >

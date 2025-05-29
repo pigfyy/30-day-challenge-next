@@ -159,7 +159,7 @@ export const ChallengeForm = ({
           </div>
           <CollapsibleContent className="flex flex-col gap-2">
             <div className="flex items-center gap-1">
-              <span className="text-sm font-medium leading-4">
+              <span className="text-sm leading-4 font-medium">
                 Change challenge dates
               </span>
               <TooltipProvider delayDuration={100}>

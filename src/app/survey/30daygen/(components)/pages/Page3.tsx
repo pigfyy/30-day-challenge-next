@@ -33,9 +33,9 @@ export const Page3 = ({ control, errors, isTurk }: Page3Props) => {
           <CardHeader>
             <CardTitle>GenAI Search System Questions</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-8">
+          <CardContent className="flex flex-col gap-8">
             {/* Question 1: How many prompts */}
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <Label className="text-base font-semibold">
                 1. How many questions did you try with the search system?
               </Label>
@@ -45,7 +45,7 @@ export const Page3 = ({ control, errors, isTurk }: Page3Props) => {
                 <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
                   <div className="flex items-start">
                     <svg
-                      className="mr-3 mt-0.5 h-5 w-5 flex-shrink-0 text-red-600"
+                      className="mt-0.5 mr-3 h-5 w-5 shrink-0 text-red-600"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -77,7 +77,7 @@ export const Page3 = ({ control, errors, isTurk }: Page3Props) => {
                 control={control}
                 name="page3.q1"
                 render={({ field, fieldState }) => (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <RadioGroup
                       onValueChange={field.onChange}
                       value={field.value || ""}
@@ -109,7 +109,7 @@ export const Page3 = ({ control, errors, isTurk }: Page3Props) => {
             </div>
 
             {/* Questions 2: Likert Scale Table */}
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
               <Label className="text-base font-semibold">
                 2. Please rate the following questions on a scale of 1-5:
               </Label>
@@ -389,7 +389,7 @@ export const Page3 = ({ control, errors, isTurk }: Page3Props) => {
             </div>
 
             {/* Question 3: Challenge preference */}
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <Label className="text-base font-semibold">
                 3. Would you use the AI challenge search feature?
               </Label>
@@ -397,7 +397,7 @@ export const Page3 = ({ control, errors, isTurk }: Page3Props) => {
                 control={control}
                 name="page3.q3"
                 render={({ field, fieldState }) => (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <RadioGroup
                       onValueChange={field.onChange}
                       value={field.value || ""}
@@ -442,7 +442,7 @@ export const Page3 = ({ control, errors, isTurk }: Page3Props) => {
             </div>
 
             {/* Question 4: Search system comments */}
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <Label className="text-base font-semibold">
                 4. Please provide any additional comments about the search
                 system (optional):
@@ -451,7 +451,7 @@ export const Page3 = ({ control, errors, isTurk }: Page3Props) => {
                 control={control}
                 name="page3.q4"
                 render={({ field, fieldState }) => (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Textarea
                       placeholder="Please share any additional thoughts about the search system..."
                       value={field.value || ""}

@@ -59,7 +59,7 @@ const SurveyCompleted = ({
   turkCode: string;
 }) => {
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="flex min-h-screen w-full items-center justify-center bg-linear-to-br from-green-50 to-blue-50 py-8">
       <div className="mx-auto max-w-2xl px-4 text-center">
         <div className="rounded-2xl bg-white p-8 shadow-xl md:p-12">
           {/* Success Icon */}
@@ -126,7 +126,7 @@ const SurveyCompleted = ({
                     {turkCode}
                   </p>
                   <svg
-                    className="ml-3 h-6 w-6 flex-shrink-0 text-yellow-700"
+                    className="ml-3 h-6 w-6 shrink-0 text-yellow-700"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -185,7 +185,7 @@ const SurveyCompleted = ({
           </div>
 
           {/* Call to Action */}
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             <Button
               onClick={() => (window.location.href = "/")}
               className="rounded-lg bg-blue-600 px-8 py-3 font-medium text-white transition-colors hover:bg-blue-700"

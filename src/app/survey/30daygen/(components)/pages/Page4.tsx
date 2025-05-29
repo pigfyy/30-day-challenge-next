@@ -79,7 +79,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
           >
             <Card className="mb-6">
               <CollapsibleTrigger className="w-full">
-                <CardContent className="flex items-center justify-between pb-6 pt-6">
+                <CardContent className="flex items-center justify-between pt-6 pb-6">
                   <p className="text-left font-medium text-gray-700">
                     📱 View App Screenshots Again (Optional)
                   </p>
@@ -104,8 +104,9 @@ export const Page4 = ({ control, errors }: Page4Props) => {
           <CardHeader>
             <CardTitle>General App Feedback</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-8">
-            <div className="space-y-3">
+          <CardContent className="flex flex-col gap-8">
+            {/* Question 1: See yourself using the app */}
+            <div className="flex flex-col gap-3">
               <Label className="text-base font-semibold">
                 1. Are you interested in using this app?
               </Label>
@@ -113,7 +114,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 control={control}
                 name="page4.seeYourselfUsing"
                 render={({ field, fieldState }) => (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <RadioGroup
                       onValueChange={field.onChange}
                       value={field.value || ""}
@@ -160,7 +161,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 render={({ field: parentField }) => (
                   <div>
                     {parentField.value === "No, I'm unlikely to use it" && (
-                      <div className="ml-6 space-y-2">
+                      <div className="ml-6 flex flex-col gap-2">
                         <Label className="text-sm font-medium text-gray-700">
                           Why?
                         </Label>
@@ -191,7 +192,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
             </div>
 
             {/* Question 2: Habit change */}
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <Label className="text-base font-semibold">
                 2. If you have already used 30 Day Me, do you think it is
                 changing your habits?
@@ -200,7 +201,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 control={control}
                 name="page4.habitChange"
                 render={({ field, fieldState }) => (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <RadioGroup
                       onValueChange={field.onChange}
                       value={field.value || ""}
@@ -247,7 +248,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
             </div>
 
             {/* Question 3: What features will best help you engage? */}
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <Label className="text-base font-semibold">
                 3. Which features would help make the app more engaging? (Select
                 all that apply)
@@ -256,7 +257,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 control={control}
                 name="page4.engagementFeatures"
                 render={({ field, fieldState }) => (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-2">
                       {[
                         "No more features needed",
@@ -303,7 +304,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 render={({ field: parentField }) => (
                   <div>
                     {parentField.value?.includes("Others (please specify)") && (
-                      <div className="ml-6 space-y-2">
+                      <div className="ml-6 flex flex-col gap-2">
                         <Label className="text-sm font-medium text-gray-700">
                           Please specify:
                         </Label>
@@ -333,7 +334,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
             </div>
 
             {/* Question 4: What would you track every day? */}
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <Label className="text-base font-semibold">
                 4. What would you track every day if you use 30 Day Me? (Select
                 all that apply)
@@ -342,7 +343,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 control={control}
                 name="page4.dailyTracking"
                 render={({ field, fieldState }) => (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-2">
                       {[
                         "Completion of daily challenges",
@@ -387,7 +388,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 render={({ field: parentField }) => (
                   <div>
                     {parentField.value?.includes("Others (please specify)") && (
-                      <div className="ml-6 space-y-2">
+                      <div className="ml-6 flex flex-col gap-2">
                         <Label className="text-sm font-medium text-gray-700">
                           Please specify:
                         </Label>
@@ -417,7 +418,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
             </div>
 
             {/* Question 5: App store engagement */}
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <Label className="text-base font-semibold">
                 5. Currently the app can be installed as a shortcut on your
                 phone. If we publish the app to app stores, will it change your
@@ -427,7 +428,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 control={control}
                 name="page4.appStoreEngagement"
                 render={({ field, fieldState }) => (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <RadioGroup
                       onValueChange={field.onChange}
                       value={field.value || ""}
@@ -474,7 +475,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
             </div>
 
             {/* Question 6: Additional Comments */}
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <Label className="text-base font-semibold">
                 6. Please share any additional comments about the app in general
                 (optional)
@@ -483,7 +484,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
                 control={control}
                 name="page4.additionalComments"
                 render={({ field, fieldState }) => (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Textarea
                       placeholder="Please share any additional thoughts or feedback about the app..."
                       value={field.value || ""}

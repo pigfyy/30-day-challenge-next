@@ -74,7 +74,7 @@ const TaskItem = ({
       <Checkbox
         checked={task.completed}
         onCheckedChange={() => onToggleTask(task.id)}
-        className="flex-shrink-0"
+        className="shrink-0"
         onClick={(e) => e.stopPropagation()}
       />
 
@@ -219,7 +219,7 @@ const DailyTasksList = ({ tasks, onTasksChange }: DailyTasksListProps) => {
             : ""
         }`}
       >
-        <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center">
+        <div className="flex h-4 w-4 shrink-0 items-center justify-center">
           <Plus className="h-3 w-3 text-gray-400" />
         </div>
         <Input

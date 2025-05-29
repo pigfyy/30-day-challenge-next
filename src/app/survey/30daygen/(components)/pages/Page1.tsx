@@ -92,39 +92,43 @@ export const Page1 = ({ control, errors }: Page1Props) => {
         {/* Contact Information */}
         <Card>
           <CardContent className="pt-6">
-            <div className="space-y-6">
-              {/* Age Field */}
-              <div className="space-y-4">
-                <Label className="text-base font-semibold">Age Range</Label>
-                <Controller
-                  control={control}
-                  name="page1.age"
-                  render={({ field, fieldState }) => (
-                    <div className="space-y-2">
-                      <RadioGroup
-                        value={field.value || ""}
-                        onValueChange={field.onChange}
-                        className="flex flex-col gap-2"
-                      >
-                        {ageOptions.map((option, index) => (
-                          <CustomRadioItem
-                            key={option.value}
-                            value={option.value}
-                            id={`age-${index + 1}`}
-                            label={option.label}
-                            isSelected={field.value === option.value}
-                            variant="card"
-                          />
-                        ))}
-                      </RadioGroup>
-                      {fieldState.error && (
-                        <p className="text-sm text-red-500">
-                          {fieldState.error.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                />
+            <div className="flex flex-col gap-6">
+              {/* Age Group */}
+              <div className="flex flex-col gap-4">
+                <Label className="text-lg font-semibold text-gray-900">
+                  What is your age group? *
+                </Label>
+                <div className="flex flex-col gap-2">
+                  <Controller
+                    control={control}
+                    name="page1.age"
+                    render={({ field, fieldState }) => (
+                      <div className="flex flex-col gap-2">
+                        <RadioGroup
+                          value={field.value || ""}
+                          onValueChange={field.onChange}
+                          className="flex flex-col gap-2"
+                        >
+                          {ageOptions.map((option, index) => (
+                            <CustomRadioItem
+                              key={option.value}
+                              value={option.value}
+                              id={`age-${index + 1}`}
+                              label={option.label}
+                              isSelected={field.value === option.value}
+                              variant="card"
+                            />
+                          ))}
+                        </RadioGroup>
+                        {fieldState.error && (
+                          <p className="text-sm text-red-500">
+                            {fieldState.error.message}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
               </div>
             </div>
           </CardContent>

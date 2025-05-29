@@ -131,7 +131,7 @@ export const Leaderboard = () => {
               )}
             </div>
           </div>
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             {isLoading ? (
               <Skeleton className="h-20 w-20 rounded-lg sm:h-24 sm:w-24 md:h-28 md:w-28" />
             ) : (
