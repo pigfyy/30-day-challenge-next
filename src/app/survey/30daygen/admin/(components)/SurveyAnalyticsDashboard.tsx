@@ -218,7 +218,14 @@ export function SurveyAnalyticsDashboard({
                 : "0.00"}
             </div>
             <p className="text-muted-foreground text-sm">
-              Best performing question
+              {Object.values(lankarAverages).length > 0
+                ? `${Object.entries(lankarAverages)
+                    .find(
+                      ([key, value]) =>
+                        value === Math.max(...Object.values(lankarAverages)),
+                    )?.[0]
+                    ?.toUpperCase()} - Best performing question`
+                : "Best performing question"}
             </p>
           </CardContent>
         </Card>
@@ -233,7 +240,16 @@ export function SurveyAnalyticsDashboard({
                 ? formatAverage(Math.min(...Object.values(lankarAverages)))
                 : "0.00"}
             </div>
-            <p className="text-muted-foreground text-sm">Needs improvement</p>
+            <p className="text-muted-foreground text-sm">
+              {Object.values(lankarAverages).length > 0
+                ? `${Object.entries(lankarAverages)
+                    .find(
+                      ([key, value]) =>
+                        value === Math.min(...Object.values(lankarAverages)),
+                    )?.[0]
+                    ?.toUpperCase()} - Needs improvement`
+                : "Needs improvement"}
+            </p>
           </CardContent>
         </Card>
       </div>
