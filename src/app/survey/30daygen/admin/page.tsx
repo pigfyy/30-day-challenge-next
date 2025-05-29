@@ -5,7 +5,11 @@ import { SurveyAnalyticsDashboard } from "./(components)/SurveyAnalyticsDashboar
 export default async function Survey30DayGenAdminPage() {
   await validateAdmin();
 
-  const responses = await db.query.surveyResponse.findMany();
+  const isDevelopment = process.env.NODE_ENV === "development";
+  const hasProdDb = !!process.env.POSTGRES_URL_PRODUCTION;
+  const dbToUse = isDevelopment && hasProdDb ? prodDb : db;
+
+  const responses = await dbToUse.query.surveyResponse.findMany();
 
   return (
     <div className="container mx-auto px-4 py-8">
