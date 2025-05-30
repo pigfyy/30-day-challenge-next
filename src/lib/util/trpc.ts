@@ -12,7 +12,7 @@ export const trpcClient = trpc.createClient({
         process.env.NEXT_PUBLIC_TRPC_URL ||
         (false
           ? "http://localhost:3000/api/trpc"
-          : "http://192.168.68.73:3000/api/trpc"),
+          : "http://192.168.68.82:3000/api/trpc"),
       transformer: superjson,
     }),
     loggerLink({
