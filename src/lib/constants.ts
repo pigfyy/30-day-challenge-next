@@ -9,4 +9,5 @@ export const ADMIN_IDS = [
   "user_2xNoK9NQhHtRIWU5Pi9D4MSolWI",
   "user_2xNeGvUdHkyRkS6ic4jvFiRPv6Q",
   "user_2xNeAxeRhmVJpFMifqh7LrOgc9A",
+  "user_2xNeBCzaOGq3KrbQ2uvxVEhHBBx",
 ];
