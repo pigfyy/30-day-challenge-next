@@ -2,8 +2,16 @@ import { db, prodDb } from "@/lib/db/drizzle";
 import { validateAdmin } from "@/lib/util";
 import { SurveyAnalyticsDashboard } from "./(components)/SurveyAnalyticsDashboard";
 
-export default async function Survey30DayGenAdminPage() {
-  await validateAdmin();
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function Survey30DayGenAdminPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  if ((await searchParams).secret !== process.env.ADMIN_SECRET) {
+    await validateAdmin();
+  }
 
   const isDevelopment = process.env.NODE_ENV === "development";
   const hasProdDb = !!process.env.POSTGRES_URL_PRODUCTION;
