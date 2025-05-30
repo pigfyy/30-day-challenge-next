@@ -1,8 +1,14 @@
 import { db, prodDb } from "@/lib/db/drizzle";
 import { validateAdmin } from "@/lib/util";
 import { SurveyAnalyticsDashboard } from "./(components)/SurveyAnalyticsDashboard";
+import { Metadata } from "next";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export const metadata: Metadata = {
+  title: "Survey Analysis - 30 Day Me",
+  description: "Survey Analysis - 30 Day Me",
+};
 
 export default async function Survey30DayGenAdminPage({
   searchParams,
