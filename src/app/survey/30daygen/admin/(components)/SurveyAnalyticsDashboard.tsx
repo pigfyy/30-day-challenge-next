@@ -46,19 +46,19 @@ const ScoreDistribution = ({
   };
 
   return (
-    <div className="flex w-16 scale-135 transform flex-col gap-0.5">
+    <div className="flex w-20 flex-col gap-1">
       {scores.map((score) => {
         const percentage = distribution[score] || 0;
         return (
-          <div key={score} className="flex h-2 items-center gap-1">
-            <span className="w-1 text-[8px] text-gray-500">{score}</span>
-            <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-gray-100">
+          <div key={score} className="flex h-2.5 items-center gap-1">
+            <span className="w-1.5 text-[10px] text-gray-500">{score}</span>
+            <div className="h-2 flex-1 overflow-hidden rounded-sm bg-gray-100">
               <div
                 className={`h-full ${getColorForScore(score)} transition-all duration-300`}
                 style={{ width: `${percentage}%` }}
               />
             </div>
-            <span className="w-3 text-right text-[8px] text-gray-600">
+            <span className="w-4 text-right text-[10px] text-gray-600">
               {percentage > 0 ? Math.round(percentage) : "0"}%
             </span>
           </div>
@@ -91,7 +91,7 @@ const EngagementCard = ({
   };
 
   return (
-    <div className="flex flex-1 flex-col gap-2 rounded-lg border p-4">
+    <div className="flex min-w-[280px] flex-1 flex-col gap-2 rounded-lg border p-4 md:min-w-0">
       <div className="mb-3 text-center">
         <h4 className="text-sm font-semibold">{title}</h4>
         <p className="text-muted-foreground text-xs">{subtitle}</p>
@@ -143,7 +143,7 @@ const QuestionAnalysis = ({
           Question {questionKey.toUpperCase()}
         </p>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 overflow-x-auto pb-2 md:gap-4">
         <EngagementCard
           title="All Users"
           subtitle="All responses"
