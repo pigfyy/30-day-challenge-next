@@ -15,6 +15,8 @@ import type { InferSelectModel } from "drizzle-orm";
 import type { surveyResponse } from "@/lib/db/drizzle";
 import { LankarAnalysis } from "./LankarAnalysis";
 import { Q3Analysis } from "./Q3Analysis";
+import { Q4Analysis } from "./Q4Analysis";
+import { SurveyFormData } from "@/app/survey/30daygen/types";
 
 type SurveyResponseData = InferSelectModel<typeof surveyResponse>;
 
@@ -57,6 +59,20 @@ export function SurveyAnalyticsDashboard({
     const totalFiltered = analysisData.all.count;
     return `Analyzing ${totalFiltered} of ${responses.length} responses from age group ${ageLabel} (${((totalFiltered / responses.length) * 100).toFixed(1)}%)`;
   };
+
+  const getDuplicates = () => {
+    responses.forEach((response) => {
+      if (
+        (response.responseData as SurveyFormData).page3.q4?.includes(
+          "One thing",
+        )
+      ) {
+        console.log(response.id);
+      }
+    });
+  };
+
+  getDuplicates();
 
   return (
     <div className="space-y-6">
@@ -128,6 +144,12 @@ export function SurveyAnalyticsDashboard({
       />
 
       <Q3Analysis
+        responses={responses}
+        filterOption={filterOption}
+        ageRangeLabels={ageRangeLabels}
+      />
+
+      <Q4Analysis
         responses={responses}
         filterOption={filterOption}
         ageRangeLabels={ageRangeLabels}

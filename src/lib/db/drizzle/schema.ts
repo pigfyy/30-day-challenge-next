@@ -229,4 +229,5 @@ export const surveyResponse = pgTable("SurveyResponse", {
     .defaultNow()
     .notNull(),
   turkCode: text("turk_code"),
+  isInvalid: boolean().default(false).notNull(),
 });

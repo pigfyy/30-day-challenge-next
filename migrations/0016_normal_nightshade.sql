@@ -1,0 +1,1 @@
+ALTER TABLE "SurveyResponse" ADD COLUMN "isInvalid" boolean DEFAULT false NOT NULL;
