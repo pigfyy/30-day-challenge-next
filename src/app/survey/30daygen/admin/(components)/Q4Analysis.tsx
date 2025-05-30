@@ -59,24 +59,24 @@ export function Q4Analysis({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Search System Comments (Q4)</CardTitle>
-        <CardDescription>
-          Additional comments about the search system from users who provided
-          feedback
-          {filterOption !== "all" &&
-            ` (filtered for ${ageRangeLabels[filterOption]} age group)`}
-        </CardDescription>
+      <CardHeader className="flex flex-col justify-between md:flex-row md:items-center md:gap-4">
+        <div>
+          <CardTitle>Search System Comments (Q4)</CardTitle>
+          <CardDescription>
+            Additional comments about the search system from users who provided
+            feedback
+            {filterOption !== "all" &&
+              ` (filtered for ${ageRangeLabels[filterOption]} age group)`}
+          </CardDescription>
+        </div>
+
+        <p className="text-muted-foreground text-sm">
+          {sortedResponses.length} comments out of {ageFilteredResponses.length}{" "}
+          total responses
+        </p>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="text-center">
-            <p className="text-muted-foreground text-sm">
-              {sortedResponses.length} comments out of{" "}
-              {ageFilteredResponses.length} total responses
-            </p>
-          </div>
-
           {sortedResponses.length > 0 ? (
             <div className="overflow-hidden rounded-lg border">
               <div className="grid grid-cols-[min-content_1fr] items-center">
