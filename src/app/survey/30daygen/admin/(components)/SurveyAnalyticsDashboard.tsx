@@ -60,20 +60,6 @@ export function SurveyAnalyticsDashboard({
     return `Analyzing ${totalFiltered} of ${responses.length} responses from age group ${ageLabel} (${((totalFiltered / responses.length) * 100).toFixed(1)}%)`;
   };
 
-  const getDuplicates = () => {
-    responses.forEach((response) => {
-      if (
-        (response.responseData as SurveyFormData).page3.q4?.includes(
-          "One thing",
-        )
-      ) {
-        console.log(response.id);
-      }
-    });
-  };
-
-  getDuplicates();
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

@@ -208,11 +208,13 @@ const Navigation = ({
   handleNext,
   handleBack,
   onSubmit,
+  isSubmitting,
 }: {
   currentPage: number;
   handleNext: () => void;
   handleBack: () => void;
   onSubmit: () => void;
+  isSubmitting: boolean;
 }) => {
   return (
     <div className="bg-gray-50 py-8">
@@ -238,7 +240,11 @@ const Navigation = ({
           )}
 
           {currentPage === 4 && (
-            <Button onClick={onSubmit} className="px-8 py-2">
+            <Button
+              onClick={onSubmit}
+              className="px-8 py-2"
+              disabled={isSubmitting}
+            >
               Submit
             </Button>
           )}
@@ -251,9 +257,11 @@ const Navigation = ({
 const Survey = ({
   onSubmit: surveySubmit,
   isTurk,
+  isSubmitting,
 }: {
   onSubmit: (data: SurveyFormData) => void;
   isTurk: boolean;
+  isSubmitting: boolean;
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [validationAttempted, setValidationAttempted] = useState<{
@@ -424,6 +432,7 @@ const Survey = ({
         handleNext={handleNext}
         handleBack={handleBack}
         onSubmit={handleSubmit(surveySubmit)}
+        isSubmitting={isSubmitting}
       />
     </div>
   );
@@ -439,7 +448,7 @@ export default function Survey30DayGenPage() {
     setGeneratedTurkCode(generateTurkCode());
   }, []);
 
-  const { mutate: createSurveyResponse } =
+  const { mutate: createSurveyResponse, isPending: isSubmitting } =
     trpc.surveyResponse.create.useMutation({
       onSettled: () => {
         clearLocalStorage();
@@ -463,7 +472,11 @@ export default function Survey30DayGenPage() {
       {isFormCompleted ? (
         <SurveyCompleted isTurk={isTurk} turkCode={generatedTurkCode} />
       ) : (
-        <Survey onSubmit={onSubmit} isTurk={isTurk} />
+        <Survey
+          onSubmit={onSubmit}
+          isTurk={isTurk}
+          isSubmitting={isSubmitting}
+        />
       )}
     </div>
   );

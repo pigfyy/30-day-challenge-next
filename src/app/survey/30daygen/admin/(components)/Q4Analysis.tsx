@@ -10,6 +10,7 @@ import {
 import type { InferSelectModel } from "drizzle-orm";
 import type { surveyResponse } from "@/lib/db/drizzle";
 import type { SurveyFormData } from "../../types";
+import React from "react";
 
 type SurveyResponseData = InferSelectModel<typeof surveyResponse>;
 
@@ -91,24 +92,18 @@ export function Q4Analysis({
 
                 {/* Content rows */}
                 {sortedResponses.map((response, index) => (
-                  <>
-                    <div
-                      key={`${index}-count`}
-                      className="flex items-center justify-center px-4 py-3 hover:bg-gray-50"
-                    >
+                  <React.Fragment key={index}>
+                    <div className="flex items-center justify-center px-4 py-3 hover:bg-gray-50">
                       <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-medium text-blue-800">
                         {response.searchQueryCount}
                       </span>
                     </div>
-                    <div
-                      key={`${index}-comment`}
-                      className="flex items-center px-4 py-3 hover:bg-gray-50"
-                    >
+                    <div className="flex items-center px-4 py-3 hover:bg-gray-50">
                       <p className="text-sm leading-relaxed text-gray-900">
                         {response.comment}
                       </p>
                     </div>
-                  </>
+                  </React.Fragment>
                 ))}
               </div>
             </div>
