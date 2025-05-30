@@ -11,8 +11,6 @@ const surveyDataSchema = z
 export const surveyResponseRouter = router({
   create: procedure.input(surveyDataSchema).mutation(async ({ input }) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       const { turkCode, ...responseData } = input;
 
       const result = await db
