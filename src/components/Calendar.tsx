@@ -86,10 +86,10 @@ function StridePadding({
   return (
     <>
       {isNotLeftEdge && isCompleted && item.leftCompleted ? (
-        <div className="absolute left-0 h-full w-[3px] bg-neutral-200"></div>
+        <div className="bg-valid-day absolute left-0 h-full w-[3px]"></div>
       ) : null}
       {isNotRightEdge && isCompleted && item.rightCompleted ? (
-        <div className="absolute right-0 h-full w-[3px] bg-neutral-200"></div>
+        <div className="bg-valid-day absolute right-0 h-full w-[3px]"></div>
       ) : null}
     </>
   );
@@ -223,7 +223,7 @@ function Day({
 
   let completedClasses = "";
   if (isCompleted) {
-    completedClasses = "bg-neutral-200";
+    completedClasses = "bg-valid-day";
     const addRoundedClass = (condition: boolean, className: string) => {
       if (condition) {
         completedClasses += ` ${className}`;

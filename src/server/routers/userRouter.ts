@@ -80,4 +80,16 @@ export const userRouter = router({
       throw new Error("Error getting user percentiles");
     }
   }),
+  query: {
+    isAdmin: procedure.query(async ({ ctx }) => {
+      if (!ctx.clerkUserId) {
+        throw new Error("Not authenticated");
+      }
+      const data = await db
+        .select()
+        .from(user)
+        .where(eq(user.clerkId, ctx.clerkUserId));
+      return data[0] ? true : false;
+    }),
+  },
 });

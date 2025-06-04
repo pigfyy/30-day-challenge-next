@@ -81,7 +81,7 @@ export const ViewChallenge = () => {
       ref={containerRef}
       {...bind()}
       style={style}
-      className={`m-2 w-full rounded-lg bg-white p-2 shadow-lg transition-opacity duration-300 sm:p-4 md:mx-auto md:w-5/6 md:p-5 lg:w-2/3 lg:p-6 xl:w-1/2 2xl:w-[45%] ${
+      className={`m-2 w-full rounded-lg p-2 shadow-lg transition-opacity duration-300 sm:p-4 md:mx-auto md:w-5/6 md:p-5 lg:w-2/3 lg:p-6 xl:w-1/2 2xl:w-[45%] ${
         isNavigating ? "opacity-50" : "opacity-100"
       }`}
     >
@@ -89,7 +89,7 @@ export const ViewChallenge = () => {
         <BackButton />
       </div>
       <ViewChallengeHeader />
-      <div className="mt-6 rounded-lg border border-neutral-100 bg-neutral-50 p-1 sm:p-4 lg:p-8">
+      <div className="mt-6 rounded-lg p-1 ring-1 ring-neutral-100 sm:p-4 lg:p-8">
         <Calendar challenge={challenge} />
       </div>
     </div>
