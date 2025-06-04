@@ -14,7 +14,7 @@ export default function LandingPage() {
     <div className="flex w-full flex-col items-center overflow-x-hidden">
       <PwaRedirectHandler />
       {/* Hero Section */}
-      <section className="w-full bg-linear-to-br from-blue-50 via-white to-purple-50 py-24">
+      <section className="from-background-darker to-background w-full bg-linear-to-br py-24">
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="bg-grid-slate-400/[0.05] absolute inset-0 -z-10" />
           <div className="absolute inset-0 -z-10 flex items-center justify-center">
@@ -69,8 +69,11 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative w-full overflow-hidden py-24">
-        <div className="absolute right-0 top-0 -mr-10 -mt-10 h-40 w-40 rounded-full bg-yellow-300 opacity-10"></div>
+      <section
+        id="features"
+        className="relative w-full overflow-hidden bg-green-50 py-24"
+      >
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 h-40 w-40 rounded-full bg-yellow-300 opacity-10"></div>
         <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-60 w-60 rounded-full bg-blue-300 opacity-10"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center">
@@ -179,7 +182,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
       {/* Testimonials Section */}
       <section className="relative w-full bg-linear-to-br from-gray-50 to-blue-50 py-24">
         <div className="bg-grid-slate-400/[0.05] absolute inset-x-0 top-0 -z-0 h-40" />
@@ -211,7 +213,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="flex-1">
-                <p className="text-xl italic leading-relaxed text-gray-600">
+                <p className="text-xl leading-relaxed text-gray-600 italic">
                   &ldquo;This app has really helped me become more conscious and
                   intentional about my behavior.&rdquo;
                 </p>
@@ -258,7 +260,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="flex-1">
-                <p className="text-xl italic leading-relaxed text-gray-600">
+                <p className="text-xl leading-relaxed text-gray-600 italic">
                   &ldquo;Being able to see my completion rate at a glance is
                   really motivating.&rdquo;
                 </p>
@@ -290,26 +292,25 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      {/* DASHBOARD DEMO SECTION */}
-      <section className="relative w-full bg-linear-to-br from-blue-50 to-white py-24">
-        <div className="absolute right-0 top-40 h-80 w-80 rounded-full bg-blue-300 opacity-10 blur-3xl"></div>
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center">
-            <span className="mb-4 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-600">
-              DASHBOARD DEMO
-            </span>
-            <h2 className="mb-4 text-center text-3xl font-bold text-gray-900">
-              Track Your Challenge Progress
-            </h2>
-            <div className="mb-8 h-1 w-16 rounded-full bg-blue-600"></div>
-          </div>
 
+      {/* COMBINED DEMO SECTION */}
+      <section className="relative grid w-full gap-20 bg-purple-50 py-24">
+        <div className="absolute top-40 right-0 h-80 w-80 rounded-full bg-purple-300 opacity-10 blur-3xl"></div>
+        <div className="absolute top-80 left-0 h-80 w-80 rounded-full bg-blue-300 opacity-10 blur-3xl"></div>
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Dashboard Demo */}
           <div className="mx-auto mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
             {/* Dashboard Description */}
             <div className="flex flex-col justify-center">
-              <h3 className="text-2xl font-bold text-gray-900">
-                Your Progress Dashboard
-              </h3>
+              <div className="flex flex-col items-start">
+                <span className="mb-4 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-600">
+                  DASHBOARD DEMO
+                </span>
+                <h2 className="mb-4 text-3xl font-bold text-gray-900">
+                  Track Your Challenge Progress
+                </h2>
+                <div className="mb-8 h-1 w-16 rounded-full bg-blue-600"></div>
+              </div>
               <p className="mt-4 text-lg text-gray-600">
                 Our intuitive dashboard gives you a clear view of all your
                 active challenges. At a glance, you can:
@@ -390,7 +391,7 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            {/* Video */}
+            {/* Dashboard Image */}
             <div className="flex items-center justify-center">
               <div
                 className="relative overflow-hidden rounded-xl shadow-2xl"
@@ -423,32 +424,56 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Challenge Page Demo Section */}
-      <section className="relative w-full bg-linear-to-br from-blue-50 to-white py-24">
-        <div className="absolute right-0 top-40 h-80 w-80 rounded-full bg-blue-300 opacity-10 blur-3xl"></div>
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center">
-            <span className="mb-4 rounded-full bg-green-100 px-3 py-1 text-sm text-green-600">
-              CHALLENGE PAGE
-            </span>
-            <h2 className="mb-4 text-center text-3xl font-bold text-gray-900">
-              Mark Completions & Upload Progress Photos
-            </h2>
-            <div className="mb-8 h-1 w-16 rounded-full bg-green-600"></div>
-          </div>
+          {/* Challenge Page Demo - Flipped orientation */}
+          <div className="mx-auto mt-24 grid grid-cols-1 gap-8 md:grid-cols-2">
+            {/* Challenge Page Image - Now on left */}
+            <div className="flex items-center justify-center">
+              <div
+                className="relative overflow-hidden rounded-xl shadow-2xl"
+                style={{
+                  maxWidth: "600px",
+                  width: "100%",
+                  aspectRatio: "600 / 550",
+                }}
+              >
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    transform: "scale(1)",
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    src="/trackdemo.webp"
+                    alt="30 Day Me Challenge Page Demo"
+                    fill
+                    className="object-contain"
+                    priority
+                    unoptimized
+                  />
+                </div>
+              </div>
+            </div>
 
-          <div className="mx-auto mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Description */}
+            {/* Challenge Page Description - Now on right */}
             <div className="flex flex-col justify-center">
-              <h3 className="text-2xl font-bold text-gray-900">
-                Daily Challenge Updates
-              </h3>
+              <div className="flex flex-col items-start">
+                <span className="mb-4 rounded-full bg-green-100 px-3 py-1 text-sm text-green-600">
+                  CHALLENGE PAGE
+                </span>
+                <h2 className="mb-4 text-3xl font-bold text-gray-900">
+                  Mark Completions & Upload Progress Photos
+                </h2>
+                <div className="mb-8 h-1 w-16 rounded-full bg-green-600"></div>
+              </div>
               <p className="mt-4 text-lg text-gray-600">
                 Our challenge page makes it easy to document your daily progress
-                and stay on track:
+                and stay on track. At a glance, you can:
               </p>
               <ul className="mt-6 space-y-4">
                 <li className="flex items-start">
@@ -525,63 +550,21 @@ export default function LandingPage() {
                 </li>
               </ul>
             </div>
-
-            {/* Demo Image */}
-            <div className="flex items-center justify-center">
-              <div
-                className="relative overflow-hidden rounded-xl shadow-2xl"
-                style={{
-                  maxWidth: "600px",
-                  width: "100%",
-                  aspectRatio: "600 / 550",
-                }}
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    transform: "scale(1)",
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Image
-                    src="/trackdemo.webp"
-                    alt="30 Day Me Challenge Page Demo"
-                    fill
-                    className="object-contain"
-                    priority
-                    unoptimized
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Create Challenge Section */}
-      <section className="relative w-full bg-linear-to-br from-purple-50 to-white py-24">
-        <div className="absolute left-0 top-40 h-80 w-80 rounded-full bg-purple-300 opacity-10 blur-3xl"></div>
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center">
-            <span className="mb-4 rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-600">
-              CHALLENGE CREATION
-            </span>
-            <h2 className="mb-4 text-center text-3xl font-bold text-gray-900">
-              Create Custom Challenges
-            </h2>
-            <div className="mb-8 h-1 w-16 rounded-full bg-purple-600"></div>
           </div>
 
-          <div className="mx-auto mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Description */}
+          {/* Create Challenge Demo */}
+          <div className="mx-auto mt-24 grid grid-cols-1 gap-8 md:grid-cols-2">
+            {/* Challenge Creation Description */}
             <div className="flex flex-col justify-center">
-              <h3 className="text-2xl font-bold text-gray-900">
-                Personalize Your Journey
-              </h3>
+              <div className="flex flex-col items-start">
+                <span className="mb-4 rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-600">
+                  CHALLENGE CREATION
+                </span>
+                <h2 className="mb-4 text-3xl font-bold text-gray-900">
+                  Create Custom Challenges
+                </h2>
+                <div className="mb-8 h-1 w-16 rounded-full bg-purple-600"></div>
+              </div>
               <p className="mt-4 text-lg text-gray-600">
                 Creating your own challenge is simple and powerful. With our
                 intuitive interface you can:
@@ -645,7 +628,7 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            {/* Demo Image */}
+            {/* Challenge Creation Image */}
             <div className="flex items-center justify-center">
               <div
                 className="relative overflow-hidden rounded-xl shadow-2xl"
@@ -685,7 +668,7 @@ export default function LandingPage() {
       <section className="w-full py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="relative overflow-hidden rounded-3xl border border-gray-200 bg-white px-8 py-16 shadow-lg sm:px-14 sm:py-20">
-            <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-blue-100 opacity-20 blur-3xl"></div>
+            <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-blue-100 opacity-20 blur-3xl"></div>
             <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-blue-100 opacity-20 blur-3xl"></div>
             <div className="relative z-10 mx-auto max-w-3xl text-center">
               <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
