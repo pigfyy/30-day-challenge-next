@@ -2,6 +2,7 @@ import { db, prodDb } from "@/lib/db/drizzle";
 import { validateAdmin } from "@/lib/util";
 import { SurveyAnalyticsDashboard } from "./(components)/SurveyAnalyticsDashboard";
 import { Metadata } from "next";
+import type { SurveyFormData } from "../types";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 

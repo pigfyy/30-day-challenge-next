@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import Page3 from "@/app/survey/30daygen/admin/(components)/page3/Page3";
+import Page4 from "@/app/survey/30daygen/admin/(components)/page4/Page4";
 import {
   Card,
   CardContent,
@@ -8,15 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { getAgeRangeStats, getComprehensiveAnalysis } from "../analysis";
-import type { InferSelectModel } from "drizzle-orm";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { surveyResponse } from "@/lib/db/drizzle";
-import { LankarAnalysis } from "./LankarAnalysis";
-import { Q3Analysis } from "./Q3Analysis";
-import { Q4Analysis } from "./Q4Analysis";
-import { SurveyFormData } from "@/app/survey/30daygen/types";
+import type { InferSelectModel } from "drizzle-orm";
+import { useMemo, useState } from "react";
+import { getAgeRangeStats, getComprehensiveAnalysis } from "../analysis";
 
 type SurveyResponseData = InferSelectModel<typeof surveyResponse>;
 
@@ -123,23 +122,50 @@ export function SurveyAnalyticsDashboard({
         </CardContent>
       </Card>
 
-      <LankarAnalysis
-        analysisData={analysisData}
-        filterOption={filterOption}
-        ageRangeLabels={ageRangeLabels}
-      />
-
-      <Q3Analysis
-        responses={responses}
-        filterOption={filterOption}
-        ageRangeLabels={ageRangeLabels}
-      />
-
-      <Q4Analysis
-        responses={responses}
-        filterOption={filterOption}
-        ageRangeLabels={ageRangeLabels}
+      <PageSelector
+        Page3={
+          <Page3
+            analysisData={analysisData}
+            filterOption={filterOption}
+            ageRangeLabels={ageRangeLabels}
+            responses={responses}
+          />
+        }
+        Page4={
+          <Page4
+            responses={responses}
+            filterOption={filterOption}
+            ageRangeLabels={ageRangeLabels}
+          />
+        }
       />
     </div>
   );
 }
+
+const PageSelector = ({
+  Page3,
+  Page4,
+}: {
+  Page3: React.ReactNode;
+  Page4: React.ReactNode;
+}) => {
+  return (
+    <Tabs defaultValue="page3" className="w-full">
+      <TabsList className="grid h-14 w-full grid-cols-2">
+        <TabsTrigger value="page3" className="h-12 text-lg font-bold">
+          Search System Analysis
+        </TabsTrigger>
+        <TabsTrigger value="page4" className="h-12 text-lg font-bold">
+          General App Analysis
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="page3" className="mt-6">
+        {Page3}
+      </TabsContent>
+      <TabsContent value="page4" className="mt-6">
+        {Page4}
+      </TabsContent>
+    </Tabs>
+  );
+};

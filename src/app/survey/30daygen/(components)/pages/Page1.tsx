@@ -60,7 +60,7 @@ export const Page1 = ({ control, errors }: Page1Props) => {
 
         {/* Introduction */}
         <Card className="mb-8">
-          <CardContent className="pt-6">
+          <CardContent>
             <p className="text-md leading-relaxed text-gray-700">
               30day.me is a self-improvement app designed to help you reach your
               personal goals through 30-day challenges. A 30-day challenge
@@ -79,7 +79,7 @@ export const Page1 = ({ control, errors }: Page1Props) => {
 
         {/* App Screenshots Section */}
         <Card className="mb-8">
-          <CardContent className="px-0 py-6">
+          <CardContent className="px-0">
             <p className="mb-6 px-6 text-gray-700">
               Here are some screenshots to help you understand what the app
               looks like:
@@ -91,7 +91,7 @@ export const Page1 = ({ control, errors }: Page1Props) => {
 
         {/* Contact Information */}
         <Card>
-          <CardContent className="pt-6">
+          <CardContent>
             <div className="flex flex-col gap-6">
               {/* Age Group */}
               <div className="flex flex-col gap-4">

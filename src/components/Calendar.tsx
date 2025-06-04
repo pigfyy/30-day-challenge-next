@@ -265,7 +265,7 @@ function Day({
     <button
       key={index}
       className={`flex aspect-square w-full flex-1 flex-row py-[3px] ${
-        isDragging ? "select-none overscroll-none" : ""
+        isDragging ? "overscroll-none select-none" : ""
       }`}
       onClick={handleClick}
       disabled={!isValidDay}
@@ -280,7 +280,7 @@ function Day({
         >
           {isValidDay && !isMobile ? (
             <Maximize2
-              className="absolute right-2 top-2 h-6 w-6 rounded-md p-1 text-neutral-400 opacity-0 transition-opacity duration-75 hover:bg-white group-hover:opacity-100"
+              className="absolute top-2 right-2 h-6 w-6 rounded-md p-1 text-neutral-400 opacity-0 transition-opacity duration-75 group-hover:opacity-100 hover:bg-white"
               onClick={handleMaximizeDay}
             />
           ) : null}

@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  allowedDevOrigins: ["192.168.68.82"],
+  allowedDevOrigins: ["192.168.68.82", "192.168.68.75"],
   images: {
     remotePatterns: [
       {
@@ -70,7 +70,6 @@ const nextConfig = {
       },
     ];
   },
-  // This is required to support PostHog trailing slash API requests
   skipTrailingSlashRedirect: true,
 };
 

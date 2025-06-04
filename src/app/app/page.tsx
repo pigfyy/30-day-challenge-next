@@ -25,11 +25,5 @@ export async function generateMetadata(props: GenerateMetadataProps) {
 }
 
 export default async function Page() {
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect("/");
-  }
-
   return <PageLayout />;
 }

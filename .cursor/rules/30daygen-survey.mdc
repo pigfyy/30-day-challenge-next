@@ -1,6 +1,0 @@
----
-description: 
-globs: 
-alwaysApply: true
----
-Always reference plan.md for information. Also put all comopnents for the survey inside of src/app/survey/30daygen/(components) folder, instead of the normal component folder. Reference STRUCTURE.md to better understand progress as of far.Modify STRUCTURE.md when you modify the organization of the project or add a new component. 

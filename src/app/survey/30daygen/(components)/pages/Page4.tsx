@@ -63,7 +63,7 @@ export const Page4 = ({ control, errors }: Page4Props) => {
 
           {/* App Overview Section */}
           <Card className="mb-6">
-            <CardContent className="pt-6">
+            <CardContent>
               <p className="text-gray-700">
                 The following questions are about the 30 Day Me app as a whole.
                 You can answer roughly based on your impression from the
@@ -77,9 +77,9 @@ export const Page4 = ({ control, errors }: Page4Props) => {
             open={isScreenshotsOpen}
             onOpenChange={setIsScreenshotsOpen}
           >
-            <Card className="mb-6">
+            <Card className="py-0">
               <CollapsibleTrigger className="w-full">
-                <CardContent className="flex items-center justify-between pt-6 pb-6">
+                <CardContent className="flex items-center justify-between py-6">
                   <p className="text-left font-medium text-gray-700">
                     📱 View App Screenshots Again (Optional)
                   </p>

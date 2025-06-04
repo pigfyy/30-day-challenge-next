@@ -33,7 +33,7 @@ export const Page2 = ({ onSearchQuery, isTurk }: Page2Props) => {
 
         {/* Instructions */}
         <Card className="mb-8">
-          <CardContent className="pt-6">
+          <CardContent>
             <p className="text-lg leading-relaxed text-gray-700">
               We have created an AI search system aimed to help you generate
               challenges towards your goals. Please make at least{" "}

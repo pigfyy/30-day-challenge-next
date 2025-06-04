@@ -21,7 +21,7 @@ export const Page3 = ({ control, errors, isTurk }: Page3Props) => {
 
         {/* Instructions */}
         <Card className="mb-8">
-          <CardContent className="pt-6">
+          <CardContent>
             <p className="text-lg leading-relaxed text-gray-700">
               Based on your experience with the AI search system on the previous
               page, please answer all of the following questions.

@@ -8,15 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getComprehensiveAnalysis } from "../analysis";
+import { getComprehensiveAnalysis } from "../../analysis";
 import type { InferSelectModel } from "drizzle-orm";
 import type { surveyResponse } from "@/lib/db/drizzle";
 
 // Component for visualizing score distribution
 const ScoreDistribution = ({
   distribution,
+  totalCount,
 }: {
   distribution: Record<number, number>;
+  totalCount: number;
 }) => {
   const scores = [5, 4, 3, 2, 1];
   const getColorForScore = (score: number) => {
@@ -37,9 +39,10 @@ const ScoreDistribution = ({
   };
 
   return (
-    <div className="flex w-20 flex-col gap-1">
+    <div className="flex w-24 flex-col gap-1">
       {scores.map((score) => {
         const percentage = distribution[score] || 0;
+        const count = Math.round((percentage / 100) * totalCount);
         return (
           <div key={score} className="flex h-2.5 items-center gap-1">
             <span className="w-1.5 text-[10px] text-gray-500">{score}</span>
@@ -49,8 +52,9 @@ const ScoreDistribution = ({
                 style={{ width: `${percentage}%` }}
               />
             </div>
-            <span className="w-4 text-right text-[10px] text-gray-600">
-              {percentage > 0 ? Math.round(percentage) : "0"}%
+            <span className="w-12 text-right text-[10px] text-gray-600">
+              {count > 0 ? count : "0"} (
+              {percentage > 0 ? Math.round(percentage) : "0"}%)
             </span>
           </div>
         );
@@ -82,14 +86,14 @@ const EngagementCard = ({
   };
 
   return (
-    <div className="flex min-w-[280px] flex-1 flex-col gap-2 rounded-lg border p-4 md:min-w-0">
+    <div className="flex min-w-[320px] flex-1 flex-col gap-2 rounded-lg border p-4 md:min-w-0">
       <div className="mb-3 text-center">
         <h4 className="text-sm font-semibold">{title}</h4>
         <p className="text-muted-foreground text-xs">{subtitle}</p>
         <p className="text-muted-foreground text-xs">({count} responses)</p>
       </div>
       <div className="flex items-center justify-center gap-6">
-        <ScoreDistribution distribution={distribution} />
+        <ScoreDistribution distribution={distribution} totalCount={count} />
         <div className="text-right">
           <div className={`text-xl font-bold ${getScoreColor(average)}`}>
             {formatAverage(average)}
@@ -200,7 +204,7 @@ export function LankarAnalysis({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Likert Scale Analysis by Search Engagement</CardTitle>
+        <CardTitle>Likert Scale Analysis by Search Engagement (Q1)</CardTitle>
         <CardDescription>
           Average scores and distributions on a scale of 1-5 for GenAI search
           system questions, segmented by user search engagement levels

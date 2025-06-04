@@ -5,6 +5,7 @@ import { CreateChallenge } from "@/components/molecule/challenge-form/CreateChal
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ViewChallenge } from "@/components/ViewChallenge";
 import { useUrlState } from "@/hooks/use-url-state";
+import { useUser } from "@clerk/nextjs";
 import { Suspense } from "react";
 
 const Challenges = () => {
@@ -24,6 +25,12 @@ const Challenges = () => {
 };
 
 export function PageLayout() {
+  const user = useUser();
+
+  if (!user.isSignedIn) {
+    return <Home />;
+  }
+
   return (
     <>
       <div className="my-6 flex flex-1 items-center justify-center">
