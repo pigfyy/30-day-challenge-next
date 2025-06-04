@@ -2,24 +2,18 @@
 
 import { DevDialog } from "@/components/DevDialog";
 import { Header } from "@/components/Header";
+import { PostHogProvider } from "@/components/PostHogProvider";
+import { ThemeWrapper } from "@/components/ThemeWrapper";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Toaster } from "@/components/ui/toaster";
-import { PostHogProvider } from "@/components/PostHogProvider";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import { ThemeWrapper } from "@/components/ThemeWrapper";
 import { queryClient } from "@/lib/util/queryClient";
 import { trpc, trpcClient } from "@/lib/util/trpc";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
 import { Suspense } from "react";
-import { Quicksand } from "next/font/google";
 import "./globals.css";
-
-const quicksand = Quicksand({
-  subsets: ["latin"],
-  variable: "--font-quicksand",
-});
 
 export default function RootLayout({
   children,
@@ -46,7 +40,7 @@ export default function RootLayout({
                 />
               </head>
               <body
-                className={`${quicksand.className} bg-background-darker flex min-h-screen flex-col`}
+                className={`bg-background-darker flex min-h-screen flex-col`}
               >
                 <ThemeWrapper>
                   <PostHogProvider>
