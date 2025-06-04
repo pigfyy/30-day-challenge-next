@@ -11,7 +11,13 @@ import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
 import { Suspense } from "react";
+import { Quicksand } from "next/font/google";
 import "./globals.css";
+
+const quicksand = Quicksand({
+  subsets: ["latin"],
+  variable: "--font-quicksand",
+});
 
 export default function RootLayout({
   children,
@@ -36,7 +42,9 @@ export default function RootLayout({
                 content="30 Day Me is a platform for creating and tracking 30-day challenges."
               />
             </head>
-            <body className="flex min-h-screen flex-col bg-gray-50">
+            <body
+              className={`${quicksand.className} flex min-h-screen flex-col bg-gray-50`}
+            >
               <PostHogProvider>
                 <Suspense
                   fallback={

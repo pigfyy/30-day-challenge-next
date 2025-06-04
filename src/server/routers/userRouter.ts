@@ -34,8 +34,6 @@ export const userRouter = router({
         )
       `.as("last30DaysPercentile");
 
-      // Create separate subqueries for lifetime and last 30 days percentiles
-      // to exclude users with 0 completed days from each calculation
       const lifetimeRankedUsersSubquery = db
         .select({
           clerkId: user.clerkId,
