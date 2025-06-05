@@ -76,13 +76,13 @@ const ProgressBar = ({
       </div>
       <div className="relative h-3 w-full rounded-md bg-gray-300">
         <div
-          className={`absolute left-0 top-0 h-3 bg-gray-500 ${
+          className={`absolute top-0 left-0 h-3 bg-gray-500 ${
             elapsedTime === 1 ? "rounded-full" : "rounded-l-full"
           }`}
           style={{ width: `${elapsedTime * 100}%` }}
         ></div>
         <div
-          className={`absolute left-0 top-1/2 h-4 -translate-y-1/2 rounded-full bg-green-500 ${backgroundColor}`}
+          className={`absolute top-1/2 left-0 h-4 -translate-y-1/2 rounded-full bg-green-500 ${backgroundColor}`}
           style={{ width: `${completionRate * elapsedTime * 100}%` }}
         ></div>
       </div>
@@ -126,7 +126,7 @@ const ChallengeCard = ({
       onClick={() => handleViewClick(challenge.id)}
     >
       <CardHeader>
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl">
+        <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-lg text-2xl">
           {challenge.icon}
         </div>
         <CardTitle className="text-lg font-semibold">
@@ -135,7 +135,7 @@ const ChallengeCard = ({
       </CardHeader>
       <CardContent>
         <div className="mb-7 space-y-2">
-          <p className="text-base text-foreground">
+          <p className="text-foreground text-base">
             <span className="font-semibold">Wish:</span> {challenge.wish}
           </p>
           <p className="text-base">
@@ -143,7 +143,7 @@ const ChallengeCard = ({
             {challenge.dailyAction}
           </p>
         </div>
-        <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+        <div className="text-muted-foreground mt-2 space-y-2 text-sm">
           <div className="flex justify-between">
             <span>{new Date(challenge.startDate).toLocaleDateString()}</span>
             <span>{new Date(challenge.endDate).toLocaleDateString()}</span>
@@ -246,18 +246,18 @@ export const ChallengeGrid = () => {
             onClick={handleCreateChallengeClick}
           >
             <CardHeader className="flex flex-row items-center justify-start gap-3 space-y-0 md:flex-col md:items-start md:justify-center">
-              <div className="mb-0 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl md:mb-4">
+              <div className="bg-primary/10 mb-0 flex h-12 w-12 items-center justify-center rounded-lg text-2xl md:mb-4">
                 <PlusCircle />
               </div>
               <CardTitle className="mt-0 text-lg font-semibold">
                 Create New Challenge
               </CardTitle>
-              <CardDescription className="hidden text-base text-foreground md:block">
+              <CardDescription className="text-foreground hidden text-base md:block">
                 Start a new personalized challenge.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground md:block md:text-base">
+              <p className="text-muted-foreground text-sm md:block md:text-base">
                 Define your goals and track your progress.
               </p>
             </CardContent>

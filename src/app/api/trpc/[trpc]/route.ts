@@ -8,7 +8,8 @@ export async function GET(req: NextRequest) {
     endpoint: "/api/trpc",
     req,
     router: appRouter,
-    createContext: async ({ req }) => await createContext({ req }),
+    createContext: async ({ req }) =>
+      await createContext({ req: req as NextRequest }),
     onError: (opts) => {
       // console.error(opts.error);
     },
@@ -20,7 +21,8 @@ export async function POST(req: NextRequest) {
     endpoint: "/api/trpc",
     req,
     router: appRouter,
-    createContext: async ({ req }) => await createContext({ req }),
+    createContext: async ({ req }) =>
+      await createContext({ req: req as NextRequest }),
     onError: (opts) => {
       // console.error(opts.error);
     },

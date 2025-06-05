@@ -22,6 +22,8 @@ export const user = pgTable("user", {
     .notNull(),
   username: text("username").unique(),
   displayUsername: text("display_username"),
+  completedDays: integer("completed_days"),
+  completedDaysInLast30Days: integer("completed_days_in_last30_days"),
 });
 
 export const session = pgTable("session", {

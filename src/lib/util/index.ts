@@ -32,3 +32,7 @@ export const validateAdmin = async () => {
     redirect("/");
   }
 };
+
+export const validateIsAdmin = async (userId: string) => {
+  return ADMIN_IDS.includes(userId);
+};

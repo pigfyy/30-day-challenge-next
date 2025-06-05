@@ -1,55 +1,52 @@
-import { router, procedure } from "@/server/init";
-import { z } from "zod";
-import { db, clerkUser } from "@/lib/db/drizzle";
+import { db } from "@/lib/db/drizzle";
+import { user } from "@/lib/db/drizzle/auth-schema";
+import { validateIsAdmin } from "@/lib/util";
+import { procedure, router } from "@/server/init";
 import { eq, sql } from "drizzle-orm";
 
 export const userRouter = router({
   getUser: procedure.query(async ({ ctx }) => {
-    if (!ctx.clerkUserId) {
+    if (!ctx.user) {
       throw new Error("Not authenticated");
     }
-    const users = await db
-      .select()
-      .from(clerkUser)
-      .where(eq(clerkUser.clerkId, ctx.clerkUserId));
-    return users[0] || null;
+    return ctx.user;
   }),
   getUserPercentiles: procedure.query(async ({ ctx }) => {
-    if (!ctx.clerkUserId) {
+    if (!ctx.user?.id) {
       throw new Error("Not authenticated");
     }
 
     try {
       const lifetimePercentileExpr = sql<number>`
         ROUND(
-          (PERCENT_RANK() OVER (ORDER BY ${clerkUser.completedDays}) * 100)::numeric,
+          (PERCENT_RANK() OVER (ORDER BY ${user.completedDays}) * 100)::numeric,
           1
         )
       `.as("lifetimePercentile");
 
       const last30DaysPercentileExpr = sql<number>`
         ROUND(
-          (PERCENT_RANK() OVER (ORDER BY ${clerkUser.completedDaysInLast30Days}) * 100)::numeric,
+          (PERCENT_RANK() OVER (ORDER BY ${user.completedDaysInLast30Days}) * 100)::numeric,
           1
         )
       `.as("last30DaysPercentile");
 
       const lifetimeRankedUsersSubquery = db
         .select({
-          clerkId: clerkUser.clerkId,
+          id: user.id,
           lifetimePercentile: lifetimePercentileExpr,
         })
-        .from(clerkUser)
-        .where(sql`${clerkUser.completedDays} > 0`)
+        .from(user)
+        .where(sql`${user.completedDays} > 0`)
         .as("lifetime_ranked_users");
 
       const last30DaysRankedUsersSubquery = db
         .select({
-          clerkId: clerkUser.clerkId,
+          id: user.id,
           last30DaysPercentile: last30DaysPercentileExpr,
         })
-        .from(clerkUser)
-        .where(sql`${clerkUser.completedDaysInLast30Days} > 0`)
+        .from(user)
+        .where(sql`${user.completedDaysInLast30Days} > 0`)
         .as("last30days_ranked_users");
 
       // Get lifetime percentile
@@ -58,7 +55,7 @@ export const userRouter = router({
           lifetimePercentile: lifetimeRankedUsersSubquery.lifetimePercentile,
         })
         .from(lifetimeRankedUsersSubquery)
-        .where(eq(lifetimeRankedUsersSubquery.clerkId, ctx.clerkUserId))
+        .where(eq(lifetimeRankedUsersSubquery.id, ctx.user.id))
         .limit(1);
 
       // Get last 30 days percentile
@@ -68,7 +65,7 @@ export const userRouter = router({
             last30DaysRankedUsersSubquery.last30DaysPercentile,
         })
         .from(last30DaysRankedUsersSubquery)
-        .where(eq(last30DaysRankedUsersSubquery.clerkId, ctx.clerkUserId))
+        .where(eq(last30DaysRankedUsersSubquery.id, ctx.user.id))
         .limit(1);
 
       return {
@@ -82,14 +79,13 @@ export const userRouter = router({
   }),
   query: {
     isAdmin: procedure.query(async ({ ctx }) => {
-      if (!ctx.clerkUserId) {
+      if (!ctx.user?.id) {
         throw new Error("Not authenticated");
       }
-      const data = await db
-        .select()
-        .from(clerkUser)
-        .where(eq(clerkUser.clerkId, ctx.clerkUserId));
-      return data[0] ? true : false;
+
+      const isAdmin = await validateIsAdmin(ctx.user.id);
+
+      return isAdmin;
     }),
   },
 });

@@ -15,7 +15,11 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { authClient } from "@/lib/auth-client";
 
 const AdminFeatureToggles = () => {
-  const { data: isAdmin, isLoading } = trpc.user.query.isAdmin.useQuery();
+  const {
+    data: isAdmin,
+    isLoading,
+    error,
+  } = trpc.user.query.isAdmin.useQuery();
   const { isNewTheme, toggleTheme } = useTheme();
 
   if (!isAdmin || isLoading) {
@@ -128,8 +132,6 @@ export const Header = () => {
   const session = authClient.useSession();
   const isClient = useClient();
 
-  console.log("session", session);
-
   return (
     <header className="w-full border-b shadow-xs">
       <div className="mx-auto flex w-11/12 items-center justify-between gap-6 py-4 md:w-2/3">
@@ -145,8 +147,8 @@ export const Header = () => {
             </Link>
           ) : (
             <>
-              <UserButton />
               <AdminFeatureToggles />
+              <UserButton />
             </>
           )}
         </div>

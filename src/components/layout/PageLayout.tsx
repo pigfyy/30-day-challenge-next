@@ -5,7 +5,8 @@ import { CreateChallenge } from "@/components/molecule/challenge-form/CreateChal
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ViewChallenge } from "@/components/ViewChallenge";
 import { useUrlState } from "@/hooks/use-url-state";
-import { useUser } from "@clerk/nextjs";
+import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 const Challenges = () => {
@@ -25,10 +26,10 @@ const Challenges = () => {
 };
 
 export function PageLayout() {
-  const user = useUser();
+  const { data: session } = authClient.useSession();
 
-  if (!user.isSignedIn) {
-    return <Home />;
+  if (!session?.user?.id) {
+    redirect("/sign-in");
   }
 
   return (

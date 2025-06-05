@@ -1,3 +1,12 @@
+import { user } from "@/lib/db/drizzle/auth-schema";
+
+// Export the auth schema tables
+export {
+  user,
+  session,
+  account,
+  verification,
+} from "@/lib/db/drizzle/auth-schema";
 import cuid from "cuid";
 import { relations } from "drizzle-orm";
 import {
@@ -80,7 +89,7 @@ export const challenge = pgTable(
   (table) => [
     foreignKey({
       columns: [table.userId],
-      foreignColumns: [clerkUser.id],
+      foreignColumns: [user.id],
       name: "Challenge_userId_fkey",
     })
       .onUpdate("cascade")
@@ -122,7 +131,7 @@ export const dailyProgress = pgTable(
       .onDelete("restrict"),
     foreignKey({
       columns: [table.userId],
-      foreignColumns: [clerkUser.id],
+      foreignColumns: [user.id],
       name: "DailyProgress_userId_fkey",
     })
       .onUpdate("cascade")
@@ -160,15 +169,15 @@ export const dailyTask = pgTable(
 );
 
 // Relations
-export const userRelations = relations(clerkUser, ({ many }) => ({
+export const userRelations = relations(user, ({ many }) => ({
   challenges: many(challenge),
   dailyProgress: many(dailyProgress),
 }));
 
 export const challengeRelations = relations(challenge, ({ one, many }) => ({
-  user: one(clerkUser, {
+  user: one(user, {
     fields: [challenge.userId],
-    references: [clerkUser.id],
+    references: [user.id],
   }),
   challengeIdea: one(challengeIdea, {
     fields: [challenge.challengeIdeaId],
@@ -184,9 +193,9 @@ export const dailyProgressRelations = relations(
       fields: [dailyProgress.challengeId],
       references: [challenge.id],
     }),
-    user: one(clerkUser, {
+    user: one(user, {
       fields: [dailyProgress.userId],
-      references: [clerkUser.id],
+      references: [user.id],
     }),
     dailyTasks: many(dailyTask),
   }),

@@ -25,5 +25,17 @@ export const auth = betterAuth({
       allowDifferentEmails: true,
     },
   },
+  user: {
+    additionalFields: {
+      completedDays: {
+        type: "number",
+        defaultValue: 0,
+      },
+      completedDaysInLast30Days: {
+        type: "number",
+        defaultValue: 0,
+      },
+    },
+  },
   plugins: [username(), nextCookies()],
 });

@@ -17,14 +17,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { FcGoogle } from "react-icons/fc";
 import { authClient } from "@/lib/auth-client";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
+import { z } from "zod";
 
 const signInSchema = z.object({
   username: z.string().min(1, "Username or email is required"),
@@ -49,9 +49,14 @@ export default function Page() {
     setIsLoading(true);
 
     try {
-      const { data, error } = await authClient.signIn.email({
+      const { error } = await authClient.signIn.email({
         email: values.username,
         password: values.password,
+        fetchOptions: {
+          onSuccess: () => {
+            router.push("/app");
+          },
+        },
       });
 
       if (error) {
@@ -76,11 +81,14 @@ export default function Page() {
     setIsLoading(true);
 
     try {
-      const result = await authClient.signIn.social({
+      await authClient.signIn.social({
         provider: "google",
+        fetchOptions: {
+          onSuccess: () => {
+            router.push("/app");
+          },
+        },
       });
-
-      console.log("result", result);
     } catch (error) {
       console.error("Google sign in error:", error);
     } finally {
