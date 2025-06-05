@@ -1,11 +1,3 @@
-import { user } from "@/lib/db/drizzle/auth-schema";
-
-export {
-  user,
-  session,
-  account,
-  verification,
-} from "@/lib/db/drizzle/auth-schema";
 import cuid from "cuid";
 import { relations } from "drizzle-orm";
 import {
@@ -20,6 +12,27 @@ import {
   uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
+export {
+  user,
+  session,
+  account,
+  verification,
+} from "@/lib/db/drizzle/old-auth-schema";
+
+export const challengeIdea = pgTable("ChallengeIdea", {
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => cuid()),
+  index: integer().notNull(),
+  title: text().notNull(),
+  wish: text().notNull(),
+  dailyAction: text().notNull(),
+  description: text().notNull(),
+  sourceName: text("source_name").notNull(),
+  sourceLink: text("source_link").notNull(),
+  organization: text("organization").default("").notNull(),
+});
 
 export const clerkUser = pgTable(
   "User",
@@ -52,21 +65,6 @@ export const clerkUser = pgTable(
   ],
 );
 
-export const challengeIdea = pgTable("ChallengeIdea", {
-  id: text("id")
-    .primaryKey()
-    .notNull()
-    .$defaultFn(() => cuid()),
-  index: integer().notNull(),
-  title: text().notNull(),
-  wish: text().notNull(),
-  dailyAction: text().notNull(),
-  description: text().notNull(),
-  sourceName: text("source_name").notNull(),
-  sourceLink: text("source_link").notNull(),
-  organization: text("organization").default("").notNull(),
-});
-
 export const challenge = pgTable(
   "Challenge",
   {
@@ -86,13 +84,13 @@ export const challenge = pgTable(
     challengeIdeaId: text("challenge_idea_id"),
   },
   (table) => [
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [user.id],
-      name: "Challenge_userId_fkey",
-    })
-      .onUpdate("cascade")
-      .onDelete("restrict"),
+    // foreignKey({
+    //   columns: [table.userId],
+    //   foreignColumns: [user.id],
+    //   name: "Challenge_userId_fkey",
+    // })
+    //   .onUpdate("cascade")
+    //   .onDelete("restrict"),
     foreignKey({
       columns: [table.challengeIdeaId],
       foreignColumns: [challengeIdea.id],
@@ -128,13 +126,13 @@ export const dailyProgress = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("restrict"),
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [user.id],
-      name: "DailyProgress_userId_fkey",
-    })
-      .onUpdate("cascade")
-      .onDelete("restrict"),
+    // foreignKey({
+    //   columns: [table.userId],
+    //   foreignColumns: [user.id],
+    //   name: "DailyProgress_userId_fkey",
+    // })
+    //   .onUpdate("cascade")
+    //   .onDelete("restrict"),
     index("dailyProgress_challengeId_idx").on(table.challengeId),
     index("dailyProgress_userId_idx").on(table.userId),
   ],
@@ -168,16 +166,16 @@ export const dailyTask = pgTable(
 );
 
 // Relations
-export const userRelations = relations(user, ({ many }) => ({
-  challenges: many(challenge),
-  dailyProgress: many(dailyProgress),
-}));
+// export const userRelations = relations(user, ({ many }) => ({
+//   challenges: many(challenge),
+//   dailyProgress: many(dailyProgress),
+// }));
 
 export const challengeRelations = relations(challenge, ({ one, many }) => ({
-  user: one(user, {
-    fields: [challenge.userId],
-    references: [user.id],
-  }),
+  // user: one(user, {
+  //   fields: [challenge.userId],
+  //   references: [user.id],
+  // }),
   challengeIdea: one(challengeIdea, {
     fields: [challenge.challengeIdeaId],
     references: [challengeIdea.id],
@@ -192,10 +190,10 @@ export const dailyProgressRelations = relations(
       fields: [dailyProgress.challengeId],
       references: [challenge.id],
     }),
-    user: one(user, {
-      fields: [dailyProgress.userId],
-      references: [user.id],
-    }),
+    // user: one(user, {
+    //   fields: [dailyProgress.userId],
+    //   references: [user.id],
+    // }),
     dailyTasks: many(dailyTask),
   }),
 );
@@ -223,5 +221,3 @@ export const surveyResponse = pgTable("SurveyResponse", {
   turkCode: text("turk_code"),
   isInvalid: boolean().default(false).notNull(),
 });
-
-export * from "./auth-schema";
