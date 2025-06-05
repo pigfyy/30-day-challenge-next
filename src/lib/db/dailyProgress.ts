@@ -1,4 +1,4 @@
-import { db, dailyProgress, user } from "@/lib/db/drizzle";
+import { db, dailyProgress, clerkUser } from "@/lib/db/drizzle";
 import {
   ChallengeWithDailyProgress,
   DailyProgress,
@@ -71,41 +71,41 @@ export const editDailyProgressCompletion = async (
         completedDays: SQL;
         completedDaysInLast30Days?: SQL;
       } = {
-        completedDays: sql`${user.completedDays} + 1`,
+        completedDays: sql`${clerkUser.completedDays} + 1`,
       };
       if (updatedEntry.date) {
         setClauseUpdate.completedDaysInLast30Days = sql`
           CASE
             WHEN ${updatedEntry.date} >= (DATE_TRUNC('day', NOW() AT TIME ZONE 'America/Los_Angeles') - INTERVAL '29 day')
-            THEN ${user.completedDaysInLast30Days} + 1
-            ELSE ${user.completedDaysInLast30Days}
+            THEN ${clerkUser.completedDaysInLast30Days} + 1
+            ELSE ${clerkUser.completedDaysInLast30Days}
           END
         `;
       }
       await tx
-        .update(user)
+        .update(clerkUser)
         .set(setClauseUpdate)
-        .where(and(eq(user.id, userIdForUpdate)));
+        .where(and(eq(clerkUser.id, userIdForUpdate)));
     } else if (!progressInformation.completed && count[0].count < 1) {
       const setClauseUpdate: {
         completedDays: SQL;
         completedDaysInLast30Days?: SQL;
       } = {
-        completedDays: sql`${user.completedDays} - 1`,
+        completedDays: sql`${clerkUser.completedDays} - 1`,
       };
       if (updatedEntry.date) {
         setClauseUpdate.completedDaysInLast30Days = sql`
           CASE
             WHEN ${updatedEntry.date} >= (DATE_TRUNC('day', NOW() AT TIME ZONE 'America/Los_Angeles') - INTERVAL '29 day')
-            THEN ${user.completedDaysInLast30Days} - 1
-            ELSE ${user.completedDaysInLast30Days}
+            THEN ${clerkUser.completedDaysInLast30Days} - 1
+            ELSE ${clerkUser.completedDaysInLast30Days}
           END
         `;
       }
       await tx
-        .update(user)
+        .update(clerkUser)
         .set(setClauseUpdate)
-        .where(and(eq(user.id, userIdForUpdate)));
+        .where(and(eq(clerkUser.id, userIdForUpdate)));
     }
 
     return updatedEntry;

@@ -13,22 +13,6 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const prismaMigrations = pgTable("_prisma_migrations", {
-  id: varchar({ length: 36 }).primaryKey().notNull(),
-  checksum: varchar({ length: 64 }).notNull(),
-  finishedAt: timestamp("finished_at", { withTimezone: true, mode: "date" }),
-  migrationName: varchar("migration_name", { length: 255 }).notNull(),
-  logs: text(),
-  rolledBackAt: timestamp("rolled_back_at", {
-    withTimezone: true,
-    mode: "date",
-  }),
-  startedAt: timestamp("started_at", { withTimezone: true, mode: "date" })
-    .defaultNow()
-    .notNull(),
-  appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
-});
-
 export const challengeIdea = pgTable("ChallengeIdea", {
   id: text("id")
     .primaryKey()
@@ -44,7 +28,7 @@ export const challengeIdea = pgTable("ChallengeIdea", {
   organization: text("organization").default("").notNull(),
 });
 
-export const user = pgTable(
+export const clerkUser = pgTable(
   "User",
   {
     id: text("id")
@@ -96,7 +80,7 @@ export const challenge = pgTable(
   (table) => [
     foreignKey({
       columns: [table.userId],
-      foreignColumns: [user.id],
+      foreignColumns: [clerkUser.id],
       name: "Challenge_userId_fkey",
     })
       .onUpdate("cascade")
@@ -138,7 +122,7 @@ export const dailyProgress = pgTable(
       .onDelete("restrict"),
     foreignKey({
       columns: [table.userId],
-      foreignColumns: [user.id],
+      foreignColumns: [clerkUser.id],
       name: "DailyProgress_userId_fkey",
     })
       .onUpdate("cascade")
@@ -176,15 +160,15 @@ export const dailyTask = pgTable(
 );
 
 // Relations
-export const userRelations = relations(user, ({ many }) => ({
+export const userRelations = relations(clerkUser, ({ many }) => ({
   challenges: many(challenge),
   dailyProgress: many(dailyProgress),
 }));
 
 export const challengeRelations = relations(challenge, ({ one, many }) => ({
-  user: one(user, {
+  user: one(clerkUser, {
     fields: [challenge.userId],
-    references: [user.id],
+    references: [clerkUser.id],
   }),
   challengeIdea: one(challengeIdea, {
     fields: [challenge.challengeIdeaId],
@@ -200,9 +184,9 @@ export const dailyProgressRelations = relations(
       fields: [dailyProgress.challengeId],
       references: [challenge.id],
     }),
-    user: one(user, {
+    user: one(clerkUser, {
       fields: [dailyProgress.userId],
-      references: [user.id],
+      references: [clerkUser.id],
     }),
     dailyTasks: many(dailyTask),
   }),
@@ -231,3 +215,5 @@ export const surveyResponse = pgTable("SurveyResponse", {
   turkCode: text("turk_code"),
   isInvalid: boolean().default(false).notNull(),
 });
+
+export * from "./auth-schema";

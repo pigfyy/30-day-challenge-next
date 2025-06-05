@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useClient } from "@/hooks/use-client";
 import { useUrlState } from "@/hooks/use-url-state";
 import { trpc } from "@/lib/util/trpc";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { ShieldUser } from "lucide-react";
+import { ShieldUser, User, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useTheme } from "@/contexts/ThemeContext";
+import { authClient } from "@/lib/auth-client";
 
 const AdminFeatureToggles = () => {
   const { data: isAdmin, isLoading } = trpc.user.query.isAdmin.useQuery();
@@ -82,13 +82,60 @@ const Branding = () => {
   );
 };
 
+const UserButton = () => {
+  const session = authClient.useSession();
+
+  if (!session.data) {
+    return null;
+  }
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+  };
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="icon" className="text-gray-700">
+          <User />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="end">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h4 className="leading-none font-medium">Profile</h4>
+            {session.data.user?.email && (
+              <p className="text-muted-foreground text-sm">
+                {session.data.user.email}
+              </p>
+            )}
+          </div>
+          <Button
+            variant="outline"
+            onClick={handleSignOut}
+            className="flex items-center gap-2"
+          >
+            <LogOut size={16} />
+            Sign Out
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
 export const Header = () => {
+  const session = authClient.useSession();
+  const isClient = useClient();
+
+  console.log("session", session);
+
   return (
     <header className="w-full border-b shadow-xs">
       <div className="mx-auto flex w-11/12 items-center justify-between gap-6 py-4 md:w-2/3">
         <Branding />
         <div className="flex items-center space-x-4">
-          <SignedOut>
+          {!isClient || session.isPending || !session.data ? (
             <Link
               href={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/sign-in"}
             >
@@ -96,11 +143,12 @@ export const Header = () => {
                 Sign In
               </Button>
             </Link>
-          </SignedOut>
-          <SignedIn>
-            <AdminFeatureToggles />
-            <UserButton />
-          </SignedIn>
+          ) : (
+            <>
+              <UserButton />
+              <AdminFeatureToggles />
+            </>
+          )}
         </div>
       </div>
     </header>

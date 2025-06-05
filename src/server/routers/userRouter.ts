@@ -1,6 +1,6 @@
 import { router, procedure } from "@/server/init";
 import { z } from "zod";
-import { db, user } from "@/lib/db/drizzle";
+import { db, clerkUser } from "@/lib/db/drizzle";
 import { eq, sql } from "drizzle-orm";
 
 export const userRouter = router({
@@ -10,8 +10,8 @@ export const userRouter = router({
     }
     const users = await db
       .select()
-      .from(user)
-      .where(eq(user.clerkId, ctx.clerkUserId));
+      .from(clerkUser)
+      .where(eq(clerkUser.clerkId, ctx.clerkUserId));
     return users[0] || null;
   }),
   getUserPercentiles: procedure.query(async ({ ctx }) => {
@@ -22,34 +22,34 @@ export const userRouter = router({
     try {
       const lifetimePercentileExpr = sql<number>`
         ROUND(
-          (PERCENT_RANK() OVER (ORDER BY ${user.completedDays}) * 100)::numeric,
+          (PERCENT_RANK() OVER (ORDER BY ${clerkUser.completedDays}) * 100)::numeric,
           1
         )
       `.as("lifetimePercentile");
 
       const last30DaysPercentileExpr = sql<number>`
         ROUND(
-          (PERCENT_RANK() OVER (ORDER BY ${user.completedDaysInLast30Days}) * 100)::numeric,
+          (PERCENT_RANK() OVER (ORDER BY ${clerkUser.completedDaysInLast30Days}) * 100)::numeric,
           1
         )
       `.as("last30DaysPercentile");
 
       const lifetimeRankedUsersSubquery = db
         .select({
-          clerkId: user.clerkId,
+          clerkId: clerkUser.clerkId,
           lifetimePercentile: lifetimePercentileExpr,
         })
-        .from(user)
-        .where(sql`${user.completedDays} > 0`)
+        .from(clerkUser)
+        .where(sql`${clerkUser.completedDays} > 0`)
         .as("lifetime_ranked_users");
 
       const last30DaysRankedUsersSubquery = db
         .select({
-          clerkId: user.clerkId,
+          clerkId: clerkUser.clerkId,
           last30DaysPercentile: last30DaysPercentileExpr,
         })
-        .from(user)
-        .where(sql`${user.completedDaysInLast30Days} > 0`)
+        .from(clerkUser)
+        .where(sql`${clerkUser.completedDaysInLast30Days} > 0`)
         .as("last30days_ranked_users");
 
       // Get lifetime percentile
@@ -87,8 +87,8 @@ export const userRouter = router({
       }
       const data = await db
         .select()
-        .from(user)
-        .where(eq(user.clerkId, ctx.clerkUserId));
+        .from(clerkUser)
+        .where(eq(clerkUser.clerkId, ctx.clerkUserId));
       return data[0] ? true : false;
     }),
   },

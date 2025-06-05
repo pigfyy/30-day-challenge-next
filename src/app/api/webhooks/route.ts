@@ -1,7 +1,7 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { db, user } from "@/lib/db/drizzle";
+import { db, clerkUser } from "@/lib/db/drizzle";
 import { eq } from "drizzle-orm";
 import { deleteUser, findUserByClerkId } from "@/lib/db/user";
 
@@ -76,15 +76,13 @@ export async function POST(req: Request) {
         updated_at &&
         image_url
       ) {
-        await db
-          .insert(user)
-          .values({
-            email: email_addresses[0].email_address,
-            username: username!,
-            imageUrl: image_url,
-            clerkId: id,
-            createdAt: new Date(created_at),
-          });
+        await db.insert(clerkUser).values({
+          email: email_addresses[0].email_address,
+          username: username!,
+          imageUrl: image_url,
+          clerkId: id,
+          createdAt: new Date(created_at),
+        });
       }
 
       return new Response("New user created!", { status: 200 });
@@ -122,13 +120,13 @@ export async function POST(req: Request) {
 
     try {
       await db
-        .update(user)
+        .update(clerkUser)
         .set({
           email: email_addresses[0].email_address,
           username: username!,
           imageUrl: image_url,
         })
-        .where(eq(user.clerkId, id));
+        .where(eq(clerkUser.clerkId, id));
       return new Response("User updated!", { status: 200 });
     } catch (e: unknown) {
       console.error(e);

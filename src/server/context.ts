@@ -1,5 +1,5 @@
 import { getAuth } from "@clerk/nextjs/server";
-import { db, user } from "@/lib/db/drizzle";
+import { db, clerkUser } from "@/lib/db/drizzle";
 import { eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 
@@ -18,8 +18,8 @@ export async function createContext({ req }: { req: Request }) {
       try {
         const users = await db
           .select()
-          .from(user)
-          .where(eq(user.clerkId, userId));
+          .from(clerkUser)
+          .where(eq(clerkUser.clerkId, userId));
 
         if (users && users.length > 0) {
           foundUser = users[0];

@@ -1,4 +1,4 @@
-import { challenge, dailyProgress, db, user } from "@/lib/db/drizzle";
+import { challenge, dailyProgress, db, clerkUser } from "@/lib/db/drizzle";
 import {
   NewChallenge,
   ChallengeWithDailyProgress,
@@ -105,12 +105,12 @@ export const deleteChallenge = async (challengeId: string) => {
       }
 
       await tx
-        .update(user)
+        .update(clerkUser)
         .set({
-          completedDays: sql`${user.completedDays} - ${exclusiveDaysCount[0]?.count || 0}`,
-          completedDaysInLast30Days: sql`${user.completedDaysInLast30Days} - ${exclusiveDaysCountLast30Days[0]?.count || 0}`,
+          completedDays: sql`${clerkUser.completedDays} - ${exclusiveDaysCount[0]?.count || 0}`,
+          completedDaysInLast30Days: sql`${clerkUser.completedDaysInLast30Days} - ${exclusiveDaysCountLast30Days[0]?.count || 0}`,
         })
-        .where(eq(user.id, deletedChallenge.userId));
+        .where(eq(clerkUser.id, deletedChallenge.userId));
 
       return deletedChallenge;
     });
