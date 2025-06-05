@@ -7,12 +7,13 @@ import { trpc } from "@/lib/util/trpc";
 import { ShieldUser, User, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useTheme } from "@/contexts/ThemeContext";
 import { authClient } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const AdminFeatureToggles = () => {
   const {
@@ -88,21 +89,36 @@ const Branding = () => {
 
 const UserButton = () => {
   const session = authClient.useSession();
+  const router = useRouter();
 
   if (!session.data) {
     return null;
   }
 
   const handleSignOut = async () => {
-    await authClient.signOut();
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/sign-in");
+        },
+      },
+    });
   };
+
+  const source = session.data.user.image
+    ? session.data.user.image
+    : "/profile-default.png";
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" className="text-gray-700">
-          <User />
-        </Button>
+        <Image
+          src={source}
+          alt="Profile Picture"
+          width={32}
+          height={32}
+          className="cursor-pointer rounded-full"
+        />
       </PopoverTrigger>
       <PopoverContent align="end">
         <div className="grid gap-4">
@@ -137,10 +153,8 @@ export const Header = () => {
       <div className="mx-auto flex w-11/12 items-center justify-between gap-6 py-4 md:w-2/3">
         <Branding />
         <div className="flex items-center space-x-4">
-          {!isClient || session.isPending || !session.data ? (
-            <Link
-              href={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/sign-in"}
-            >
+          {!isClient || session.isPending ? null : !session.data ? (
+            <Link href={"/sign-in"}>
               <Button variant="outline" className="text-gray-700">
                 Sign In
               </Button>

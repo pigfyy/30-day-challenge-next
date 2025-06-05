@@ -6,8 +6,8 @@ import { and, eq, gt, lt, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import webpush from "web-push";
 import { uploadImage } from "./db/dailyProgress";
-import { auth } from "@clerk/nextjs/server";
-import { clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 webpush.setVapidDetails(
   "mailto:franklinzhang06@gmail.com",
@@ -117,13 +117,20 @@ export async function changeDates(
 
 export async function deleteCurrentUserAction() {
   try {
-    const { userId } = await auth();
-    if (!userId) {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session) {
       throw new Error("User not authenticated");
     }
-    const client = await clerkClient();
-    await client.users.deleteUser(userId);
-    revalidatePath("/"); // Revalidate relevant paths if necessary
+
+    await auth.api.deleteUser({
+      headers: await headers(),
+      body: {
+        password: session.session.token,
+      },
+    });
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error("Error deleting user:", error);

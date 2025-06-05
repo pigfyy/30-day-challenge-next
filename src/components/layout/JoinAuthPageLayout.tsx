@@ -1,7 +1,8 @@
 "use client";
 
-import { SignIn, SignUp } from "@clerk/nextjs";
-import InAppBrowserWarning from "@/components/molecules/InAppBrowserWarning";
+import InAppBrowserWarning from "@/components/molecule/InAppBrowserWarning";
+import { SignIn } from "@/components/molecule/auth/SignIn";
+import { SignUp } from "@/components/molecule/auth/SignUp";
 
 interface JoinAuthPageLayoutProps {
   challengeId: string;
@@ -27,19 +28,7 @@ export default function JoinAuthPageLayout({
       <h1 className="text-3xl font-bold">Welcome!</h1>
       <p className="text-md mb-5 text-gray-500">{welcomeMessage}</p>
       <InAppBrowserWarning />
-      {type === "sign-in" ? (
-        <SignIn
-          forceRedirectUrl={`/app/join/${challengeId}`}
-          signUpUrl={`/join/${challengeId}?type=sign-up`}
-          routing="hash"
-        />
-      ) : (
-        <SignUp
-          forceRedirectUrl={`/app/join/${challengeId}`}
-          signInUrl={`/join/${challengeId}?type=sign-in`}
-          routing="hash"
-        />
-      )}
+      {type === "sign-in" ? <SignIn /> : <SignUp />}
     </div>
   );
 }

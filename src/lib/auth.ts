@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { username } from "better-auth/plugins";
 
 export const auth = betterAuth({
+  appName: "30 Day Me",
   database: drizzleAdapter(db, {
     provider: "pg",
   }),

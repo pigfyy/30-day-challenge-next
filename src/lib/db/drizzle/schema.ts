@@ -37,37 +37,6 @@ export const challengeIdea = pgTable("ChallengeIdea", {
   organization: text("organization").default("").notNull(),
 });
 
-export const clerkUser = pgTable(
-  "User",
-  {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .$defaultFn(() => cuid()),
-    email: text().notNull(),
-    username: text().notNull(),
-    imageUrl: text().notNull(),
-    clerkId: text().notNull(),
-    completedDays: integer().default(0).notNull(),
-    completedDaysInLast30Days: integer().default(0).notNull(),
-    createdAt: timestamp({ precision: 3, mode: "date" }).defaultNow().notNull(),
-  },
-  (table) => [
-    uniqueIndex("User_clerkId_key").using(
-      "btree",
-      table.clerkId.asc().nullsLast().op("text_ops"),
-    ),
-    uniqueIndex("User_email_key").using(
-      "btree",
-      table.email.asc().nullsLast().op("text_ops"),
-    ),
-    uniqueIndex("User_username_key").using(
-      "btree",
-      table.username.asc().nullsLast().op("text_ops"),
-    ),
-  ],
-);
-
 export const challenge = pgTable(
   "Challenge",
   {

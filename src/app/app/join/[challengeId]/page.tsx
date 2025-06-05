@@ -1,5 +1,6 @@
 import JoinPageLayout from "@/components/layout/JoinPageLayout";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -11,10 +12,12 @@ export default async function JoinChallengePage({
 }: {
   params: Promise<{ challengeId: string }>;
 }) {
-  const { userId } = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   const { challengeId } = await params;
 
-  if (!userId) {
+  if (!session) {
     redirect(`/join/${challengeId}`);
   }
 

@@ -1,28 +1,33 @@
-import { db, clerkUser, dailyProgress, challenge } from "@/lib/db/drizzle";
-import { NewClerkUser } from "@/lib/db/drizzle/zod";
+import { challenge, dailyProgress, db, user } from "@/lib/db/drizzle";
 import { eq } from "drizzle-orm";
-import { cache } from "react";
 
-export const findUserByClerkId = async (clerkId: string, noThrow?: boolean) => {
+export const findUserById = async (userId: string, noThrow?: boolean) => {
   const data = await db
     .select()
-    .from(clerkUser)
-    .where(eq(clerkUser.clerkId, clerkId))
+    .from(user)
+    .where(eq(user.id, userId))
     .execute();
 
   if (!noThrow && (!data || data.length === 0))
-    throw Error(`User with clerkId ${clerkId} not found`);
+    throw Error(`User with id ${userId} not found`);
   return data[0];
 };
 
-export const createUser = async (userInformation: NewClerkUser) => {
-  const [data] = await db.insert(clerkUser).values(userInformation).returning();
-  return data;
+export const findUserByEmail = async (email: string, noThrow?: boolean) => {
+  const data = await db
+    .select()
+    .from(user)
+    .where(eq(user.email, email))
+    .execute();
+
+  if (!noThrow && (!data || data.length === 0))
+    throw Error(`User with email ${email} not found`);
+  return data[0];
 };
 
-export const deleteUser = async (clerkId: string) => {
-  const userId = await findUserByClerkId(clerkId);
-  await db.delete(dailyProgress).where(eq(dailyProgress.userId, userId.id));
-  await db.delete(challenge).where(eq(challenge.userId, userId.id));
-  await db.delete(clerkUser).where(eq(clerkUser.id, userId.id));
+export const deleteUser = async (userId: string) => {
+  const userData = await findUserById(userId);
+  await db.delete(dailyProgress).where(eq(dailyProgress.userId, userData.id));
+  await db.delete(challenge).where(eq(challenge.userId, userData.id));
+  await db.delete(user).where(eq(user.id, userData.id));
 };

@@ -14,12 +14,12 @@ import {
 } from "@/lib/actions";
 import { trpc } from "@/lib/util/trpc";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import React from "react";
-import { useClerk } from "@clerk/nextjs";
+import { authClient } from "@/lib/auth-client";
 
 const Content: React.FC<{
   setIsModalOpen: (isOpen: boolean) => void;
@@ -27,7 +27,7 @@ const Content: React.FC<{
   const utils = trpc.useUtils();
   const searchParams = useSearchParams();
   const challengeId = searchParams.get("challenge");
-  const { signOut } = useClerk();
+  const router = useRouter();
 
   const { data: challenges } = trpc.challenge.getChallenges.useQuery();
 
@@ -44,7 +44,13 @@ const Content: React.FC<{
     try {
       const result = await deleteCurrentUserAction();
       if (result.success) {
-        await signOut({ redirectUrl: "/" });
+        await authClient.signOut({
+          fetchOptions: {
+            onSuccess: () => {
+              router.push("/");
+            },
+          },
+        });
       } else {
         console.error("Failed to delete user:", result.error);
       }

@@ -1,12 +1,7 @@
-import { challenge, dailyProgress, db, clerkUser } from "@/lib/db/drizzle";
-import {
-  NewChallenge,
-  ChallengeWithDailyProgress,
-  Challenge,
-} from "@/lib/db/drizzle/zod";
-import { desc, eq, and, exists, sql } from "drizzle-orm";
+import { challenge, dailyProgress, db, user } from "@/lib/db/drizzle";
+import { NewChallenge } from "@/lib/db/drizzle/zod";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { deleteImage } from "./dailyProgress";
-import { PgSelect } from "drizzle-orm/pg-core";
 
 export type CreateChallengeInput = NewChallenge;
 
@@ -105,12 +100,12 @@ export const deleteChallenge = async (challengeId: string) => {
       }
 
       await tx
-        .update(clerkUser)
+        .update(user)
         .set({
-          completedDays: sql`${clerkUser.completedDays} - ${exclusiveDaysCount[0]?.count || 0}`,
-          completedDaysInLast30Days: sql`${clerkUser.completedDaysInLast30Days} - ${exclusiveDaysCountLast30Days[0]?.count || 0}`,
+          completedDays: sql`${user.completedDays} - ${exclusiveDaysCount[0]?.count || 0}`,
+          completedDaysInLast30Days: sql`${user.completedDaysInLast30Days} - ${exclusiveDaysCountLast30Days[0]?.count || 0}`,
         })
-        .where(eq(clerkUser.id, deletedChallenge.userId));
+        .where(eq(user.id, deletedChallenge.userId));
 
       return deletedChallenge;
     });

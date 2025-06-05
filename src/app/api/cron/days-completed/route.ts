@@ -1,4 +1,4 @@
-import { dailyProgress, db, clerkUser } from "@/lib/db/drizzle";
+import { dailyProgress, db, user } from "@/lib/db/drizzle";
 import { sql } from "drizzle-orm";
 
 export async function POST(request: Request) {
@@ -14,19 +14,19 @@ export async function POST(request: Request) {
   try {
     const beforeUpdate = await db
       .select({
-        id: clerkUser.id,
-        completedDays: clerkUser.completedDays,
-        completedDaysInLast30Days: clerkUser.completedDaysInLast30Days,
+        id: user.id,
+        completedDays: user.completedDays,
+        completedDaysInLast30Days: user.completedDaysInLast30Days,
       })
-      .from(clerkUser);
+      .from(user);
 
     if (timeInDays > 0) {
-      await db.update(clerkUser).set({
+      await db.update(user).set({
         completedDaysInLast30Days: sql`COALESCE(
           (
             SELECT COUNT(DISTINCT DATE(${dailyProgress.date}))
             FROM ${dailyProgress}
-            WHERE ${dailyProgress.userId} = ${clerkUser.id}
+            WHERE ${dailyProgress.userId} = ${user.id}
               AND ${dailyProgress.completed} = true
               AND DATE(${dailyProgress.date}) >= (CURRENT_DATE - INTERVAL '${sql.raw(timeInDays.toString())} days')
               AND DATE(${dailyProgress.date}) <= CURRENT_DATE
@@ -34,19 +34,19 @@ export async function POST(request: Request) {
         )`,
       });
     } else {
-      await db.update(clerkUser).set({
-        completedDays: sql`(SELECT COUNT(DISTINCT ${dailyProgress.date}) FROM ${dailyProgress} WHERE ${dailyProgress.userId} = ${clerkUser.id} AND ${dailyProgress.completed} = true)`,
+      await db.update(user).set({
+        completedDays: sql`(SELECT COUNT(DISTINCT ${dailyProgress.date}) FROM ${dailyProgress} WHERE ${dailyProgress.userId} = ${user.id} AND ${dailyProgress.completed} = true)`,
       });
     }
 
     // Get values after update
     const afterUpdate = await db
       .select({
-        id: clerkUser.id,
-        completedDays: clerkUser.completedDays,
-        completedDaysInLast30Days: clerkUser.completedDaysInLast30Days,
+        id: user.id,
+        completedDays: user.completedDays,
+        completedDaysInLast30Days: user.completedDaysInLast30Days,
       })
-      .from(clerkUser);
+      .from(user);
 
     // Calculate discrepancies
     let completedDaysDiscrepancies = 0;

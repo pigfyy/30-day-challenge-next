@@ -10,4 +10,5 @@ export const ADMIN_IDS = [
   "user_2xNeGvUdHkyRkS6ic4jvFiRPv6Q",
   "user_2xNeAxeRhmVJpFMifqh7LrOgc9A",
   "user_2xNeBCzaOGq3KrbQ2uvxVEhHBBx",
+  "L5RykSoL1fOwKlq6wWVmyaWAsS0DIYM0",
 ];

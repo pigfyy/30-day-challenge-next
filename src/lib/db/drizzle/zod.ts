@@ -4,7 +4,6 @@ import {
   createUpdateSchema,
 } from "drizzle-zod";
 import {
-  clerkUser,
   challenge,
   dailyProgress,
   challengeIdea,
@@ -14,10 +13,6 @@ import {
   account,
   verification,
 } from "@/lib/db/drizzle/schema";
-
-export const insertClerkUserSchema = createInsertSchema(clerkUser);
-export const selectClerkUserSchema = createSelectSchema(clerkUser);
-export const updateClerkUserSchema = createUpdateSchema(clerkUser);
 
 export const insertUserSchema = createInsertSchema(user);
 export const selectUserSchema = createSelectSchema(user);
@@ -50,9 +45,6 @@ export const updateChallengeIdeaSchema = createUpdateSchema(challengeIdea);
 export const insertDailyTaskSchema = createInsertSchema(dailyTask);
 export const selectDailyTaskSchema = createSelectSchema(dailyTask);
 export const updateDailyTaskSchema = createUpdateSchema(dailyTask);
-
-export type ClerkUser = typeof clerkUser.$inferSelect;
-export type NewClerkUser = typeof clerkUser.$inferInsert;
 
 export type User = typeof user.$inferSelect;
 export type NewUser = typeof user.$inferInsert;

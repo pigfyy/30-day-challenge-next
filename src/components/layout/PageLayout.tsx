@@ -6,8 +6,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ViewChallenge } from "@/components/ViewChallenge";
 import { useUrlState } from "@/hooks/use-url-state";
 import { authClient } from "@/lib/auth-client";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
+import { useRouter } from "next/navigation";
+import { Suspense, useEffect } from "react";
 
 const Challenges = () => {
   const { getQueryParam } = useUrlState();
@@ -26,11 +26,14 @@ const Challenges = () => {
 };
 
 export function PageLayout() {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
+  const router = useRouter();
 
-  if (!session?.user?.id) {
-    redirect("/sign-in");
-  }
+  useEffect(() => {
+    if (!isPending && !session?.user?.id) {
+      router.push("/sign-in");
+    }
+  }, [isPending, session?.user?.id, router]);
 
   return (
     <>

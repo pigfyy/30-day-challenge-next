@@ -1,7 +1,5 @@
 import { PageLayout } from "@/components/layout/PageLayout";
 import { getChallenge } from "@/lib/db/challenge";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 type GenerateMetadataProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

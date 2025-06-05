@@ -9,8 +9,15 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
+  crossOrigin: "anonymous",
   experimental: {
     serverActions: {
       bodySizeLimit: "4mb",

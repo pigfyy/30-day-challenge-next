@@ -1,6 +1,7 @@
 import { ADMIN_IDS } from "@/lib/constants";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import OpenAI from "openai";
 
@@ -27,8 +28,11 @@ export const base64ToBlob = (base64String: string, mimeType: string) => {
 };
 
 export const validateAdmin = async () => {
-  const { userId } = await auth();
-  if (!userId || !ADMIN_IDS.includes(userId)) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session || !ADMIN_IDS.includes(session.user.id)) {
     redirect("/");
   }
 };
