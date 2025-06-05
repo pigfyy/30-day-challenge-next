@@ -91,7 +91,7 @@ async function getClerkUsers(totalUsers: number) {
   return clerkUsers;
 }
 
-export async function generateBackupCodes(secret: string) {
+async function generateBackupCodes(secret: string) {
   const key = secret;
   const backupCodes = Array.from({ length: 10 })
     .fill(null)
