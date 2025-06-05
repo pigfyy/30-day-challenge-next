@@ -25,6 +25,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
+import { useToast } from "@/hooks/use-toast";
 
 const signInSchema = z.object({
   username: z.string().min(1, "Username or email is required"),
@@ -36,6 +37,7 @@ type SignInFormValues = z.infer<typeof signInSchema>;
 export function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -90,6 +92,15 @@ export function SignIn() {
     }
   };
 
+  const handleForgotPassword = () => {
+    toast({
+      title: "Feature Not Available",
+      description:
+        "We're super sorry! Password reset functionality isn't implemented yet. We're working hard to add this feature soon.",
+      variant: "default",
+    });
+  };
+
   return (
     <div className="flex w-full items-center justify-center pt-8 pb-12">
       <Card className="w-full max-w-md">
@@ -131,12 +142,13 @@ export function SignIn() {
                   <FormItem>
                     <div className="flex items-center">
                       <FormLabel>Password</FormLabel>
-                      <Link
-                        href="#"
+                      <button
+                        type="button"
+                        onClick={handleForgotPassword}
                         className="ml-auto text-sm underline-offset-4 hover:underline"
                       >
                         Forgot your password?
-                      </Link>
+                      </button>
                     </div>
                     <FormControl>
                       <Input type="password" disabled={isLoading} {...field} />

@@ -25,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import InAppBrowserWarning from "@/components/molecule/InAppBrowserWarning";
 
 const signUpSchema = z
   .object({
@@ -115,7 +116,8 @@ export function SignUp() {
   };
 
   return (
-    <div className="flex w-full items-center justify-center pt-8 pb-12">
+    <div className="flex w-full flex-col items-center justify-center pt-8 pb-12">
+      <InAppBrowserWarning className="w-full max-w-md" />
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create your account</CardTitle>

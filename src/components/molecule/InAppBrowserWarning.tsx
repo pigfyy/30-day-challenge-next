@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from "react";
 import InApp from "detect-inapp";
+import { cn } from "@/lib/utils";
 
-export default function InAppBrowserWarning() {
+export default function InAppBrowserWarning({
+  className,
+}: {
+  className?: string;
+}) {
   const [isInAppBrowserClient, setIsInAppBrowserClient] = useState(false);
 
   useEffect(() => {
@@ -18,7 +23,12 @@ export default function InAppBrowserWarning() {
   }
 
   return (
-    <div className="animated-wavy-border mb-4 rounded p-0.5 text-center">
+    <div
+      className={cn(
+        "animated-wavy-border mb-4 rounded p-0.5 text-center",
+        className,
+      )}
+    >
       <style jsx>{`
         @keyframes wavyBorderAnimation {
           0% {
@@ -48,7 +58,7 @@ export default function InAppBrowserWarning() {
         }
       `}</style>
       <div className="rounded bg-yellow-200 p-2.5">
-        <p className="mb-1 text-lg font-bold uppercase text-yellow-900">
+        <p className="mb-1 text-lg font-bold text-yellow-900 uppercase">
           Warning
         </p>
         <p className="text-yellow-800">
