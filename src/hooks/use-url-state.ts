@@ -17,8 +17,8 @@ export const useUrlState = () => {
    * @param value - The query parameter value
    */
   const setQueryParam = (key: string, value: string) => {
-    // Use history.pushState for a non-reloading URL update
-    history.pushState(null, "", `${pathname}?${key}=${value}`);
+    // Use history.replaceState for a non-reloading URL update
+    history.replaceState(null, "", `${pathname}?${key}=${value}`);
   };
 
   /**
@@ -33,11 +33,11 @@ export const useUrlState = () => {
       urlParams.set(key, value);
     });
 
-    history.pushState(null, "", `${pathname}?${urlParams.toString()}`);
+    history.replaceState(null, "", `${pathname}?${urlParams.toString()}`);
   };
 
   /**
-   * Updates a query parameter in the URL using Next.js router (causes rerender)
+   * Updates a query parameter in the URL without causing a page reload
    *
    * @param key - The query parameter key
    * @param value - The query parameter value
@@ -45,11 +45,11 @@ export const useUrlState = () => {
   const updateQueryParam = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams);
     params.set(key, value);
-    replace(`${pathname}?${params.toString()}`);
+    history.replaceState(null, "", `${pathname}?${params.toString()}`);
   };
 
   /**
-   * Updates multiple query parameters in the URL using Next.js router
+   * Updates multiple query parameters in the URL without causing a page reload
    *
    * @param params - Object containing key-value pairs to set in the URL
    */
@@ -60,18 +60,18 @@ export const useUrlState = () => {
       urlParams.set(key, value);
     });
 
-    replace(`${pathname}?${urlParams.toString()}`);
+    history.replaceState(null, "", `${pathname}?${urlParams.toString()}`);
   };
 
   /**
-   * Removes a query parameter from the URL using Next.js router
+   * Removes a query parameter from the URL without causing a page reload
    *
    * @param key - The query parameter key to remove
    */
   const removeQueryParam = (key: string) => {
     const params = new URLSearchParams(searchParams);
     params.delete(key);
-    replace(`${pathname}?${params.toString()}`);
+    history.replaceState(null, "", `${pathname}?${params.toString()}`);
   };
 
   /**
