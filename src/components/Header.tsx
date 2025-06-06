@@ -66,10 +66,7 @@ const Branding = () => {
       href="/"
       className="flex items-center gap-3"
       onNavigate={(e) => {
-        if (
-          !isClient &&
-          (pathname === "/app" || pathname.startsWith("/app/"))
-        ) {
+        if (isClient && (pathname === "/app" || pathname.startsWith("/app/"))) {
           e.preventDefault();
           removeQueryParam("challenge");
         }
