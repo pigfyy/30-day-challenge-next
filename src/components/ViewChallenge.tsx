@@ -51,8 +51,7 @@ export const ViewChallenge = () => {
         updateQueryParam,
         utils,
       );
-
-      setTimeout(() => setIsNavigating(false), 300);
+      setIsNavigating(false);
     },
   });
 
