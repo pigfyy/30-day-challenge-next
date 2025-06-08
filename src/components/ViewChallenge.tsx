@@ -38,8 +38,11 @@ export const ViewChallenge = () => {
   const utils = trpc.useUtils();
   const [isNavigating, setIsNavigating] = useState(false);
 
-  const { data: challenges, isLoading: isChallengesLoading } =
-    trpc.challenge.getChallengesWithDailyProgress.useQuery();
+  const {
+    data: challenges,
+    isLoading: isChallengesLoading,
+    isFetching: isChallengesFetching,
+  } = trpc.challenge.getChallengesWithDailyProgress.useQuery();
 
   const { containerRef, bind, style } = useEdgeSwipe({
     onSwipe: (direction) => {
@@ -59,13 +62,26 @@ export const ViewChallenge = () => {
 
   const challenge = challenges?.find((c) => c.id === challengeId);
 
-  const isLoading = isChallengesLoading;
+  const isLoading = isChallengesLoading || isChallengesFetching;
 
   useEffect(() => {
-    if (!isLoading && !challenge && challengeId) {
+    if (
+      !isLoading &&
+      !challenge &&
+      challengeId &&
+      !isChallengesLoading &&
+      !isChallengesFetching
+    ) {
       removeQueryParam("challenge");
     }
-  }, [isLoading, challenge, challengeId, removeQueryParam]);
+  }, [
+    isLoading,
+    challenge,
+    challengeId,
+    removeQueryParam,
+    isChallengesLoading,
+    isChallengesFetching,
+  ]);
 
   if (isLoading) {
     return <LoadingSpinner />;
