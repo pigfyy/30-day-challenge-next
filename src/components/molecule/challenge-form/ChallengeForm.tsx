@@ -215,7 +215,7 @@ export const ChallengeForm = ({
                   Delete
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-48 p-2">
+              <PopoverContent className="w-48 p-2" isDialog={true}>
                 <div className="flex h-full flex-col gap-2">
                   <p className="text-sm text-gray-600">Are you sure?</p>
                   <div className="flex gap-2">
