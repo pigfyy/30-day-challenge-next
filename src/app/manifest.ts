@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
+    id: "/app",
+
     name: "30 Day Me",
     short_name: "30-Me",
     description: "An app to help you track your 30 days of progress",
@@ -12,9 +14,16 @@ export default function manifest(): MetadataRoute.Manifest {
     icons: [
       {
         src: "/logo.png",
-        sizes: "1440x1407",
+        sizes: "1024x1024",
         type: "image/png",
       },
     ],
+    orientation: "portrait-primary",
+    dir: "auto",
+    lang: "en",
+    scope: "/",
+    prefer_related_applications: false,
+    related_applications: [],
+    categories: ["productivity", "habit-tracking", "30-day-challenge"],
   };
 }
