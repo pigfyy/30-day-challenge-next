@@ -1,139 +1,155 @@
-const CACHE_NAME = "30-day-challenge-v2";
+const CACHE_NAME = "30-day-challenge-v3";
 const OFFLINE_URL = "/offline.html";
 
-// Files to cache for offline functionality
-const PRECACHE_URLS = [
+// Essential resources to precache
+const urlsToCache = [
   "/",
   "/offline.html",
   "/pwa-icons/android/android-launchericon-192-192.png",
   "/pwa-icons/android/android-launchericon-96-96.png",
-  "/manifest.json",
 ];
 
-// Install event - cache essential resources
-self.addEventListener("install", function (event) {
-  console.log("Service Worker installing...");
+// Install event - cache offline page and essential resources
+self.addEventListener("install", (event) => {
+  console.log("[ServiceWorker] Install");
+
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then(function (cache) {
-        console.log("Caching app shell and offline page");
-        return cache.addAll(PRECACHE_URLS);
+      .then((cache) => {
+        console.log("[ServiceWorker] Caching offline page");
+        return cache.addAll(urlsToCache);
       })
-      .then(function () {
+      .then(() => {
+        console.log("[ServiceWorker] Skip waiting on install");
         return self.skipWaiting();
       }),
   );
 });
 
 // Activate event - clean up old caches
-self.addEventListener("activate", function (event) {
-  console.log("Service Worker activating...");
+self.addEventListener("activate", (event) => {
+  console.log("[ServiceWorker] Activate");
+
   event.waitUntil(
     caches
       .keys()
-      .then(function (cacheNames) {
+      .then((cacheNames) => {
         return Promise.all(
-          cacheNames.map(function (cacheName) {
+          cacheNames.map((cacheName) => {
             if (cacheName !== CACHE_NAME) {
-              console.log("Deleting old cache:", cacheName);
+              console.log("[ServiceWorker] Removing old cache", cacheName);
               return caches.delete(cacheName);
             }
           }),
         );
       })
-      .then(function () {
+      .then(() => {
+        console.log("[ServiceWorker] Claiming clients");
         return self.clients.claim();
       }),
   );
 });
 
-// Fetch event - implement Network First strategy with offline fallback
-self.addEventListener("fetch", function (event) {
-  // Skip non-GET requests
-  if (event.request.method !== "GET") {
-    return;
-  }
+// Fetch event - handle offline requests
+self.addEventListener("fetch", (event) => {
+  console.log("[ServiceWorker] Fetch", event.request.url);
 
-  // Skip requests to external domains
-  if (!event.request.url.startsWith(self.location.origin)) {
-    return;
-  }
+  // Only handle GET requests
+  if (event.request.method !== "GET") return;
 
-  // Skip API requests (let them fail naturally)
-  if (event.request.url.includes("/api/")) {
-    return;
-  }
+  // Only handle requests from same origin
+  if (!event.request.url.startsWith(self.location.origin)) return;
 
-  // Handle navigation requests (page loads) with Network First + Offline fallback
+  // Don't handle API requests
+  if (event.request.url.includes("/api/")) return;
+
+  // Handle page navigation requests
   if (event.request.mode === "navigate") {
+    console.log(
+      "[ServiceWorker] Handling navigate request for",
+      event.request.url,
+    );
+
     event.respondWith(
       fetch(event.request)
-        .then(function (response) {
-          // If network succeeds, cache the response and return it
-          if (response && response.status === 200) {
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then(function (cache) {
-              cache.put(event.request, responseToCache);
+        .then((response) => {
+          console.log(
+            "[ServiceWorker] Network response for navigation",
+            response.status,
+          );
+          // Network request succeeded, cache and return the response
+          if (response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseClone);
             });
-            return response;
           }
           return response;
         })
-        .catch(function () {
-          // Network failed - serve offline page
-          console.log("Network failed for navigation, serving offline page");
-          return caches.match(OFFLINE_URL).then(function (offlineResponse) {
-            return (
-              offlineResponse ||
-              new Response("Offline page not found", { status: 404 })
-            );
+        .catch((error) => {
+          console.log(
+            "[ServiceWorker] Network request failed, serving offline page",
+            error,
+          );
+          // Network request failed, serve offline page
+          return caches.open(CACHE_NAME).then((cache) => {
+            return cache.match(OFFLINE_URL);
           });
         }),
     );
-    return;
   }
-
-  // Handle non-navigation requests (assets, etc.) with Cache First strategy
-  event.respondWith(
-    caches
-      .match(event.request)
-      .then(function (cachedResponse) {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(event.request).then(function (response) {
-          // Don't cache non-successful responses
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== "basic"
-          ) {
+  // Handle other requests (assets, etc.)
+  else {
+    event.respondWith(
+      caches
+        .match(event.request)
+        .then((response) => {
+          if (response) {
+            console.log(
+              "[ServiceWorker] Serving from cache",
+              event.request.url,
+            );
             return response;
           }
 
-          // Clone the response for caching
-          const responseToCache = response.clone();
-
-          caches.open(CACHE_NAME).then(function (cache) {
-            cache.put(event.request, responseToCache);
+          console.log(
+            "[ServiceWorker] Fetching from network",
+            event.request.url,
+          );
+          return fetch(event.request).then((response) => {
+            // Cache successful responses
+            if (response.status === 200) {
+              const responseClone = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, responseClone);
+              });
+            }
+            return response;
           });
-
-          return response;
-        });
-      })
-      .catch(function () {
-        // For non-navigation requests, just fail if not in cache
-        return new Response("Resource not available offline", { status: 503 });
-      }),
-  );
+        })
+        .catch((error) => {
+          console.log(
+            "[ServiceWorker] Failed to fetch resource",
+            event.request.url,
+            error,
+          );
+          return new Response("Resource not available offline", {
+            status: 503,
+            statusText: "Service Unavailable",
+          });
+        }),
+    );
+  }
 });
 
-// Push notification event
-self.addEventListener("push", function (event) {
+// Push notification handling
+self.addEventListener("push", (event) => {
+  console.log("[ServiceWorker] Push Received.");
+
   if (event.data) {
     const data = event.data.json();
+    const title = data.title || "30 Day Challenge";
     const options = {
       body: data.body,
       icon: data.icon || "/pwa-icons/android/android-launchericon-192-192.png",
@@ -141,16 +157,19 @@ self.addEventListener("push", function (event) {
       vibrate: [100, 50, 100],
       data: {
         dateOfArrival: Date.now(),
-        primaryKey: "2",
+        primaryKey: "1",
       },
     };
-    event.waitUntil(self.registration.showNotification(data.title, options));
+
+    event.waitUntil(self.registration.showNotification(title, options));
   }
 });
 
-// Notification click event
-self.addEventListener("notificationclick", function (event) {
-  console.log("Notification click received.");
+// Notification click handling
+self.addEventListener("notificationclick", (event) => {
+  console.log("[ServiceWorker] Notification click Received.");
+
   event.notification.close();
-  event.waitUntil(clients.openWindow(self.location.origin));
+
+  event.waitUntil(clients.openWindow("/"));
 });

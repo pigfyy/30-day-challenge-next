@@ -57,15 +57,12 @@ export default function PushNotificationManager() {
 
   async function registerSW() {
     try {
-      const registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      });
-
+      // Service worker is registered globally, just get the registration
+      const registration = await navigator.serviceWorker.ready;
       const sub = await registration.pushManager.getSubscription();
       setSubscription(sub);
     } catch (error) {
-      console.error("Service Worker registration failed:", error);
+      console.error("Getting service worker registration failed:", error);
     }
   }
 
