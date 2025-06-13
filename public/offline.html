@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offline - 30 Day Challenge</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .offline-container {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+      }
+
+      .offline-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 24px;
+        background: #f3f4f6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+      }
+
+      .offline-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #1f2937;
+      }
+
+      .offline-subtitle {
+        font-size: 16px;
+        color: #6b7280;
+        margin-bottom: 32px;
+        line-height: 1.6;
+      }
+
+      .retry-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        margin-bottom: 24px;
+      }
+
+      .retry-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+      }
+
+      .offline-features {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 24px;
+        margin-top: 24px;
+      }
+
+      .feature-list {
+        list-style: none;
+        text-align: left;
+      }
+
+      .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: #4b5563;
+      }
+
+      .feature-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .feature-icon {
+        width: 20px;
+        height: 20px;
+        background: #10b981;
+        border-radius: 50%;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+
+      .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        margin-top: 16px;
+        font-size: 14px;
+        color: #6b7280;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: #ef4444;
+        border-radius: 50%;
+        margin-right: 8px;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .offline-container {
+          padding: 24px;
+        }
+
+        .offline-title {
+          font-size: 24px;
+        }
+
+        .offline-icon {
+          width: 60px;
+          height: 60px;
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="offline-container">
+      <div class="offline-icon">📱</div>
+
+      <h1 class="offline-title">You're Offline</h1>
+      <p class="offline-subtitle">
+        It looks like you've lost your internet connection. Don't worry, you can
+        still access some features of 30 Day Challenge!
+      </p>
+
+      <button class="retry-button" onclick="window.location.reload()">
+        Try Again
+      </button>
+
+      <div class="offline-features">
+        <h3 style="margin-bottom: 16px; font-size: 16px; color: #1f2937">
+          Available Offline:
+        </h3>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon">✓</div>
+            View your challenge progress
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon">✓</div>
+            Read cached content
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon">✓</div>
+            Access app navigation
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon">✓</div>
+            PWA continues to work
+          </li>
+        </ul>
+      </div>
+
+      <div class="status-indicator">
+        <div class="status-dot"></div>
+        Connection status: Offline
+      </div>
+    </div>
+
+    <script>
+      // Check for connection periodically
+      function checkConnection() {
+        if (navigator.onLine) {
+          window.location.reload();
+        }
+      }
+
+      // Listen for online event
+      window.addEventListener("online", function () {
+        window.location.reload();
+      });
+
+      // Check connection every 5 seconds
+      setInterval(checkConnection, 5000);
+
+      // Update connection status
+      function updateConnectionStatus() {
+        const statusDot = document.querySelector(".status-dot");
+        const statusText = document.querySelector(".status-indicator");
+
+        if (navigator.onLine) {
+          statusDot.style.background = "#10b981";
+          statusText.innerHTML =
+            '<div class="status-dot" style="background: #10b981;"></div>Connection status: Online';
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          statusDot.style.background = "#ef4444";
+          statusText.innerHTML =
+            '<div class="status-dot" style="background: #ef4444;"></div>Connection status: Offline';
+        }
+      }
+
+      // Update status on load
+      updateConnectionStatus();
+
+      // Listen for online/offline events
+      window.addEventListener("online", updateConnectionStatus);
+      window.addEventListener("offline", updateConnectionStatus);
+    </script>
+  </body>
+</html>

@@ -54,7 +54,20 @@ This project now includes full PWA functionality based on the [Next.js PWA docum
   - Client-side detection
   - Display mode monitoring
 
-### 6. Security Headers
+### 6. Offline Functionality
+
+- **Files**:
+  - `public/sw.js` (Enhanced with caching)
+  - `public/offline.html` (Offline fallback page)
+  - `src/components/OfflineIndicator.tsx`
+- **Status**: ✅ Fully functional
+- **Features**:
+  - Caches essential app resources
+  - Serves offline.html when network fails
+  - Real-time connection status indicator
+  - Automatic cache management
+
+### 7. Security Headers
 
 - **File**: `next.config.mjs`
 - **Status**: ✅ Configured

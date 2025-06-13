@@ -2,6 +2,7 @@
 
 import PushNotificationManager from "@/components/PushNotificationManager";
 import InstallPrompt from "@/components/InstallPrompt";
+import OfflineIndicator from "@/components/OfflineIndicator";
 import {
   Card,
   CardContent,
@@ -10,8 +11,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { usePwa } from "@/hooks/use-pwa";
-import { Smartphone, Bell, Wifi, Download } from "lucide-react";
+import { Smartphone, Bell, Wifi, Download, WifiOff } from "lucide-react";
 
 export default function PwaDemo() {
   const { isPwa, isClient } = usePwa();
@@ -27,6 +29,9 @@ export default function PwaDemo() {
 
   return (
     <div className="space-y-6">
+      {/* Offline Indicator */}
+      <OfflineIndicator />
+
       {/* PWA Status Card */}
       <Card>
         <CardHeader>
@@ -113,6 +118,57 @@ export default function PwaDemo() {
                 </p>
               </div>
             </div>
+            <div className="flex items-center gap-3 rounded-lg border p-3">
+              <WifiOff className="h-5 w-5 text-orange-500" />
+              <div>
+                <h4 className="font-medium">Offline Functionality</h4>
+                <p className="text-sm text-gray-600">
+                  Access cached content and see a custom offline page when
+                  disconnected
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Offline Testing Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <WifiOff className="h-5 w-5" />
+            Offline Testing
+          </CardTitle>
+          <CardDescription>
+            Test the offline functionality of your PWA
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <h4 className="mb-2 font-medium text-amber-800">
+              How to Test Offline Mode:
+            </h4>
+            <ol className="list-inside list-decimal space-y-1 text-sm text-amber-700">
+              <li>Open browser DevTools (F12)</li>
+              <li>Go to Network tab</li>
+              <li>Check &ldquo;Offline&rdquo; checkbox</li>
+              <li>Refresh the page to see the offline page</li>
+              <li>
+                Or visit:{" "}
+                <code className="rounded bg-amber-100 px-1">/offline.html</code>
+              </li>
+            </ol>
+          </div>
+
+          <div className="grid gap-2">
+            <Button
+              variant="outline"
+              onClick={() => window.open("/offline.html", "_blank")}
+              className="w-full"
+            >
+              <WifiOff className="mr-2 h-4 w-4" />
+              Preview Offline Page
+            </Button>
           </div>
         </CardContent>
       </Card>

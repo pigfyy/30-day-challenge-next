@@ -32,6 +32,15 @@ function urlBase64ToUint8Array(base64String: string) {
   return outputArray;
 }
 
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+  return window.btoa(binary);
+}
+
 export default function PushNotificationManager() {
   const [isSupported, setIsSupported] = useState(false);
   const [subscription, setSubscription] = useState<PushSubscription | null>(
@@ -69,8 +78,22 @@ export default function PushNotificationManager() {
           process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
         ),
       });
+
+      // Convert PushSubscription to plain object for Server Action
+      const subscriptionData = {
+        endpoint: sub.endpoint,
+        keys: {
+          p256dh: sub.getKey("p256dh")
+            ? arrayBufferToBase64(sub.getKey("p256dh")!)
+            : "",
+          auth: sub.getKey("auth")
+            ? arrayBufferToBase64(sub.getKey("auth")!)
+            : "",
+        },
+      };
+
       setSubscription(sub);
-      await subscribeUser(sub);
+      await subscribeUser(subscriptionData);
       toast({
         title: "Success!",
         description: "You have successfully subscribed to push notifications.",

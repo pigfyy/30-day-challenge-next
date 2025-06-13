@@ -22,26 +22,39 @@ interface WebPushSubscription extends PushSubscription {
   };
 }
 
+interface SubscriptionData {
+  endpoint: string;
+  keys: {
+    p256dh: string;
+    auth: string;
+  };
+}
+
 let subscription: WebPushSubscription | null = null;
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   return Buffer.from(buffer).toString("base64");
 }
 
-export async function subscribeUser(sub: PushSubscription) {
-  const p256dh = sub.getKey("p256dh");
-  const auth = sub.getKey("auth");
-
-  if (!p256dh || !auth) {
+export async function subscribeUser(subscriptionData: SubscriptionData) {
+  if (!subscriptionData.keys.p256dh || !subscriptionData.keys.auth) {
     throw new Error("Invalid subscription: missing p256dh or auth keys");
   }
 
   const webPushSubscription: WebPushSubscription = {
-    ...sub,
-    keys: {
-      p256dh: arrayBufferToBase64(p256dh),
-      auth: arrayBufferToBase64(auth),
+    endpoint: subscriptionData.endpoint,
+    expirationTime: null,
+    options: {
+      applicationServerKey: null,
+      userVisibleOnly: true,
     },
+    keys: {
+      p256dh: subscriptionData.keys.p256dh,
+      auth: subscriptionData.keys.auth,
+    },
+    getKey: () => null,
+    toJSON: () => ({}),
+    unsubscribe: () => Promise.resolve(true),
   };
 
   subscription = webPushSubscription;
