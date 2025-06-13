@@ -62,9 +62,9 @@ export async function sendNotification(message: string) {
     await webpush.sendNotification(
       subscription,
       JSON.stringify({
-        title: "Test Notification",
+        title: "30 Day Challenge",
         body: message,
-        icon: "/icon.png",
+        icon: "/pwa-icons/android/android-launchericon-192-192.png",
       }),
     );
     return { success: true };
