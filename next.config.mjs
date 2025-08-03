@@ -25,6 +25,8 @@ const nextConfig = {
   },
   crossOrigin: "anonymous",
   experimental: {
+    // React compiler disabled
+    reactCompiler: false,
     serverActions: {
       bodySizeLimit: "4mb",
     },

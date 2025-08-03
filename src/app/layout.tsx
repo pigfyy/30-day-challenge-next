@@ -8,7 +8,8 @@ import { TRPCProvider } from "@/lib/util/trpc";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+// Service worker disabled
+// import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import { Analytics } from "@vercel/analytics/react";
 import { Suspense } from "react";
 import "./globals.css";
@@ -45,7 +46,8 @@ export default function RootLayout({
                     </div>
                   }
                 >
-                  <ServiceWorkerRegistration />
+                  {/* Service worker disabled */}
+                  {/* <ServiceWorkerRegistration /> */}
                   <Header />
                   <main className="flex flex-1">{children}</main>
                   <Toaster />

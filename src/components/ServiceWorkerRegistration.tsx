@@ -4,10 +4,11 @@ import { useEffect } from "react";
 
 export default function ServiceWorkerRegistration() {
   useEffect(() => {
-    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      // Register service worker
-      registerSW();
-    }
+    // Service worker registration disabled
+    // if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+    //   // Register service worker
+    //   registerSW();
+    // }
   }, []);
 
   async function registerSW() {

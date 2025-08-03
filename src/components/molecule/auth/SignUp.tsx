@@ -117,7 +117,7 @@ export function SignUp() {
 
   return (
     <div className="flex w-full flex-col items-center justify-center pt-8 pb-12">
-      <InAppBrowserWarning className="w-full max-w-md" />
+      {/* <InAppBrowserWarning className="w-full max-w-md" /> */}
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create your account</CardTitle>
