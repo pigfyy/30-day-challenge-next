@@ -78,6 +78,7 @@ export function SignUp() {
         name: values.username,
         fetchOptions: {
           onSuccess: (data) => {
+            console.log("pushing");
             router.push("/app?challenge=new");
           },
         },

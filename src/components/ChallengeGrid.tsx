@@ -240,7 +240,7 @@ export const ChallengeGrid = () => {
           )}
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
-          <Leaderboard />
+          {/* <Leaderboard /> */}
           <Card
             className="flex cursor-pointer flex-col justify-center transition-shadow duration-200 hover:shadow-lg"
             onClick={handleCreateChallengeClick}
