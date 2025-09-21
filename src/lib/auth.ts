@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db, prodDb } from "@/lib/db/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { username } from "better-auth/plugins";
+import { bearer, username } from "better-auth/plugins";
 
 export const auth = betterAuth({
   appName: "30 Day Me",
@@ -38,7 +38,7 @@ export const auth = betterAuth({
       },
     },
   },
-  plugins: [username(), nextCookies()],
+  plugins: [username(), nextCookies(), bearer()],
 });
 
 export const authProd = betterAuth({
@@ -75,5 +75,5 @@ export const authProd = betterAuth({
       },
     },
   },
-  plugins: [username(), nextCookies()],
+  plugins: [username(), nextCookies(), bearer()],
 });
