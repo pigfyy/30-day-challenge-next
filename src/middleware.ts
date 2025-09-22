@@ -1,6 +1,11 @@
 import { betterFetch } from "@better-fetch/fetch";
-import type { Session } from "better-auth/types";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+
+type Session = {
+  user: { id: string; email: string; name?: string };
+  session: { id: string; userId: string; expiresAt: string };
+};
 
 export default async function middleware(request: NextRequest) {
   const { data: session } = await betterFetch<Session>(
@@ -21,9 +26,13 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/app", request.url));
   }
 
+  if (!session && request.nextUrl.pathname.startsWith("/api/protected")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/app/:path*", "/sign-in", "/sign-up", "/api/protected/:path*"],
 };
