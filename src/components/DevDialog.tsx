@@ -11,6 +11,7 @@ import {
   changeDates,
   deleteDailyProgressAction,
   deleteCurrentUserAction,
+  resetAllDailyProgressAction,
 } from "@/lib/actions";
 import { trpc } from "@/lib/util/trpc";
 import Link from "next/link";
@@ -36,6 +37,8 @@ const Content: React.FC<{
   const [endDate, setEndDate] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isDeletingUser, setIsDeletingUser] = useState<boolean>(false);
+  const [isResettingProgress, setIsResettingProgress] =
+    useState<boolean>(false);
 
   const challenge = challenges?.find((c) => c.id === challengeId);
 
@@ -58,6 +61,25 @@ const Content: React.FC<{
       console.error("Error in delete user and sign out process:", error);
     } finally {
       setIsDeletingUser(false);
+    }
+  };
+
+  const handleResetAllDailyProgress = async () => {
+    if (!challengeId) return;
+    setIsResettingProgress(true);
+    try {
+      const result = await resetAllDailyProgressAction(challengeId);
+      if (result.success) {
+        await utils.challenge.getChallenges.invalidate();
+        await utils.challenge.getChallengesWithDailyProgress.invalidate();
+        await utils.dailyProgress.getDailyProgress.invalidate();
+      } else {
+        console.error("Failed to reset daily progress:", result.error);
+      }
+    } catch (error) {
+      console.error("Error resetting daily progress:", error);
+    } finally {
+      setIsResettingProgress(false);
     }
   };
 
@@ -96,7 +118,8 @@ const Content: React.FC<{
     }
   };
 
-  const isAnyActionInProgress = isSubmitting || isDeletingUser;
+  const isAnyActionInProgress =
+    isSubmitting || isDeletingUser || isResettingProgress;
   const isSubmitDatesDisabled =
     !startDate || !endDate || isAnyActionInProgress || !challenge;
 
@@ -136,6 +159,18 @@ const Content: React.FC<{
         </>
       )}
       <div className="flex flex-col space-y-2">
+        {challengeId && (
+          <Button
+            onClick={handleResetAllDailyProgress}
+            disabled={isAnyActionInProgress}
+            variant="destructive"
+            className="w-full"
+          >
+            {isResettingProgress
+              ? "Resetting Progress..."
+              : "Reset All Daily Progress"}
+          </Button>
+        )}
         <Button
           onClick={handleDeleteUserAndSignOut}
           disabled={isAnyActionInProgress}

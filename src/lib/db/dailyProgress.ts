@@ -1,18 +1,16 @@
-import { db, dailyProgress, user } from "@/lib/db/drizzle";
-import {
-  ChallengeWithDailyProgress,
-  DailyProgress,
-  NewDailyProgress,
-} from "@/lib/db/drizzle/zod";
+import { dailyProgress, db, user } from "@/lib/db/drizzle";
+import { NewDailyProgress } from "@/lib/db/drizzle/zod";
+import { del, put } from "@vercel/blob";
+import { and, eq, sql, SQL } from "drizzle-orm";
 import { base64ToBlob } from "../util";
-import { put, del } from "@vercel/blob";
-import { eq, and, sql, notExists, exists, SQL } from "drizzle-orm";
 
 export const editDailyProgressCompletion = async (
   progressInformation: NewDailyProgress,
   existingRecord: NewDailyProgress | undefined,
 ) => {
   const recordId = progressInformation.id!;
+
+  console.log(recordId);
 
   return await db.transaction(async (tx) => {
     const updatedProgressEntries = existingRecord

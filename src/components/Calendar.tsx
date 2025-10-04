@@ -1,21 +1,16 @@
 "use client";
 
 import { toast } from "@/hooks/use-toast";
+import { ChallengeWithDailyProgress } from "@/lib/db/drizzle/zod";
 import { createCalendarDates, gridData, isDateValid } from "@/lib/util/dates";
 import { trpc } from "@/lib/util/trpc";
-import {
-  Challenge,
-  ChallengeWithDailyProgress,
-  DailyProgress,
-} from "@/lib/db/drizzle/zod";
-import { getDate, isSameDay } from "date-fns";
-import { Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
-import { useRef, useState, useEffect } from "react";
+import { useGesture } from "@use-gesture/react";
+import cuid from "cuid";
+import { getDate } from "date-fns";
+import { Maximize2 } from "lucide-react";
+import { useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { ViewDayDialog } from "./organism/ViewDayDialog";
-import { useGesture } from "@use-gesture/react";
-import { Button } from "./ui/button";
-import cuid from "cuid";
 
 type CalendarProps = { challenge: ChallengeWithDailyProgress };
 
@@ -25,6 +20,7 @@ export default function Calendar({ challenge }: CalendarProps) {
     undefined | Date
   >();
 
+  console.log(challenge.dailyProgress);
   const gridData = createCalendarDates(challenge);
 
   return (

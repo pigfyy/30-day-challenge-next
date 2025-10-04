@@ -39,7 +39,7 @@ export const updateChallenge = async (
 
 export const deleteChallenge = async (challengeId: string) => {
   try {
-    await db.transaction(async (tx) => {
+    return await db.transaction(async (tx) => {
       const exclusiveDaysCount = await tx
         .select({ count: sql<number>`count(*)` })
         .from(dailyProgress)
@@ -48,7 +48,7 @@ export const deleteChallenge = async (challengeId: string) => {
             eq(dailyProgress.challengeId, challengeId),
             eq(dailyProgress.completed, true),
             sql`NOT EXISTS (
-            SELECT 1 FROM "DailyProgress" dp2 
+            SELECT 1 FROM "DailyProgress" dp2
             WHERE dp2."userId" = ${dailyProgress.userId}
             AND DATE_TRUNC('day', dp2."date" AT TIME ZONE 'America/Los_Angeles') = DATE_TRUNC('day', ${dailyProgress.date} AT TIME ZONE 'America/Los_Angeles')
             AND dp2."challengeId" != ${challengeId}
@@ -66,7 +66,7 @@ export const deleteChallenge = async (challengeId: string) => {
             eq(dailyProgress.completed, true),
             sql`DATE_TRUNC('day', ${dailyProgress.date} AT TIME ZONE 'America/Los_Angeles') >= DATE_TRUNC('day', NOW() AT TIME ZONE 'America/Los_Angeles') - INTERVAL '29 day'`,
             sql`NOT EXISTS (
-            SELECT 1 FROM "DailyProgress" dp2 
+            SELECT 1 FROM "DailyProgress" dp2
             WHERE dp2."userId" = ${dailyProgress.userId}
             AND DATE_TRUNC('day', dp2."date" AT TIME ZONE 'America/Los_Angeles') = DATE_TRUNC('day', ${dailyProgress.date} AT TIME ZONE 'America/Los_Angeles')
             AND dp2."challengeId" != ${challengeId}

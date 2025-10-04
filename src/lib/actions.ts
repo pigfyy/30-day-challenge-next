@@ -128,6 +128,20 @@ export async function changeDates(
     );
 }
 
+export async function resetAllDailyProgressAction(challengeId: string) {
+  try {
+    await db
+      .delete(dailyProgress)
+      .where(eq(dailyProgress.challengeId, challengeId));
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error resetting daily progress:", error);
+    return { success: false, error: "Failed to reset daily progress" };
+  }
+}
+
 export async function deleteCurrentUserAction() {
   try {
     const session = await auth.api.getSession({
