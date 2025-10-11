@@ -150,6 +150,8 @@ export const ChallengeSearchCard = ({
       wish: challengeIdea.wish,
       dailyAction: challengeIdea.dailyAction,
       icon: "✅",
+      startDate: new Date(),
+      endDate: addDays(new Date(), 30),
     });
     toast({
       title: "Success!",
