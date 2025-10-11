@@ -8,10 +8,15 @@ type Session = {
 };
 
 export default async function middleware(request: NextRequest) {
+  // Use the host header to get the actual domain (works with ngrok)
+  const protocol = request.headers.get("x-forwarded-proto") || "http";
+  const host = request.headers.get("host") || "localhost:3000";
+  const baseURL = `${protocol}://${host}`;
+
   const { data: session } = await betterFetch<Session>(
     "/api/auth/get-session",
     {
-      baseURL: request.nextUrl.origin,
+      baseURL,
       headers: {
         cookie: request.headers.get("cookie") || "",
       },

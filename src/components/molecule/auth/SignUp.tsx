@@ -23,7 +23,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import InAppBrowserWarning from "@/components/molecule/InAppBrowserWarning";
 
@@ -57,6 +57,7 @@ type SignUpFormValues = z.infer<typeof signUpSchema>;
 export function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -76,18 +77,17 @@ export function SignUp() {
         email: values.email,
         password: values.password,
         name: values.username,
-        fetchOptions: {
-          onSuccess: (data) => {
-            console.log("pushing");
-            router.push("/app?challenge=new");
-          },
-        },
       });
 
       if (error) {
         form.setError("root", {
           type: "manual",
           message: error.message || "Something went wrong. Please try again.",
+        });
+      } else {
+        // Use startTransition to avoid state updates during render
+        startTransition(() => {
+          router.push("/app?challenge=new");
         });
       }
     } catch (error) {

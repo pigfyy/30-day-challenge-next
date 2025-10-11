@@ -21,7 +21,7 @@ import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
@@ -38,6 +38,7 @@ export function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -54,17 +55,16 @@ export function SignIn() {
       const { error } = await authClient.signIn.email({
         email: values.username,
         password: values.password,
-        fetchOptions: {
-          onSuccess: () => {
-            router.push("/app");
-          },
-        },
       });
 
       if (error) {
         form.setError("root", {
           type: "manual",
           message: error.message || "Invalid credentials. Please try again.",
+        });
+      } else {
+        startTransition(() => {
+          router.push("/app");
         });
       }
     } catch (error) {
@@ -121,11 +121,11 @@ export function SignIn() {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username or Email</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="johndoe or m@example.com"
+                        placeholder="m@example.com"
                         disabled={isLoading}
                         {...field}
                       />

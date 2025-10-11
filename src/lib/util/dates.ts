@@ -138,7 +138,12 @@ export const calculateCompletionRate = (
 
   const daysElapsed = Math.max(1, differenceInDays(endDate, startDate) + 1);
   const completedDays = challenge.dailyProgress.filter(
-    (progress: DailyProgress) => progress.completed,
+    (progress: DailyProgress) =>
+      progress.completed &&
+      isWithinInterval(new Date(progress.date), {
+        start: startOfDay(challenge.startDate),
+        end: endOfDay(challenge.endDate),
+      }),
   ).length;
 
   return Math.min(1, completedDays / daysElapsed);
