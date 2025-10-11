@@ -1,10 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  allowedDevOrigins: [
-    "192.168.68.82",
-    "192.168.68.75",
-    "mature-subtle-troll.ngrok-free.app",
-  ],
+  allowedDevOrigins: ["192.168.68.82", "192.168.68.75"],
   images: {
     remotePatterns: [
       {

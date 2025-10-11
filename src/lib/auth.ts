@@ -6,28 +6,17 @@ import { bearer, username } from "better-auth/plugins";
 
 export const auth = betterAuth({
   appName: "30 Day Me",
-  baseURL: process.env.NEXT_PUBLIC_AUTH_URL || "http://localhost:3000",
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
   emailAndPassword: {
     enabled: true,
   },
-  trustedOrigins: [
-    "http://localhost:3000",
-    "https://mature-subtle-troll.ngrok-free.app",
-  ],
   socialProviders: {
     google: {
       enabled: true,
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    },
-    apple: {
-      enabled: true,
-      clientId: process.env.APPLE_SERVICE_ID as string,
-      clientSecret: process.env.APPLE_CLIENT_SECRET as string,
-      appBundleIdentifier: "ThirtyDayMe.ThirtyDayMe",
     },
   },
   account: {
