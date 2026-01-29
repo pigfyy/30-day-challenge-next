@@ -1,680 +1,266 @@
-import LearnMoreButton from "@/components/LearnMoreButton";
-import PwaRedirectHandler from "@/components/PwaRedirectHandler";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
-export async function generateMetadata() {
-  return { title: "30 Day Me" };
-}
+export default function HomePage() {
+  const scrollToHowItWorks = () => {
+    document
+      .getElementById("how-it-works")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
 
-export default function LandingPage() {
   return (
     <div className="flex w-full flex-col items-center overflow-x-hidden">
-      <PwaRedirectHandler />
       {/* Hero Section */}
-      <section className="from-background-darker to-background w-full bg-linear-to-br py-24">
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="bg-grid-slate-400/[0.05] absolute inset-0 -z-10" />
-          <div className="absolute inset-0 -z-10 flex items-center justify-center">
-            <div className="h-160 w-160 rounded-full bg-blue-100/20 blur-3xl" />
-          </div>
-          <div className="relative flex flex-col items-center text-center">
-            <div className="animate-bounce-slow">
-              <Image
-                src="/logo.png"
-                alt="30 Day Me Logo"
-                width={100}
-                height={100}
-                className="rounded-xl shadow-lg"
-              />
-            </div>
-            <h1 className="mt-8 text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
-              30 Day Me
+      <section className="w-full py-16 sm:py-24">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center text-center">
+            <Image
+              src="/logo.png"
+              alt="30 Day Me"
+              width={80}
+              height={80}
+              className="rounded-xl"
+            />
+            <h1 className="text-foreground mt-6 text-3xl font-bold sm:text-4xl md:text-5xl">
+              Build habits that stick.
             </h1>
-            <div className="my-6 h-1 w-20 rounded-full bg-linear-to-r from-blue-600 to-purple-600"></div>
-            <p className="mt-4 max-w-2xl text-xl leading-relaxed text-gray-600">
-              Track your habits, build your discipline, and build a new you
-              month by month.
+            <p className="text-muted-foreground mt-4 max-w-xl text-lg">
+              Pick a 30-day challenge. Show up daily. Track your progress with
+              photos. Simple as that.
             </p>
-            <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-              <Link href={"/sign-up"}>
-                <Button
-                  size="lg"
-                  className="transform bg-blue-600 text-lg font-semibold shadow-md transition-all duration-200 hover:-translate-y-1 hover:bg-blue-700 hover:shadow-lg"
-                >
-                  Get Started
-                </Button>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link href="/sign-up">
+                <Button size="lg">Start a challenge</Button>
               </Link>
-              <LearnMoreButton />
+              <Button size="lg" variant="outline" onClick={scrollToHowItWorks}>
+                See how it works
+              </Button>
+            </div>
+            <div className="mt-6 flex items-center gap-3">
+              <span className="text-muted-foreground text-sm">
+                Also available on
+              </span>
+              <Link
+                href="https://apps.apple.com/us/app/30-day-me/id6755921080"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/download_on_app_store.svg"
+                  alt="Download on the App Store"
+                  width={120}
+                  height={40}
+                  className="h-9 w-auto"
+                />
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* How It Works Section */}
       <section
-        id="features"
-        className="relative w-full overflow-hidden bg-green-50 py-24"
+        id="how-it-works"
+        className="border-border bg-muted w-full border-t py-16 sm:py-24"
       >
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 h-40 w-40 rounded-full bg-yellow-300 opacity-10"></div>
-        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-60 w-60 rounded-full bg-blue-300 opacity-10"></div>
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center">
-            <span className="mb-4 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-600">
-              FEATURES
-            </span>
-            <h2 className="mb-4 text-center text-3xl font-bold text-gray-900">
-              Build Better Habits
-            </h2>
-            <div className="mb-12 h-1 w-16 rounded-full bg-blue-600"></div>
-          </div>
-          <div className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3">
-            {/* Feature 1 */}
-            <div className="flex transform flex-col items-center rounded-xl border border-gray-200 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-              <div className="rounded-full bg-blue-100 p-4 shadow-inner">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-6 w-6 text-blue-600"
-                >
-                  <path d="M11 18a1 1 0 0 1 1 1a1 1 0 0 1-1 1a1 1 0 0 1-1-1a1 1 0 0 1 1-1z" />
-                  <path d="M14 14a1 1 0 0 1 2 0a1 1 0 0 1-2 0a1 1 0 0 1 0 0z" />
-                  <path d="M7 14a1 1 0 0 1 2 0a1 1 0 0 1-2 0a1 1 0 0 1 0 0z" />
-                  <circle cx="12" cy="12" r="9" />
-                </svg>
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-foreground text-center text-2xl font-bold sm:text-3xl">
+            How it works
+          </h2>
+          <div className="mt-12 grid gap-8 sm:grid-cols-3">
+            <div className="text-center">
+              <div className="bg-foreground text-background mx-auto flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold">
+                1
               </div>
-              <h3 className="mt-6 text-xl font-semibold text-gray-900">
-                Challenge Search System
+              <h3 className="text-foreground mt-4 font-semibold">
+                Pick a challenge
               </h3>
-              <div className="my-4 h-0.5 w-10 rounded-full bg-blue-600"></div>
-              <p className="mt-2 text-center text-gray-600">
-                Find the perfect challenge to match your goals with our curated
-                search system for inspiration.
+              <p className="text-muted-foreground mt-2 text-sm">
+                Browse ideas or create your own. Cold showers, daily sketching,
+                no sugar - whatever you want to commit to.
               </p>
             </div>
-
-            {/* Feature 2 */}
-            <div className="flex transform flex-col items-center rounded-xl border border-gray-200 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-              <div className="rounded-full bg-green-100 p-4 shadow-inner">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-6 w-6 text-green-600"
-                >
-                  <path d="M15 8h.01" />
-                  <rect width="16" height="16" x="4" y="4" rx="3" />
-                  <path d="m4 15 4-4a3 5 0 0 1 3 0l5 5" />
-                  <path d="m14 14 1-1a3 5 0 0 1 3 0l2 2" />
-                </svg>
+            <div className="text-center">
+              <div className="bg-foreground text-background mx-auto flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold">
+                2
               </div>
-              <h3 className="mt-6 text-xl font-semibold text-gray-900">
-                Track Progress with Images
+              <h3 className="text-foreground mt-4 font-semibold">
+                Show up daily
               </h3>
-              <div className="my-4 h-0.5 w-10 rounded-full bg-green-600"></div>
-              <p className="mt-2 text-center text-gray-600">
-                Document your journey with visual proof of progress and
-                completion tracking.
+              <p className="text-muted-foreground mt-2 text-sm">
+                Mark each day complete. Add a photo if you want - seeing your
+                progress pile up is surprisingly motivating.
               </p>
             </div>
-
-            {/* Feature 3 */}
-            <div className="flex transform flex-col items-center rounded-xl border border-gray-200 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-              <div className="rounded-full bg-purple-100 p-4 shadow-inner">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-6 w-6 text-purple-600"
-                >
-                  <path d="M8 2v4" />
-                  <path d="M16 2v4" />
-                  <rect width="18" height="18" x="3" y="4" rx="2" />
-                  <path d="M3 10h18" />
-                  <path d="m8 14 2 2 4-4" />
-                </svg>
+            <div className="text-center">
+              <div className="bg-foreground text-background mx-auto flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold">
+                3
               </div>
-              <h3 className="mt-6 text-xl font-semibold text-gray-900">
-                Build Lasting Consistency
+              <h3 className="text-foreground mt-4 font-semibold">
+                Build the habit
               </h3>
-              <div className="my-4 h-0.5 w-10 rounded-full bg-purple-600"></div>
-              <p className="mt-2 text-center text-gray-600">
-                Transform habits through daily tracking and visual motivation to
-                develop lifelong consistency.
+              <p className="text-muted-foreground mt-2 text-sm">
+                30 days is enough to rewire your defaults. After that, it&apos;s
+                just who you are.
               </p>
             </div>
           </div>
         </div>
       </section>
-      {/* Testimonials Section */}
-      <section className="relative w-full bg-linear-to-br from-gray-50 to-blue-50 py-24">
-        <div className="bg-grid-slate-400/[0.05] absolute inset-x-0 top-0 -z-0 h-40" />
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center">
-            <span className="mb-4 rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-600">
-              TESTIMONIALS
-            </span>
-            <h2 className="mb-4 text-center text-3xl font-bold text-gray-900">
-              What Our Users Say
-            </h2>
-            <div className="mb-12 h-1 w-16 rounded-full bg-purple-600"></div>
-          </div>
-          <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Testimonial 1 */}
-            <div className="flex flex-col rounded-xl border bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
-              <div className="mb-4">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <svg
-                      key={star}
-                      className="h-5 w-5 text-yellow-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              <div className="flex-1">
-                <p className="text-xl leading-relaxed text-gray-600 italic">
-                  &ldquo;This app has really helped me become more conscious and
-                  intentional about my behavior.&rdquo;
-                </p>
-              </div>
-              <div className="mt-6 flex items-center border-t border-gray-100 pt-4">
-                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-linear-to-br from-blue-400 to-purple-500">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-full w-full p-1 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <p className="text-md font-semibold text-gray-900">
-                    30 Day Me User
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            {/* Testimonial 2 */}
-            <div className="flex flex-col rounded-xl border bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
-              <div className="mb-4">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <svg
-                      key={star}
-                      className="h-5 w-5 text-yellow-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              <div className="flex-1">
-                <p className="text-xl leading-relaxed text-gray-600 italic">
-                  &ldquo;Being able to see my completion rate at a glance is
-                  really motivating.&rdquo;
-                </p>
-              </div>
-              <div className="mt-6 flex items-center border-t border-gray-100 pt-4">
-                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-linear-to-br from-green-400 to-blue-500">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-full w-full p-1 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <p className="text-md font-semibold text-gray-900">
-                    30 Day Me User
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* App Screenshots */}
+      <section className="w-full py-16 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-foreground text-center text-2xl font-bold sm:text-3xl">
+            See it in action
+          </h2>
+          <p className="text-muted-foreground mx-auto mt-3 max-w-xl text-center">
+            A dashboard that shows your progress at a glance. No clutter, no
+            distractions.
+          </p>
 
-      {/* COMBINED DEMO SECTION */}
-      <section className="relative grid w-full gap-20 bg-purple-50 py-24">
-        <div className="absolute top-40 right-0 h-80 w-80 rounded-full bg-purple-300 opacity-10 blur-3xl"></div>
-        <div className="absolute top-80 left-0 h-80 w-80 rounded-full bg-blue-300 opacity-10 blur-3xl"></div>
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Dashboard Demo */}
-          <div className="mx-auto mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Dashboard Description */}
-            <div className="flex flex-col justify-center">
-              <div className="flex flex-col items-start">
-                <span className="mb-4 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-600">
-                  DASHBOARD DEMO
-                </span>
-                <h2 className="mb-4 text-3xl font-bold text-gray-900">
-                  Track Your Challenge Progress
-                </h2>
-                <div className="mb-8 h-1 w-16 rounded-full bg-blue-600"></div>
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <div className="space-y-3">
+              <div className="border-border overflow-hidden rounded-lg border shadow-sm">
+                <Image
+                  src="/dashboard-demo.webp"
+                  alt="Dashboard showing active challenges"
+                  width={600}
+                  height={400}
+                  className="h-auto w-full"
+                  unoptimized
+                />
               </div>
-              <p className="mt-4 text-lg text-gray-600">
-                Our intuitive dashboard gives you a clear view of all your
-                active challenges. At a glance, you can:
+              <p className="text-muted-foreground text-center text-sm">
+                Your challenges at a glance
               </p>
-              <ul className="mt-6 space-y-4">
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-blue-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    See completion rates for multiple challenges
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-blue-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Track your daily progress with visual indicators
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-blue-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Celebrate your streaks and achievements
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-blue-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Monitor multiple challenges in one place
-                  </span>
-                </li>
-              </ul>
             </div>
 
-            {/* Dashboard Image */}
-            <div className="flex items-center justify-center">
-              <div
-                className="relative overflow-hidden rounded-xl shadow-2xl"
-                style={{
-                  maxWidth: "600px",
-                  width: "100%",
-                  aspectRatio: "600 / 550",
-                }}
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    transform: "scale(1)",
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Image
-                    src="/dashboard-demo.webp"
-                    alt="30 Day Me Dashboard Demo"
-                    fill
-                    className="object-contain"
-                    priority
-                    unoptimized
-                  />
-                </div>
+            <div className="space-y-3">
+              <div className="border-border overflow-hidden rounded-lg border shadow-sm">
+                <Image
+                  src="/trackdemo.webp"
+                  alt="Tracking daily progress"
+                  width={600}
+                  height={400}
+                  className="h-auto w-full"
+                  unoptimized
+                />
               </div>
-            </div>
-          </div>
-
-          {/* Challenge Page Demo - Flipped orientation */}
-          <div className="mx-auto mt-24 grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Challenge Page Image - Now on left */}
-            <div className="flex items-center justify-center">
-              <div
-                className="relative overflow-hidden rounded-xl shadow-2xl"
-                style={{
-                  maxWidth: "600px",
-                  width: "100%",
-                  aspectRatio: "600 / 550",
-                }}
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    transform: "scale(1)",
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Image
-                    src="/trackdemo.webp"
-                    alt="30 Day Me Challenge Page Demo"
-                    fill
-                    className="object-contain"
-                    priority
-                    unoptimized
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Challenge Page Description - Now on right */}
-            <div className="flex flex-col justify-center">
-              <div className="flex flex-col items-start">
-                <span className="mb-4 rounded-full bg-green-100 px-3 py-1 text-sm text-green-600">
-                  CHALLENGE PAGE
-                </span>
-                <h2 className="mb-4 text-3xl font-bold text-gray-900">
-                  Mark Completions & Upload Progress Photos
-                </h2>
-                <div className="mb-8 h-1 w-16 rounded-full bg-green-600"></div>
-              </div>
-              <p className="mt-4 text-lg text-gray-600">
-                Our challenge page makes it easy to document your daily progress
-                and stay on track. At a glance, you can:
+              <p className="text-muted-foreground text-center text-sm">
+                Mark days complete, add photos
               </p>
-              <ul className="mt-6 space-y-4">
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-green-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Mark your daily challenge as complete with one click
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-green-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Upload before/after photos to track visual progress
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-green-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Record notes and reflections for each day
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-green-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Compare your progress throughout the challenge
-                  </span>
-                </li>
-              </ul>
             </div>
-          </div>
 
-          {/* Create Challenge Demo */}
-          <div className="mx-auto mt-24 grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Challenge Creation Description */}
-            <div className="flex flex-col justify-center">
-              <div className="flex flex-col items-start">
-                <span className="mb-4 rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-600">
-                  CHALLENGE CREATION
-                </span>
-                <h2 className="mb-4 text-3xl font-bold text-gray-900">
-                  Create Custom Challenges
-                </h2>
-                <div className="mb-8 h-1 w-16 rounded-full bg-purple-600"></div>
+            <div className="space-y-3">
+              <div className="border-border overflow-hidden rounded-lg border shadow-sm">
+                <Image
+                  src="/createdemo.webp"
+                  alt="Creating a new challenge"
+                  width={600}
+                  height={400}
+                  className="h-auto w-full"
+                  unoptimized
+                />
               </div>
-              <p className="mt-4 text-lg text-gray-600">
-                Creating your own challenge is simple and powerful. With our
-                intuitive interface you can:
+              <p className="text-muted-foreground text-center text-sm">
+                Create or browse challenges
               </p>
-              <ul className="mt-6 space-y-4">
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-purple-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Design custom challenges with your own titles and
-                    descriptions
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-purple-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Search through challenge templates for inspiration
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="mr-2 h-6 w-6 text-purple-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">
-                    Start multiple challenges and track them simultaneously
-                  </span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Challenge Creation Image */}
-            <div className="flex items-center justify-center">
-              <div
-                className="relative overflow-hidden rounded-xl shadow-2xl"
-                style={{
-                  maxWidth: "600px",
-                  width: "100%",
-                  aspectRatio: "600 / 550",
-                }}
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    transform: "scale(1)",
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Image
-                    src="/createdemo.webp"
-                    alt="30 Day Me Challenge Creation Demo"
-                    fill
-                    className="object-contain"
-                    priority
-                    unoptimized
-                  />
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="w-full py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl border border-gray-200 bg-white px-8 py-16 shadow-lg sm:px-14 sm:py-20">
-            <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-blue-100 opacity-20 blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-blue-100 opacity-20 blur-3xl"></div>
-            <div className="relative z-10 mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-                Ready to start your 30-day challenge journey?
-              </h2>
-              <p className="mt-6 text-xl text-gray-600">
-                Begin transforming your habits and your life today.
-              </p>
-              <div className="mt-10">
-                <Link href={"/sign-up"}>
-                  <Button
-                    size="lg"
-                    className="transform bg-blue-600 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:bg-blue-700 hover:shadow-lg"
-                  >
-                    Start Now
-                  </Button>
-                </Link>
-              </div>
-            </div>
+      <section className="border-border bg-muted w-full border-t py-16 sm:py-24">
+        <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-foreground text-2xl font-bold sm:text-3xl">
+            Ready to try it?
+          </h2>
+          <p className="text-muted-foreground mt-3">
+            Pick something you&apos;ve been putting off. Give it 30 days.
+          </p>
+          <div className="mt-8">
+            <Link href="/sign-up">
+              <Button size="lg">Start your first challenge</Button>
+            </Link>
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="border-border w-full border-t py-8">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            {/* Left - Logo and name */}
+            <div className="flex items-center gap-3">
+              <Image
+                src="/logo.png"
+                alt="30 Day Me"
+                width={32}
+                height={32}
+                className="rounded-lg"
+              />
+              <span className="text-foreground font-semibold">30 Day Me</span>
+            </div>
+
+            {/* Middle - Links */}
+            <div className="text-muted-foreground flex gap-6 text-sm">
+              <Link href="/privacy" className="hover:text-foreground">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-foreground">
+                Terms
+              </Link>
+              <Link href="/contact" className="hover:text-foreground">
+                Contact
+              </Link>
+            </div>
+
+            {/* Right - App Store and Social */}
+            <div className="flex items-center gap-4">
+              <Link
+                href="https://apps.apple.com/us/app/30-day-me/id6755921080"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/download_on_app_store.svg"
+                  alt="Download on the App Store"
+                  width={120}
+                  height={40}
+                  className="h-8 w-auto"
+                />
+              </Link>
+              <Link
+                href="https://www.instagram.com/30day.me/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
