@@ -34,6 +34,7 @@ export default function RootLayout({
             name="description"
             content="30 Day Me is a platform for creating and tracking 30-day challenges."
           />
+          <meta name="apple-itunes-app" content="app-id=6755921080" />
         </head>
         <body className={`bg-background-darker flex min-h-screen flex-col`}>
           <TRPCProvider>

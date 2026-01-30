@@ -7,9 +7,15 @@ export async function GET() {
       details: [
         {
           appID: "1066607225.me.30day.app",
-          paths: ["/*"],
+          paths: ["/l/*"],
         },
       ],
+    },
+    activitycontinuation: {
+      apps: ["1066607225.me.30day.app"],
+    },
+    webcredentials: {
+      apps: ["1066607225.me.30day.app"],
     },
   };
 
