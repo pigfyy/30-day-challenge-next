@@ -6,16 +6,16 @@ export async function GET() {
       apps: [],
       details: [
         {
-          appID: "1066607225.me.30day.app",
+          appID: "RMV469Q2GF.me.30day.app",
           paths: ["/l/*"],
         },
       ],
     },
     activitycontinuation: {
-      apps: ["1066607225.me.30day.app"],
+      apps: ["RMV469Q2GF.me.30day.app"],
     },
     webcredentials: {
-      apps: ["1066607225.me.30day.app"],
+      apps: ["RMV469Q2GF.me.30day.app"],
     },
   };
 
