@@ -1,6 +1,6 @@
 # Terms of Service
 
-**Last Updated: November 26, 2025**
+**Last Updated: February 5, 2026**
 
 ## 1. Introduction and Acceptance of Terms
 
@@ -10,12 +10,14 @@ These Terms constitute a legally binding agreement between you and 30 Day Me reg
 
 ## 2. Description of Service
 
-30 Day Me is a personal challenge tracking application that enables users to:
+30 Day Me is a challenge tracking and sharing application that enables users to:
 
 - Create and manage 30-day personal development challenges
 - Track daily progress with completion status
 - Add notes and photos to daily progress entries
 - View pre-built challenge ideas from curated sources
+- Publish challenges for other users to discover and join via shared links
+- Set up a public profile with a display name and profile picture
 - Monitor personal statistics and performance metrics
 
 The Service is currently provided free of charge.
@@ -65,10 +67,14 @@ When you create an account, we collect and store:
 - Challenge titles, descriptions, and goals
 - Daily progress notes
 - Photos and images uploaded to track progress
+- Published challenge ideas (title, description, wish, daily action)
+- Profile information (display name, profile picture)
 
 ### 5.2 Ownership
 
 You retain ownership of all User Content you create. By submitting User Content to the Service, you grant us a non-exclusive, worldwide, royalty-free license to use, store, and display your User Content solely for the purpose of providing and improving the Service.
+
+**Published Content:** When you publish a challenge, you understand that your display name, profile picture, and challenge content will be visible to other users. You may unpublish a challenge at any time to remove it. If you delete your account, published challenges will be anonymized (your name and profile picture removed) but the challenge content may remain available.
 
 ### 5.3 Content Responsibilities
 
@@ -104,7 +110,7 @@ The Service and its original content (excluding User Content), features, and fun
 
 ### 7.2 Challenge Ideas
 
-The Service includes pre-built challenge ideas sourced from various third parties. These ideas are provided for inspiration and personal use only. Attribution to original sources is displayed where applicable.
+The Service includes challenge ideas from two sources: pre-built ideas sourced from various third parties, and user-published challenge ideas. Pre-built ideas are provided for inspiration and personal use only, with attribution to original sources where applicable. User-published ideas are shared voluntarily by other users of the Service.
 
 ### 7.3 Feedback
 
@@ -117,7 +123,9 @@ The Service integrates with third-party services including:
 - **Google** - For authentication via Google Sign-In
 - **Apple** - For authentication via Apple Sign-In
 - **Neon** - Database hosting services
-- **Vercel** - Application hosting and file storage
+- **Cloudflare R2** - File storage (profile pictures, progress images)
+- **OpenAI** - Vector embedding generation for challenge search and discovery
+- **Vercel** - Application hosting
 - **Apple App Store** - Mobile app distribution
 
 Your use of these third-party services is subject to their respective terms of service and privacy policies. We are not responsible for the practices of these third parties.
@@ -163,7 +171,7 @@ You agree to defend, indemnify, and hold harmless 30 Day Me and its officers, di
 
 ### 13.1 Termination by You
 
-You may delete your account at any time through the account settings in the App. Upon deletion, all your data including challenges, daily progress entries, and uploaded images will be permanently removed from our systems.
+You may delete your account at any time through the account settings in the App. Upon deletion, all your personal data including challenges, daily progress entries, uploaded images, and profile information will be permanently removed from our systems. Any challenges you published will be anonymized (your name and profile picture removed) but the challenge content may remain available to users who previously joined it.
 
 ### 13.2 Termination by Us
 
